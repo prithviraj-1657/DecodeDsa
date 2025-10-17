@@ -1,9 +1,7 @@
 "use client"
-
-import type React from "react"
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, Code } from "lucide-react"
+import { ArrowLeft, ChevronLeft, ChevronRight, Code, X } from "lucide-react"
 import { Button } from "../../components/ui/button"
 
 interface ArrayElement {
@@ -18,17 +16,59 @@ interface Step {
   array: ArrayElement[]
   description: string
   code: string
+  waterHeight?: number[]
 }
 
+type ProblemType = "two-sum" | "three-sum" | "container-water" | "remove-duplicates" | "move-zeroes"
+
+interface QuestionInfo {
+  id: ProblemType
+  title: string
+  description: string
+}
+
+const QUESTIONS: QuestionInfo[] = [
+  {
+    id: "two-sum",
+    title: "Two Sum",
+    description: "Find two numbers in the array that add up to the target sum.",
+  },
+  {
+    id: "three-sum",
+    title: "Three Sum",
+    description: "Find three numbers in the array that add up to the target sum.",
+  },
+]
+
+const QUESTIONS_MODAL: QuestionInfo[] = [
+  {
+    id: "container-water",
+    title: "Container With Most Water",
+    description:
+      "Find two lines that form a container with the most water. The area is calculated as min(height[i], height[j]) × (j - i).",
+  },
+  {
+    id: "remove-duplicates",
+    title: "Remove Duplicates (Sorted)",
+    description:
+      "Given a sorted array, remove duplicates in-place so each element appears once and return the new length.",
+  },
+  {
+    id: "move-zeroes",
+    title: "Move Zeroes",
+    description: "Move all zeroes to the end of the array while maintaining the relative order of non-zero elements.",
+  },
+]
+
 function TwoPointerPage() {
+  const [selectedProblem, setSelectedProblem] = useState<ProblemType>("two-sum")
   const [arrayInput, setArrayInput] = useState<string>("")
   const [target, setTarget] = useState<number>(0)
   const [steps, setSteps] = useState<Step[]>([])
   const [currentStep, setCurrentStep] = useState<number>(0)
   const [isVisualizing, setIsVisualizing] = useState<boolean>(false)
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState<"two-sum" | "three-sum">("two-sum")
   const [showFullCode, setShowFullCode] = useState<boolean>(false)
-  
+  const [showQuestionsModal, setShowQuestionsModal] = useState<boolean>(false)
 
   const resetVisualization = () => {
     setSteps([])
@@ -37,36 +77,35 @@ function TwoPointerPage() {
     setShowFullCode(false)
   }
 
+
   const generateTwoSumSteps = (array: number[]) => {
     const sortedArray = [...array].sort((a, b) => a - b)
     const newSteps: Step[] = []
     let left = 0
     let right = sortedArray.length - 1
 
-    // Initial state
     newSteps.push({
-      array: sortedArray.map(num => ({
+      array: sortedArray.map((num) => ({
         value: num,
         isHighlighted: false,
         isPointer1: false,
         isPointer2: false,
-        isPointer3: false
+        isPointer3: false,
       })),
       description: "Initial sorted array",
       code: `# Sort the array
-array.sort()`
+array.sort()`,
     })
 
     while (left < right) {
       const currentLeft = left
       const currentRight = right
-      // Update pointers
       const currentArray = sortedArray.map((num, i) => ({
         value: num,
         isHighlighted: false,
         isPointer1: i === currentLeft,
         isPointer2: i === currentRight,
-        isPointer3: false
+        isPointer3: false,
       }))
       newSteps.push({
         array: currentArray,
@@ -78,21 +117,20 @@ if sum == target:
 elif sum < target:
     left += 1
 else:
-    right -= 1`
+    right -= 1`,
       })
 
       const sum = sortedArray[left] + sortedArray[right]
       if (sum === target) {
-        // Found a pair
         const finalArray = currentArray.map((el, i) => ({
           ...el,
-          isHighlighted: i === currentLeft || i === currentRight
+          isHighlighted: i === currentLeft || i === currentRight,
         }))
         newSteps.push({
           array: finalArray,
           description: `Found pair: ${sortedArray[currentLeft]} + ${sortedArray[currentRight]} = ${target}`,
           code: `# Found the target sum
-return [left, right]`
+return [left, right]`,
         })
         break
       } else if (sum < target) {
@@ -104,16 +142,16 @@ return [left, right]`
 
     if (left >= right) {
       newSteps.push({
-        array: sortedArray.map(num => ({
+        array: sortedArray.map((num) => ({
           value: num,
           isHighlighted: false,
           isPointer1: false,
           isPointer2: false,
-          isPointer3: false
+          isPointer3: false,
         })),
         description: "No pair found that sums to target",
         code: `# No solution found
-return []`
+return []`,
       })
     }
 
@@ -124,18 +162,17 @@ return []`
     const sortedArray = [...array].sort((a, b) => a - b)
     const newSteps: Step[] = []
 
-    // Initial state
     newSteps.push({
-      array: sortedArray.map(num => ({
+      array: sortedArray.map((num) => ({
         value: num,
         isHighlighted: false,
         isPointer1: false,
         isPointer2: false,
-        isPointer3: false
+        isPointer3: false,
       })),
       description: "Initial sorted array",
       code: `# Sort the array
-array.sort()`
+array.sort()`,
     })
 
     for (let i = 0; i < sortedArray.length - 2; i++) {
@@ -146,13 +183,12 @@ array.sort()`
         const currentI = i
         const currentLeft = left
         const currentRight = right
-        // Update pointers
         const currentArray = sortedArray.map((num, idx) => ({
           value: num,
           isHighlighted: false,
           isPointer1: idx === currentI,
           isPointer2: idx === currentLeft,
-          isPointer3: idx === currentRight
+          isPointer3: idx === currentRight,
         }))
         newSteps.push({
           array: currentArray,
@@ -164,21 +200,20 @@ if sum == target:
 elif sum < target:
     left += 1
 else:
-    right -= 1`
+    right -= 1`,
         })
 
         const sum = sortedArray[i] + sortedArray[left] + sortedArray[right]
         if (sum === target) {
-          // Found a triplet
           const finalArray = currentArray.map((el, idx) => ({
             ...el,
-            isHighlighted: idx === currentI || idx === currentLeft || idx === currentRight
+            isHighlighted: idx === currentI || idx === currentLeft || idx === currentRight,
           }))
           newSteps.push({
             array: finalArray,
             description: `Found triplet: ${sortedArray[currentI]} + ${sortedArray[currentLeft]} + ${sortedArray[currentRight]} = ${target}`,
             code: `# Found the target sum
-return [i, left, right]`
+return [i, left, right]`,
           })
           return newSteps
         } else if (sum < target) {
@@ -190,32 +225,38 @@ return [i, left, right]`
     }
 
     newSteps.push({
-      array: sortedArray.map(num => ({
+      array: sortedArray.map((num) => ({
         value: num,
         isHighlighted: false,
         isPointer1: false,
         isPointer2: false,
-        isPointer3: false
+        isPointer3: false,
       })),
       description: "No triplet found that sums to target",
       code: `# No solution found
-return []`
+return []`,
     })
 
     return newSteps
   }
 
+
   const handleVisualize = () => {
     try {
-      const numbers = arrayInput.split(',').map(num => parseInt(num.trim()))
+      const numbers = arrayInput.split(",").map((num) => Number.parseInt(num.trim()))
       if (numbers.some(isNaN)) {
         throw new Error("Invalid number in array")
       }
       resetVisualization()
       setIsVisualizing(true)
-      const newSteps = selectedAlgorithm === "two-sum" 
-        ? generateTwoSumSteps(numbers)
-        : generateThreeSumSteps(numbers)
+
+      let newSteps: Step[] = []
+      if (selectedProblem === "two-sum") {
+        newSteps = generateTwoSumSteps(numbers)
+      } else if (selectedProblem === "three-sum") {
+        newSteps = generateThreeSumSteps(numbers)
+      }
+
       setSteps(newSteps)
       setIsVisualizing(false)
     } catch (err) {
@@ -224,7 +265,7 @@ return []`
   }
 
   const getFullCode = () => {
-    if (selectedAlgorithm === "two-sum") {
+    if (selectedProblem === "two-sum") {
       return `def two_sum(array, target):
     # Sort the array
     array.sort()
@@ -240,7 +281,7 @@ return []`
             right -= 1
     
     return []  # No solution found`
-    } else {
+    } else if (selectedProblem === "three-sum") {
       return `def three_sum(array, target):
     # Sort the array
     array.sort()
@@ -259,6 +300,12 @@ return []`
     
     return []  # No solution found`
     }
+    return ""
+  }
+
+  const getProblemDescription = () => {
+    const question = QUESTIONS.find((q) => q.id === selectedProblem)
+    return question?.description || ""
   }
 
   return (
@@ -267,16 +314,22 @@ return []`
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Link to="/array-algorithms" className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors">
+              <Link
+                to="/array-algorithms"
+                className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors"
+              >
                 <ArrowLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
               </Link>
-              <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg">
-                <ArrowRight className="w-6 h-6 text-white" />
-              </div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
                 Two Pointer Techniques
               </h1>
             </div>
+            <button
+              onClick={() => setShowQuestionsModal(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            >
+              Questions
+            </button>
           </div>
         </div>
       </header>
@@ -285,33 +338,35 @@ return []`
         {/* Algorithm Selection */}
         <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Select Algorithm</h2>
-          <div className="flex gap-4">
-            <button
-              onClick={() => setSelectedAlgorithm("two-sum")}
-              className={`px-4 py-2 rounded-lg ${
-                selectedAlgorithm === "two-sum"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"
-              }`}
-            >
-              Two Sum
-            </button>
-            <button
-              onClick={() => setSelectedAlgorithm("three-sum")}
-              className={`px-4 py-2 rounded-lg ${
-                selectedAlgorithm === "three-sum"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"
-              }`}
-            >
-              Three Sum
-            </button>
+          <div className="flex gap-3">
+            {QUESTIONS.map((question) => (
+              <button
+                key={question.id}
+                onClick={() => {
+                  setSelectedProblem(question.id)
+                  resetVisualization()
+                  setTarget(0)
+                  setArrayInput("")
+                }}
+                className={`px-6 py-3 rounded-lg font-medium transition-all ${
+                  selectedProblem === question.id
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
+                }`}
+              >
+                {question.title}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Array and Target Input */}
+        {/* Input Section */}
         <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Input</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            {QUESTIONS.find((q) => q.id === selectedProblem)?.title}
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">{getProblemDescription()}</p>
+
           <div className="flex flex-col gap-4">
             <div>
               <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -326,19 +381,24 @@ return []`
                 placeholder="e.g., 1, 2, 3, 4, 5"
               />
             </div>
-            <div>
-              <label htmlFor="target-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Target Sum
-              </label>
-              <input
-                id="target-input"
-                type="number"
-                value={target}
-                onChange={(e) => setTarget(parseInt(e.target.value))}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter target sum"
-              />
-            </div>
+            {(selectedProblem === "two-sum" || selectedProblem === "three-sum") && (
+              <div>
+                <label
+                  htmlFor="target-input"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
+                  Target Sum
+                </label>
+                <input
+                  id="target-input"
+                  type="number"
+                  value={target}
+                  onChange={(e) => setTarget(Number.parseInt(e.target.value))}
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter target sum"
+                />
+              </div>
+            )}
             <button
               onClick={handleVisualize}
               disabled={isVisualizing}
@@ -354,17 +414,19 @@ return []`
             {/* Step Navigation */}
             <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Step {currentStep + 1} of {steps.length}</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Step {currentStep + 1} of {steps.length}
+                </h2>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
+                    onClick={() => setCurrentStep((prev) => Math.max(0, prev - 1))}
                     disabled={currentStep === 0}
                     className="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 disabled:opacity-50"
                   >
                     <ChevronLeft className="w-6 h-6" />
                   </button>
                   <button
-                    onClick={() => setCurrentStep(prev => Math.min(steps.length - 1, prev + 1))}
+                    onClick={() => setCurrentStep((prev) => Math.min(steps.length - 1, prev + 1))}
                     disabled={currentStep === steps.length - 1}
                     className="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 disabled:opacity-50"
                   >
@@ -373,7 +435,7 @@ return []`
                 </div>
               </div>
               <p className="text-gray-600 dark:text-gray-300 mb-4">{steps[currentStep].description}</p>
-              <Button onClick={()=> setCurrentStep(0)} variant="secondary">
+              <Button onClick={() => setCurrentStep(0)} variant="secondary">
                 Reset
               </Button>
             </div>
@@ -389,12 +451,12 @@ return []`
                       element.isHighlighted
                         ? "bg-green-500 text-white"
                         : element.isPointer1
-                        ? "bg-blue-500 text-white"
-                        : element.isPointer2
-                        ? "bg-purple-500 text-white"
-                        : element.isPointer3
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300"
+                          ? "bg-blue-500 text-white"
+                          : element.isPointer2
+                            ? "bg-purple-500 text-white"
+                            : element.isPointer3
+                              ? "bg-orange-500 text-white"
+                              : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300"
                     }`}
                   >
                     {element.value}
@@ -416,7 +478,7 @@ return []`
                 </button>
               </div>
               <pre className="bg-gray-50 dark:bg-slate-700 p-4 rounded-lg overflow-x-auto">
-                <code className="text-sm text-gray-800">
+                <code className="text-sm text-gray-800 dark:text-gray-200">
                   {showFullCode ? getFullCode() : steps[currentStep].code}
                 </code>
               </pre>
@@ -424,9 +486,46 @@ return []`
           </>
         )}
       </main>
+
+      {showQuestionsModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-96 overflow-y-auto">
+            <div className="sticky top-0 bg-white dark:bg-slate-800 border-b dark:border-slate-700 p-6 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Additional Two Pointer Problems</h2>
+              <button
+                onClick={() => setShowQuestionsModal(false)}
+                className="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+              >
+                <X className="w-6 h-6 text-gray-600 dark:text-gray-300" />
+              </button>
+            </div>
+            <div className="p-6 space-y-3">
+              {QUESTIONS_MODAL.map((question) => (
+                <button
+                  key={question.id}
+                  onClick={() => {
+                    setSelectedProblem(question.id)
+                    resetVisualization()
+                    setTarget(0)
+                    setArrayInput("")
+                    setShowQuestionsModal(false)
+                  }}
+                  className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
+                    selectedProblem === question.id
+                      ? "border-blue-600 bg-blue-50 dark:bg-slate-700"
+                      : "border-gray-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-400"
+                  }`}
+                >
+                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">{question.title}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{question.description}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
 
-export default TwoPointerPage 
-
+export default TwoPointerPage

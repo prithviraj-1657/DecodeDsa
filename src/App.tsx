@@ -67,6 +67,11 @@ function App() {
       duration: 2.5,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       wheelMultiplier: 0.7,
+      // CRITICAL FIX: Prevent Lenis from affecting sidebar scroll
+      prevent: (node) => {
+        // Check if the scroll event is within the sidebar
+        return node.closest('[data-lenis-prevent]') !== null;
+      },
     });
 
     let rafId = 0;

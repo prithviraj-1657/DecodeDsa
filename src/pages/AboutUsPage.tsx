@@ -123,7 +123,7 @@ export default function AboutUsPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/sorting"
-              className="inline-flex items-center px-8 py-4 bg-white dark:bg-slate-800 text-indigo-700 font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
+              className="inline-flex items-center px-8 py-4 bg-white dark:bg-slate-800 text-indigo-700 dark:text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
             >
               <Rocket className="w-5 h-5 mr-2" /> Start Learning Now
               <ArrowRight className="w-5 h-5 ml-2" />
@@ -147,16 +147,16 @@ export default function AboutUsPage() {
                 <Target className="w-4 h-4 mr-2" />
                 Our Mission
               </div>
-              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-700 mb-6">
                 Democratizing Algorithm Education
               </h2>
-              <p className="text-gray-600 dark:text-gray-300 text-lg mb-6">
+              <p className="text-gray-600 dark:text-gray-500 text-lg mb-6">
                 Our mission is to make Data Structures and Algorithms accessible
                 to everyone, regardless of their background or learning style.
                 We believe that visual, interactive learning breaks down
                 barriers and accelerates understanding.
               </p>
-              <p className="text-gray-600 dark:text-gray-300 text-lg">
+              <p className="text-gray-600 dark:text-gray-500 text-lg">
                 By combining cutting-edge web technologies with pedagogical
                 best practices, we're creating a platform where learners can
                 not just read about algorithms—they can see them, interact with
@@ -193,7 +193,7 @@ export default function AboutUsPage() {
       </section>
 
       {/* Core Values Section */}
-      <section className="py-20 bg-gradient-to-br from-slate-50 to-white">
+      <section className="py-20 bg-gradient-to-br from-slate-100 to-slate-50 dark:from-slate-700 dark:to-slate-800">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -225,13 +225,13 @@ export default function AboutUsPage() {
       </section>
 
       {/* Journey/Timeline Section */}
-      <section className="py-20 bg-white">
+      <section className="py-1 bg-white pt-10">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-700 mb-4">
               Our Journey
             </h2>
-            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="text-gray-600 dark:text-gray-500 max-w-2xl mx-auto">
               From a simple idea to a thriving learning platform
             </p>
           </div>
@@ -320,10 +320,10 @@ export default function AboutUsPage() {
                 <Award className="w-4 h-4 mr-2" />
                 What We Offer
               </div>
-              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-black mb-6">
                 Everything You Need to Master DSA
               </h2>
-              <p className="text-gray-600 dark:text-gray-300 text-lg mb-8">
+              <p className="text-gray-600 dark:text-gray-500 text-lg mb-8">
                 DecodeDSA provides comprehensive, interactive learning
                 experiences designed to help you understand algorithms deeply
                 and intuitively.
@@ -334,7 +334,7 @@ export default function AboutUsPage() {
                     <div className="flex-shrink-0 w-6 h-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mr-3 mt-1">
                       <CheckCircle2 className="w-4 h-4 text-white" />
                     </div>
-                    <p className="text-gray-700 dark:text-gray-300 text-lg">{feature}</p>
+                    <p className="text-gray-700 dark:text-gray-500 text-lg">{feature}</p>
                   </div>
                 ))}
               </div>
@@ -384,7 +384,7 @@ export default function AboutUsPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/sorting"
-              className="inline-flex items-center px-8 py-4 bg-white dark:bg-slate-800 text-indigo-700 font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
+              className="inline-flex items-center px-8 py-4 bg-white dark:bg-slate-800 text-indigo-700 dark:text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
             >
               <Rocket className="w-5 h-5 mr-2" /> Begin Your Journey
               <ArrowRight className="w-5 h-5 ml-2" />
@@ -553,5 +553,3 @@ export default function AboutUsPage() {
     </div>
   );
 }
-
-

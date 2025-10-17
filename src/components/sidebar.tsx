@@ -124,14 +124,15 @@ export default function Sidebar() {
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar - FIXED: Added data-lenis-prevent and overflow-y-auto */}
       <aside
-        className={`fixed top-0 left-0 h-screen w-72 bg-gradient-to-b from-slate-50 via-slate-100 to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-slate-800 dark:text-white shadow-2xl z-40 transition-all duration-300 flex flex-col ${
+        data-lenis-prevent
+        className={`fixed top-0 left-0 h-screen w-72 bg-gradient-to-b from-slate-50 via-slate-100 to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-slate-800 dark:text-white shadow-2xl z-40 transition-all duration-300 flex flex-col overflow-y-auto overflow-x-hidden ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0`}
       >
         {/* Logo */}
-        <div className="p-6 border-b border-slate-300 dark:border-slate-700">
+        <div className="flex-shrink-0 p-6 border-b border-slate-300 dark:border-slate-700">
           <Link
             to="/"
             className="flex items-center gap-3 group"
@@ -149,8 +150,8 @@ export default function Sidebar() {
           </Link>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-700 scrollbar-track-transparent">
+        {/* Navigation - FIXED: Removed overflow-y-auto from nav, it's now on the aside */}
+        <nav className="flex-1 p-4 space-y-2">
           {navItems.map((item) => (
             <div key={item.name}>
               {item.subItems ? (
@@ -215,7 +216,7 @@ export default function Sidebar() {
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-slate-300 dark:border-slate-700 space-y-3">
+        <div className="flex-shrink-0 p-4 border-t border-slate-300 dark:border-slate-700 space-y-3">
           {/* Theme Toggle Button */}
           <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-slate-200 dark:bg-slate-800">
             <div className="flex items-center gap-2">

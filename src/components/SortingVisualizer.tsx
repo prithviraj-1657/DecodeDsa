@@ -72,6 +72,27 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
     })
   }, [algorithm, inputArray])
 
+  // Keyboard navigation accessibility
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft") {
+        // Handle previous
+        if (currentStep > 0) {
+          setCurrentStep(currentStep - 1)
+        }
+      } else if (event.key === "ArrowRight") {
+        // Handle next
+        if (currentStep < steps.length - 1) {
+          setCurrentStep(currentStep + 1)
+        }
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [currentStep, steps.length])
+
+
   // Auto-play functionality
   useEffect(() => {
     let interval: NodeJS.Timeout
@@ -248,14 +269,14 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
             <RotateCcw className="w-4 h-4 mr-1" />
             Reset
           </Button>
-          <Button onClick={handlePrevious} disabled={currentStep === 0} variant="secondary">
+          <Button onClick={handlePrevious} disabled={currentStep === 0} variant="secondary"  aria-label="Go to previous step">
             Previous
           </Button>
           <Button onClick={togglePlay} variant={isPlaying ? "secondary" : "primary"} size="sm">
             {isPlaying ? <Pause className="w-4 h-4 mr-1" /> : <Play className="w-4 h-4 mr-1" />}
             {isPlaying ? "Pause" : "Play"}
           </Button>
-          <Button onClick={handleNext} disabled={currentStep === steps.length - 1}>
+          <Button onClick={handleNext} disabled={currentStep === steps.length - 1} aria-label="Go to next step">
             Next
           </Button>
         </div>

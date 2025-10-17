@@ -113,9 +113,9 @@ array.sort()`,
         code: `# Check sum of elements at left and right pointers
 sum = array[left] + array[right]
 if sum == target:
-    return [left, right]
+  return [left, right]
 elif sum < target:
-    left += 1
+  left += 1
 else:
     right -= 1`,
       })
@@ -196,9 +196,9 @@ array.sort()`,
           code: `# Check sum of three elements
 sum = array[i] + array[left] + array[right]
 if sum == target:
-    return [i, left, right]
+  return [i, left, right]
 elif sum < target:
-    left += 1
+  left += 1
 else:
     right -= 1`,
         })
@@ -267,38 +267,38 @@ return []`,
   const getFullCode = () => {
     if (selectedProblem === "two-sum") {
       return `def two_sum(array, target):
-    # Sort the array
-    array.sort()
-    left, right = 0, len(array) - 1
-    
-    while left < right:
-        sum = array[left] + array[right]
-        if sum == target:
-            return [left, right]
-        elif sum < target:
-            left += 1
-        else:
-            right -= 1
-    
-    return []  # No solution found`
+  # Sort the array
+  array.sort()
+  left, right = 0, len(array) - 1
+  
+  while left < right:
+      sum = array[left] + array[right]
+      if sum == target:
+          return [left, right]
+      elif sum < target:
+          left += 1
+      else:
+          right -= 1
+  
+  return []  # No solution found`
     } else if (selectedProblem === "three-sum") {
       return `def three_sum(array, target):
-    # Sort the array
-    array.sort()
-    
-    for i in range(len(array) - 2):
-        left, right = i + 1, len(array) - 1
-        
-        while left < right:
-            sum = array[i] + array[left] + array[right]
-            if sum == target:
-                return [i, left, right]
-            elif sum < target:
-                left += 1
-            else:
-                right -= 1
-    
-    return []  # No solution found`
+  # Sort the array
+  array.sort()
+  
+  for i in range(len(array) - 2):
+      left, right = i + 1, len(array) - 1
+      
+      while left < right:
+          sum = array[i] + array[left] + array[right]
+          if sum == target:
+              return [i, left, right]
+          elif sum < target:
+              left += 1
+          else:
+              right -= 1
+  
+  return []  # No solution found`
     }
     return ""
   }
@@ -421,14 +421,14 @@ return []`,
                   <button
                     onClick={() => setCurrentStep((prev) => Math.max(0, prev - 1))}
                     disabled={currentStep === 0}
-                    className="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 disabled:opacity-50"
+                    className="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 disabled:opacity-50"
                   >
                     <ChevronLeft className="w-6 h-6" />
                   </button>
                   <button
                     onClick={() => setCurrentStep((prev) => Math.min(steps.length - 1, prev + 1))}
                     disabled={currentStep === steps.length - 1}
-                    className="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 disabled:opacity-50"
+                    className="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 disabled:opacity-50"
                   >
                     <ChevronRight className="w-6 h-6" />
                   </button>
@@ -471,7 +471,7 @@ return []`,
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">Code</h2>
                 <button
                   onClick={() => setShowFullCode(!showFullCode)}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200"
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-600"
                 >
                   <Code className="w-5 h-5" />
                   {showFullCode ? "Show Step Code" : "Show Full Code"}

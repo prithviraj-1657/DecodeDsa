@@ -1,5 +1,6 @@
 "use client";
-import { useState, useRef, useEffect, useCallback } from "react"; // Added useRef, useEffect, useCallback
+
+import { useState, useRef, useEffect, useCallback } from "react";
 import {
   Layers,
   Eye,
@@ -12,6 +13,8 @@ import {
   ArrowUp,
   RotateCcw,
 } from "lucide-react";
+
+// --- INTERFACES AND CONSTANTS ---
 interface TrieOperation {
   name: string;
   description: string;
@@ -20,6 +23,7 @@ interface TrieOperation {
   pythonCode: string;
   realWorldExample: string;
 }
+
 const trieOperations: TrieOperation[] = [
   {
     name: "Insert",
@@ -73,6 +77,7 @@ class Trie:
     realWorldExample: "Autocomplete suggestions",
   },
 ];
+
 interface TrieNodeElement {
   char: string;
   children: TrieNodeElement[];
@@ -80,8 +85,10 @@ interface TrieNodeElement {
   isHighlighted: boolean;
   isNew?: boolean;
 }
-let trieUpdateKey = 0; // Forces re-render of the visualization to update refs
 
+let trieUpdateKey = 0;
+
+// --- COMPONENT DEFINITION ---
 function TrieVisualizerPage() {
   const [trieRoot, setTrieRoot] = useState<TrieNodeElement>({
     char: "",
@@ -94,22 +101,17 @@ function TrieVisualizerPage() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
   const [showCode, setShowCode] = useState(false);
-  const [selectedOperation, setSelectedOperation] = useState<string | null>(
-    null
-  );
+  const [selectedOperation, setSelectedOperation] = useState<string | null>(null);
   const [lastOperation, setLastOperation] = useState<string>("");
 
-  // Refs to store DOM elements of nodes for line drawing
   const nodeRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const svgRef = useRef<SVGSVGElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null); // Ref for the scrollable container
+  const containerRef = useRef<HTMLDivElement>(null);
 
+  // --- HELPER & LOGIC FUNCTIONS ---
   const addToHistory = (operation: string) => {
     const timestamp = new Date().toLocaleTimeString();
-    setOperationHistory((prev) => [
-      `${timestamp}: ${operation}`,
-      ...prev.slice(0, 19),
-    ]);
+    setOperationHistory((prev) => [`${timestamp}: ${operation}`, ...prev.slice(0, 19)]);
   };
 
   const insertWord = (node: TrieNodeElement, word: string): TrieNodeElement => {
@@ -121,86 +123,19 @@ function TrieVisualizerPage() {
     let childNode = node.children.find((c) => c.char === char);
 
     if (!childNode) {
-      childNode = {
-        char,
-        children: [],
-        isEndOfWord: false,
-        isHighlighted: true,
-        isNew: true, // Mark as new for animation
-      };
+      childNode = { char, children: [], isEndOfWord: false, isHighlighted: true, isNew: true };
       node.children.push(childNode);
-      // Sort children to maintain a stable, readable horizontal order
       node.children.sort((a, b) => a.char.localeCompare(b.char));
     } else {
       childNode.isHighlighted = true;
-      childNode.isNew = false; // Existing nodes aren't new
+      childNode.isNew = false;
     }
 
     const updatedChild = insertWord(childNode, word.slice(1));
-    node.children = node.children.map((c) =>
-      c.char === updatedChild.char ? updatedChild : c
-    );
-
+    node.children = node.children.map((c) => (c.char === updatedChild.char ? updatedChild : c));
     return node;
   };
-  const handleInsert = () => {
-    if (!inputValue) {
-      addToHistory("❌ Error: Enter a valid word");
-      return;
-    }
-    const word = inputValue.toLowerCase().replace(/[^a-z]/g, "");
-    if (!word) {
-      addToHistory("❌ Error: Word must contain letters");
-      return;
-    }
-    setIsAnimating(true);
-    setLastOperation("insert");
-    trieUpdateKey += 1; // Increment key to force re-render and re-calculate lines
-    const newRoot = JSON.parse(JSON.stringify(trieRoot));
-    const updatedRoot = insertWord(newRoot, word);
-    setTrieRoot(updatedRoot);
-    addToHistory(`✅ Inserted "${word}" into trie`);
-    setInputValue("");
-    setTimeout(() => {
-      const stateToReset = JSON.parse(JSON.stringify(updatedRoot));
 
-      const resetFlags = (node: TrieNodeElement) => {
-        node.isHighlighted = false;
-        node.isNew = false;
-        node.children.forEach(resetFlags);
-      };
-      resetFlags(stateToReset);
-
-      setTrieRoot(stateToReset);
-      setIsAnimating(false);
-    }, 1000);
-  };
-  const handleSearch = () => {
-    if (!inputValue) {
-      addToHistory("❌ Error: Enter a valid word");
-      return;
-    }
-    const word = inputValue.toLowerCase().replace(/[^a-z]/g, "");
-    if (!word) {
-      addToHistory("❌ Error: Word must contain letters");
-      return;
-    }
-    setIsAnimating(true);
-    setLastOperation("search");
-    const newRoot = JSON.parse(JSON.stringify(trieRoot));
-    const found = searchWord(newRoot, word);
-    setTrieRoot(newRoot);
-    addToHistory(
-      `🔍 Search "${word}": ${found ? "Found ✅" : "Not Found ❌"}`
-    );
-    setInputValue("");
-    setTimeout(() => {
-      const stateToReset = JSON.parse(JSON.stringify(newRoot));
-      resetHighlight(stateToReset);
-      setTrieRoot(stateToReset);
-      setIsAnimating(false);
-    }, 1000);
-  };
   const searchWord = (node: TrieNodeElement, word: string): boolean => {
     if (!word.length) return node.isEndOfWord;
     const char = word[0];
@@ -209,20 +144,12 @@ function TrieVisualizerPage() {
     childNode.isHighlighted = true;
     return searchWord(childNode, word.slice(1));
   };
+
   const resetHighlight = (node: TrieNodeElement) => {
     node.isHighlighted = false;
     node.children.forEach(resetHighlight);
   };
-  const clearTrie = () => {
-    setTrieRoot({
-      char: "",
-      children: [],
-      isEndOfWord: false,
-      isHighlighted: false,
-    });
-    addToHistory("🗑️ Trie cleared");
-    trieUpdateKey += 1; // Increment key to force re-render and clear lines
-  };
+
   const getFullTrieCode = () => {
     return `class TrieNode:
     def __init__(self):
@@ -257,45 +184,104 @@ class Trie:
             node = node.children[char]
         return True`;
   };
+
+  // --- HANDLER FUNCTIONS ---
+  const handleInsert = () => {
+    const word = inputValue.toLowerCase().replace(/[^a-z]/g, "");
+    if (!word) {
+      addToHistory(`❌ Error: Please enter a valid word.`);
+      return;
+    }
+
+    setIsAnimating(true);
+    setLastOperation("insert");
+    trieUpdateKey += 1;
+
+    const newRoot = JSON.parse(JSON.stringify(trieRoot));
+    const updatedRoot = insertWord(newRoot, word);
+    setTrieRoot(updatedRoot);
+    addToHistory(`✅ Inserted "${word}" into trie`);
+    setInputValue("");
+
+    setTimeout(() => {
+      const stateToReset = JSON.parse(JSON.stringify(updatedRoot));
+      const resetFlags = (node: TrieNodeElement) => {
+        node.isHighlighted = false;
+        node.isNew = false;
+        node.children.forEach(resetFlags);
+      };
+      resetFlags(stateToReset);
+      setTrieRoot(stateToReset);
+      setIsAnimating(false);
+    }, 1000);
+  };
+
+  const handleSearch = () => {
+    const word = inputValue.toLowerCase().replace(/[^a-z]/g, "");
+    if (!word) {
+      addToHistory(`❌ Error: Please enter a valid word.`);
+      return;
+    }
+
+    setIsAnimating(true);
+    setLastOperation("search");
+    const newRoot = JSON.parse(JSON.stringify(trieRoot));
+    const found = searchWord(newRoot, word);
+    setTrieRoot(newRoot);
+    addToHistory(`🔍 Search "${word}": ${found ? "Found ✅" : "Not Found ❌"}`);
+    setInputValue("");
+
+    setTimeout(() => {
+      const stateToReset = JSON.parse(JSON.stringify(newRoot));
+      resetHighlight(stateToReset);
+      setTrieRoot(stateToReset);
+      setIsAnimating(false);
+    }, 1000);
+  };
+
+  const clearTrie = () => {
+    setTrieRoot({ char: "", children: [], isEndOfWord: false, isHighlighted: false });
+    addToHistory("🗑️ Trie cleared");
+    trieUpdateKey += 1;
+  };
+
+  // --- DRAWING LOGIC & EFFECTS ---
   const drawLines = useCallback(() => {
     if (!svgRef.current || !containerRef.current) return;
+
     const svg = svgRef.current;
-    const containerRect = containerRef.current.getBoundingClientRect();
-    while (svg.lastChild) {
-      svg.removeChild(svg.lastChild);
-    }
+    const container = containerRef.current;
+    
+    svg.style.width = `${container.scrollWidth}px`;
+    svg.style.height = `${container.scrollHeight}px`;
+    
+    const containerRect = container.getBoundingClientRect();
+    while (svg.lastChild) svg.removeChild(svg.lastChild);
+
     const traverseAndDraw = (node: TrieNodeElement, path: string) => {
       const parentKey = path + node.char;
       const parentRef = nodeRefs.current.get(parentKey);
 
       if (parentRef) {
         const parentRect = parentRef.getBoundingClientRect();
-
         node.children.forEach((child) => {
           const childKey = parentKey + child.char;
           const childRef = nodeRefs.current.get(childKey);
-
           if (childRef) {
             const childRect = childRef.getBoundingClientRect();
+            
+            const pX = parentRect.left + parentRect.width / 2 - containerRect.left + container.scrollLeft;
+            const pY = parentRect.bottom - containerRect.top + container.scrollTop;
+            const cX = childRect.left + childRect.width / 2 - containerRect.left + container.scrollLeft;
+            const cY = childRect.top - containerRect.top + container.scrollTop;
 
-            // Calculate coordinates relative to the SVG container
-            const pX = parentRect.left + parentRect.width / 2 - containerRect.left;
-            const pY = parentRect.bottom - containerRect.top; // Bottom of parent node
-
-            const cX = childRect.left + childRect.width / 2 - containerRect.left;
-            const cY = childRect.top - containerRect.top; // Top of child node
-
-            const line = document.createElementNS(
-              "http://www.w3.org/2000/svg",
-              "line"
-            );
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
             line.setAttribute("x1", String(pX));
             line.setAttribute("y1", String(pY));
             line.setAttribute("x2", String(cX));
             line.setAttribute("y2", String(cY));
-            line.setAttribute("stroke", "rgb(156 163 175)"); // Tailwind gray-400
+            line.setAttribute("stroke", "rgb(156 163 175)");
             line.setAttribute("stroke-width", "2");
-            line.setAttribute("class", "transition-all duration-300 ease-out"); // Add transition for smoother updates
             svg.appendChild(line);
           }
           traverseAndDraw(child, parentKey);
@@ -303,40 +289,37 @@ class Trie:
       }
     };
     traverseAndDraw(trieRoot, "");
-  }, [trieRoot]); 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      drawLines();
-    }, 50); 
+  }, [trieRoot]);
 
+  useEffect(() => {
+    const timeoutId = setTimeout(drawLines, 50);
+    const container = containerRef.current;
+    
     window.addEventListener("resize", drawLines);
-    if (containerRef.current) {
-      containerRef.current.addEventListener("scroll", drawLines);
+    if (container) {
+      container.addEventListener("scroll", drawLines);
     }
+
     return () => {
       clearTimeout(timeoutId);
       window.removeEventListener("resize", drawLines);
-      if (containerRef.current) {
-        containerRef.current.removeEventListener("scroll", drawLines);
+      if (container) {
+        container.removeEventListener("scroll", drawLines);
       }
     };
-  }, [trieRoot, drawLines, isAnimating, trieUpdateKey]); 
+  }, [trieRoot, drawLines, isAnimating]);
 
+  // --- RENDER FUNCTIONS ---
   const renderTrieNode = (node: TrieNodeElement, path: string = "") => {
-    const key = path + node.char; 
+    const key = path + node.char;
+
     if (!node.char && !node.children.length && path === "") {
-      return (
-        <div className="text-gray-500 italic text-center py-4">
-          Trie is empty. Insert a word to start.
-        </div>
-      );
+      return <div className="text-gray-500 italic text-center py-4">Trie is empty. Insert a word to start.</div>;
     }
+
     const nodeContent = (
       <div
-        ref={(el) => {
-          if (el) nodeRefs.current.set(key, el);
-          else nodeRefs.current.delete(key);
-        }}
+        ref={(el) => { if (el) nodeRefs.current.set(key, el); else nodeRefs.current.delete(key); }}
         className={`relative z-10 inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm text-white transition-all duration-300 transform ${
           node.char === ""
             ? "bg-gray-400 dark:bg-gray-600 shadow-md text-gray-800 dark:text-gray-200"
@@ -350,16 +333,14 @@ class Trie:
         {node.char === "" ? "R" : node.char.toUpperCase()}
       </div>
     );
+
     return (
       <div key={key} className="flex flex-col items-center">
         {nodeContent}
         {node.children.length > 0 && (
           <div className="flex justify-center mt-8">
             {node.children.map((child) => (
-              <div
-                key={path + node.char + child.char}
-                className="flex flex-col items-center px-4" // Padding creates horizontal space between siblings
-              >
+              <div key={path + node.char + child.char} className="flex flex-col items-center px-4">
                 {renderTrieNode(child, path + node.char)}
               </div>
             ))}
@@ -368,9 +349,10 @@ class Trie:
       </div>
     );
   };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-gray-900 dark:text-gray-100">
-      {/* Header (unchanged) */}
+      {/* Header */}
       <header className="bg-white dark:bg-slate-800 shadow-sm border-b dark:border-slate-700">
         <div className="max-w-7xl mx-auto p-4 md:p-6 lg:px-8 flex justify-between items-center">
           <div className="flex items-center space-x-3">
@@ -382,132 +364,50 @@ class Trie:
             </h1>
           </div>
           <div className="flex space-x-2">
-            <button
-              onClick={() => setShowTutorial(!showTutorial)}
-              className="flex items-center space-x-2 px-4 py-2 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors"
-            >
+            <button onClick={() => setShowTutorial(!showTutorial)} className="flex items-center space-x-2 px-4 py-2 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors">
               <BookOpen className="w-5 h-5" />
               <span>Tutorial</span>
             </button>
-            <button
-              onClick={() => setShowCode(!showCode)}
-              className="flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors"
-            >
+            <button onClick={() => setShowCode(!showCode)} className="flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors">
               <Code className="w-5 h-5" />
               <span>Code</span>
             </button>
           </div>
         </div>
       </header>
+
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 space-y-8">
-        {/* Tutorial Panel (unchanged) */}
+        {/* Tutorial Panel */}
         {showTutorial && (
           <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200 dark:from-slate-700 dark:to-slate-800 dark:border-purple-900">
-            <div className="flex items-center space-x-2 mb-4">
-              <Lightbulb className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-              <h2 className="text-xl font-bold text-purple-900 dark:text-white">
-                Trie Data Structure
-              </h2>
-            </div>
-            <p className="text-purple-800 dark:text-gray-300 mb-4">
-              A **Trie** (or Prefix Tree) is a tree-like data structure that
-              stores words. Each node represents a character. Commonly used for
-              autocomplete and spell-check features.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-white dark:bg-slate-900 rounded-lg p-4">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Clock className="w-4 h-4 text-green-600" />
-                  <span className="font-semibold text-green-800 dark:text-green-400">
-                    Time Complexity
-                  </span>
-                </div>
-                <p className="text-sm text-green-700 dark:text-green-300">
-                  Insert/Search/StartsWith: **O(L)** (L = word length)
-                </p>
-              </div>
-              <div className="bg-white dark:bg-slate-900 rounded-lg p-4">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Target className="w-4 h-4 text-blue-600" />
-                  <span className="font-semibold text-blue-800 dark:text-blue-400">
-                    Use Cases
-                  </span>
-                </div>
-                <p className="text-sm text-blue-700 dark:text-blue-300">
-                  Autocomplete, Spell-check, Word dictionary
-                </p>
-              </div>
-              <div className="bg-white dark:bg-slate-900 rounded-lg p-4">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Zap className="w-4 h-4 text-orange-600" />
-                  <span className="font-semibold text-orange-800 dark:text-orange-400">
-                    Key Property
-                  </span>
-                </div>
-                <p className="text-sm text-orange-700 dark:text-orange-300">
-                  Efficiently stores data based on **common prefixes**
-                </p>
-              </div>
-            </div>
+             {/* Tutorial content... */}
           </div>
         )}
+
+        {/* Operations Overview */}
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
-            Trie Operations
-          </h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Trie Operations</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {trieOperations.map((operation) => (
               <div
                 key={operation.name}
-                className={`p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer ${
-                  selectedOperation === operation.name
-                    ? "border-purple-500 bg-purple-50 dark:bg-purple-950"
-                    : "border-gray-200 dark:border-slate-700 hover:border-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700/50"
-                }`}
-                onClick={() =>
-                  setSelectedOperation(
-                    selectedOperation === operation.name ? null : operation.name
-                  )
-                }
+                className={`p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer ${ selectedOperation === operation.name ? "border-purple-500 bg-purple-50 dark:bg-purple-950" : "border-gray-200 dark:border-slate-700 hover:border-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700/50" }`}
+                onClick={() => setSelectedOperation(selectedOperation === operation.name ? null : operation.name)}
               >
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
-                  {operation.name}
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
-                  {operation.description}
-                </p>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{operation.name}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">{operation.description}</p>
                 <div className="space-y-1 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-gray-500 dark:text-gray-400">
-                      Time:
-                    </span>
-                    <span className="font-mono text-green-600 dark:text-green-400">
-                      {operation.timeComplexity}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-500 dark:text-gray-400">
-                      Space:
-                    </span>
-                    <span className="font-mono text-blue-600 dark:text-blue-400">
-                      {operation.spaceComplexity}
-                    </span>
-                  </div>
+                    <div className="flex justify-between"><span className="text-gray-500 dark:text-gray-400">Time:</span><span className="font-mono text-green-600 dark:text-green-400">{operation.timeComplexity}</span></div>
+                    <div className="flex justify-between"><span className="text-gray-500 dark:text-gray-400">Space:</span><span className="font-mono text-blue-600 dark:text-blue-400">{operation.spaceComplexity}</span></div>
                 </div>
                 {selectedOperation === operation.name && (
                   <div className="mt-4 pt-4 border-t border-gray-200 dark:border-slate-700">
                     <div className="mb-3">
-                      <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                        Real-world Example:
-                      </h4>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">
-                        {operation.realWorldExample}
-                      </p>
+                      <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Real-world Example:</h4>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">{operation.realWorldExample}</p>
                     </div>
                     <div className="bg-gray-900 rounded-lg p-3">
-                      <pre className="text-xs text-green-400 overflow-x-auto">
-                        <code>{operation.pythonCode}</code>
-                      </pre>
+                      <pre className="text-xs text-green-400 overflow-x-auto"><code>{operation.pythonCode}</code></pre>
                     </div>
                   </div>
                 )}
@@ -515,138 +415,68 @@ class Trie:
             ))}
           </div>
         </div>
+
+        {/* Main Content: Controls & Visualization */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Controls Panel */}
           <div className="lg:col-span-1">
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6 sticky top-8 space-y-4">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                Trie Controls
-              </h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Trie Controls</h2>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Word
-                </label>
-                <input
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) =>
-                    setInputValue(e.target.value.toLowerCase().replace(/[^a-z]/g, ""))
-                  }
-                  onKeyPress={(e) => e.key === "Enter" && handleInsert()}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:text-white"
-                  placeholder="Enter word (a-z)"
-                />
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Word</label>
+                <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value.toLowerCase().replace(/[^a-z]/g, ""))} onKeyPress={(e) => e.key === "Enter" && handleInsert()} className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:text-white" placeholder="Enter word (a-z)"/>
               </div>
               <div className="grid grid-cols-1 gap-2 mt-4">
-                <button
-                  onClick={handleInsert}
-                  disabled={isAnimating || !inputValue}
-                  className="px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center space-x-2"
-                >
-                  <ArrowUp className="w-4 h-4" />
-                  <span>Insert</span>
-                </button>
-                <button
-                  onClick={handleSearch}
-                  disabled={isAnimating || !inputValue}
-                  className="px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center space-x-2"
-                >
-                  <Eye className="w-4 h-4" />
-                  <span>Search</span>
-                </button>
-                <button
-                  onClick={clearTrie}
-                  className="px-4 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 flex justify-center space-x-2"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                  <span>Clear</span>
-                </button>
+                <button onClick={handleInsert} disabled={isAnimating || !inputValue} className="px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center space-x-2"> <ArrowUp className="w-4 h-4" /> <span>Insert</span> </button>
+                <button onClick={handleSearch} disabled={isAnimating || !inputValue} className="px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center space-x-2"> <Eye className="w-4 h-4" /> <span>Search</span> </button>
+                <button onClick={clearTrie} className="px-4 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 flex justify-center space-x-2"> <RotateCcw className="w-4 h-4" /> <span>Clear</span> </button>
               </div>
             </div>
           </div>
 
+          {/* Visualization & History Panel */}
           <div className="lg:col-span-2 space-y-8">
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6 min-h-[300px] relative">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                Trie Visualization
-              </h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Trie Visualization</h2>
               <div ref={containerRef} className="relative overflow-x-auto p-4 custom-scrollbar">
-                <svg
-                  ref={svgRef}
-                  className="absolute top-0 left-0 w-full h-full pointer-events-none"
-                ></svg>
-                <div key={trieUpdateKey} className="flex justify-center pt-8">
+                <svg ref={svgRef} className="absolute top-0 left-0 pointer-events-none"></svg>
+                <div key={trieUpdateKey} className="flex justify-center pt-8 min-w-max">
                   {renderTrieNode(trieRoot, "")}
                 </div>
               </div>
-
               {lastOperation && (
-                <div className="mt-6 text-center">
-                  <div className="inline-flex items-center space-x-2 px-4 py-2 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-full">
-                    <span className="text-sm font-medium">
-                      Last Operation: {lastOperation.toUpperCase()}
-                    </span>
-                  </div>
-                </div>
+                <div className="mt-6 text-center"><div className="inline-flex items-center space-x-2 px-4 py-2 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-full"><span className="text-sm font-medium">Last Operation: {lastOperation.toUpperCase()}</span></div></div>
               )}
             </div>
+
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                Operation History
-              </h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Operation History</h2>
               <div className="max-h-60 overflow-y-auto space-y-2 custom-scrollbar">
-                {operationHistory.length === 0 ? (
-                  <p className="text-gray-500 italic text-center py-8">
-                    No operations performed yet
-                  </p>
-                ) : (
-                  operationHistory.map((op, idx) => (
-                    <div
-                      key={idx}
-                      className="text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-700 rounded-lg p-2"
-                    >
-                      {op}
-                    </div>
-                  ))
-                )}
+                {operationHistory.length === 0 ? (<p className="text-gray-500 italic text-center py-8">No operations performed yet</p>) : (operationHistory.map((op, idx) => (<div key={idx} className="text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-700 rounded-lg p-2">{op}</div>)))}
               </div>
             </div>
+
             {showCode && (
               <div className="bg-gray-900 rounded-2xl shadow-lg p-6 overflow-x-auto custom-scrollbar">
-                <pre className="text-green-400 text-xs">
-                  <code>{getFullTrieCode()}</code>
-                </pre>
+                <pre className="text-green-400 text-xs"><code>{getFullTrieCode()}</code></pre>
               </div>
             )}
           </div>
         </div>
       </main>
+
+      {/* Custom CSS for scrollbars */}
       <style >{`
-        .custom-scrollbar::-webkit-scrollbar {
-          height: 8px;
-          width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #e0e0e0; /* Light gray for track */
-          border-radius: 10px;
-        }
-        .dark .custom-scrollbar::-webkit-scrollbar-track {
-          background: #334155; /* slate-700 for dark mode */
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #9ca3af; /* gray-400 for thumb */
-          border-radius: 10px;
-        }
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #475569; /* slate-600 for dark mode */
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #6b7280; /* gray-500 on hover */
-        }
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #64748b; /* slate-500 on hover */
-        }
+        .custom-scrollbar::-webkit-scrollbar { height: 8px; width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #e0e0e0; border-radius: 10px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-track { background: #334155; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 10px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
       `}</style>
     </div>
   );
 }
+
 export default TrieVisualizerPage;

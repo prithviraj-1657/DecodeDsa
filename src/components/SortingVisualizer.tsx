@@ -18,6 +18,7 @@ interface SortResult {
   comparisons: number
   swaps: number
   steps: number
+  isDutchFlag?: boolean
 }
 
 const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputArray }) => {
@@ -65,10 +66,13 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
 
     const comparisons = newSteps.filter((step) => step.comparing?.length).length
     const swaps = newSteps.filter((step) => step.swapping?.length).length
+    const isDutchFlag = algorithm.name === "Dutch Flag Sort"
+    
     setSortResult({
       comparisons,
       swaps,
       steps: newSteps.length,
+      isDutchFlag
     })
   }, [algorithm, inputArray])
 
@@ -135,6 +139,11 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
     if (step.swapping?.includes(index)) return "bg-red-500"
     if (step.comparing?.includes(index)) return "bg-yellow-500"
     if (step.pivot === index) return "bg-purple-500"
+    
+    // Dutch Flag algorithm specific colors
+    if (step.dutchFlags?.lowSection.includes(index)) return "bg-pink-500"
+    if (step.dutchFlags?.midSection.includes(index)) return "bg-white"
+    if (step.dutchFlags?.highSection.includes(index)) return "bg-blue-500"
 
     return "bg-blue-500"
   }
@@ -147,6 +156,11 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
     if (step.swapping?.includes(index)) return "#ef4444"
     if (step.comparing?.includes(index)) return "#eab308"
     if (step.pivot === index) return "#a855f7"
+    
+    // Dutch Flag algorithm specific colors
+    if (step.dutchFlags?.lowSection.includes(index)) return "#ec4899" // Pink (Dutch Flag red)
+    if (step.dutchFlags?.midSection.includes(index)) return "#ffffff" // White (Dutch Flag white)
+    if (step.dutchFlags?.highSection.includes(index)) return "#3b82f6" // Blue (Dutch Flag blue)
 
     return "#3b82f6"
   }
@@ -199,9 +213,32 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
                   <div className="text-sm text-gray-500">Total Steps</div>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+              
+              {sortResult.isDutchFlag && (
+                <div className="mt-4 border-t pt-4 border-gray-200 dark:border-gray-700">
+                  <h4 className="font-medium text-sm mb-2">Dutch Flag Legend:</h4>
+                  <div className="flex flex-wrap gap-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 bg-pink-500 rounded-sm"></div>
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Less than pivot</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 bg-white border border-gray-300 rounded-sm"></div>
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Equal to pivot</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 bg-blue-500 rounded-sm"></div>
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Greater than pivot</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 bg-purple-500 rounded-sm"></div>
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Pivot</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
       )}
 
       <div className="w-full bg-white rounded-lg p-4 md:p-6 shadow-sm border">
@@ -261,6 +298,25 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
           <div className="w-4 h-4 bg-green-500 rounded"></div>
           <span>Sorted</span>
         </div>
+        
+        {sortResult?.isDutchFlag && (
+          <>
+            <div className="w-full border-t my-2 border-gray-200"></div>
+            <div className="text-xs text-gray-500 w-full text-center mb-2">Dutch Flag Partitioning</div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 bg-pink-500 rounded"></div>
+              <span>Less than pivot</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 bg-white rounded border border-gray-300"></div>
+              <span>Equal to pivot</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 bg-blue-500 rounded"></div>
+              <span>Greater than pivot</span>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="flex items-center justify-center md:justify-between flex-wrap gap-4 md:gap-2 bg-white rounded-lg p-4 shadow-sm border">

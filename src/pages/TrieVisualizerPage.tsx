@@ -2,14 +2,11 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import {
+  // Unused icons removed from this list
   Layers,
   Eye,
   Code,
   BookOpen,
-  Lightbulb,
-  Target,
-  Clock,
-  Zap,
   ArrowUp,
   RotateCcw,
 } from "lucide-react";
@@ -380,7 +377,11 @@ class Trie:
         {/* Tutorial Panel */}
         {showTutorial && (
           <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200 dark:from-slate-700 dark:to-slate-800 dark:border-purple-900">
-             {/* Tutorial content... */}
+             {/* You can add back the tutorial content and re-import the icons if you need them */}
+             <h2 className="text-xl font-bold text-purple-900 dark:text-white">Trie Data Structure</h2>
+             <p className="text-purple-800 dark:text-gray-300 mt-2">
+                A Trie (or Prefix Tree) is a tree-like data structure used to store a dynamic set of strings.
+              </p>
           </div>
         )}
 
@@ -464,9 +465,8 @@ class Trie:
           </div>
         </div>
       </main>
-
       {/* Custom CSS for scrollbars */}
-      <style >{`
+      <style>{`
         .custom-scrollbar::-webkit-scrollbar { height: 8px; width: 8px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #e0e0e0; border-radius: 10px; }
         .dark .custom-scrollbar::-webkit-scrollbar-track { background: #334155; }

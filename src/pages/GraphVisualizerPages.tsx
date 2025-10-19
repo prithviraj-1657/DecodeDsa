@@ -147,14 +147,14 @@ function GraphVisualizerPage() {
   const [operationHistory, setOperationHistory] = useState<string[]>([])
   const [showCode, setShowCode] = useState(false)
   const [showTutorial, setShowTutorial] = useState(false)
-  const [nodeCounter, setNodeCounter] = useState(0)
+  const [_nodeCounter, setNodeCounter] = useState(0)
   const [selectedNodes, setSelectedNodes] = useState<string[]>([])
   const [algorithmResult, setAlgorithmResult] = useState<any>(null)
 
   // Helper functions
   const generateNodeId = () => {
     setNodeCounter((prev) => prev + 1)
-    return `node-${nodeCounter}`
+    return `node-${_nodeCounter}`
   }
 
   const generateEdgeId = () => `edge-${Date.now()}-${Math.random()}`

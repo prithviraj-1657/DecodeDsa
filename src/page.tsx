@@ -168,6 +168,13 @@ export default function Page() {
               <Play className="w-5 h-5 mr-2" /> Start Visualizing
               <ChevronRight className="w-5 h-5 ml-2" />
             </Link>
+            <Link
+              to="/ai-assistant"
+              className="inline-flex items-center px-8 py-4 font-semibold text-white transition-all transform shadow-lg bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl hover:shadow-xl hover:-translate-y-1"
+            >
+              <Brain className="w-5 h-5 mr-2" /> AI Assistant
+              <ChevronRight className="w-5 h-5 ml-2" />
+            </Link>
             <a
               href="#features"
               className="inline-flex items-center px-8 py-4 font-semibold text-gray-700 dark:text-gray-200 transition-all border-2 border-gray-300 dark:border-gray-600 rounded-xl hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-slate-800"
@@ -448,6 +455,12 @@ export default function Page() {
             <div>
               <h4 className="mb-4 text-lg font-bold text-white">Quick Links</h4>
               <ul className="space-y-3 text-sm">
+                <li>
+                  <Link to="/ai-assistant" className="inline-flex items-center transition-all hover:text-white hover:translate-x-1 group">
+                    <ChevronRight className="w-4 h-4 mr-1 transition-opacity opacity-0 group-hover:opacity-100" />
+                    AI Assistant
+                  </Link>
+                </li>
                 <li>
                   <Link to="/sorting" className="inline-flex items-center transition-all hover:text-white hover:translate-x-1 group">
                     <ChevronRight className="w-4 h-4 mr-1 transition-opacity opacity-0 group-hover:opacity-100" />

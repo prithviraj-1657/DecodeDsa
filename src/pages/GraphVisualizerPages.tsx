@@ -160,14 +160,19 @@ function GraphVisualizerPage() {
   const [operationHistory, setOperationHistory] = useState<string[]>([]);
   const [showCode, setShowCode] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
-  const [nodeCounter, setNodeCounter] = useState(0);
+  // we only need the setter to reflect count changes in any UI that reads it later
+  const [, setNodeCounter] = useState(0);
   const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
   const [algorithmResult, setAlgorithmResult] = useState<any>(null);
 
   // Helper functions
+  // Use a ref so IDs are unique even when generating many nodes in a loop
+  const nodeIdCounterRef = React.useRef(0);
   const generateNodeId = () => {
-    setNodeCounter((prev) => prev + 1);
-    return `node-${Date.now()}-${Math.random()}`;
+    nodeIdCounterRef.current += 1;
+    // keep external counter in sync for any UI that displays count
+    setNodeCounter(nodeIdCounterRef.current);
+    return `node-${nodeIdCounterRef.current}`;
   };
 
   const generateEdgeId = () => `edge-${Date.now()}-${Math.random()}`;

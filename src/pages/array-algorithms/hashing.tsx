@@ -1,52 +1,51 @@
-"use client"
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { ArrowLeft, Hash, ChevronLeft, ChevronRight, Code } from "lucide-react"
-import { Button } from "../../components/ui/button"
+"use client";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowLeft, Hash, ChevronLeft, ChevronRight, Code } from "lucide-react";
+import { Button } from "../../components/ui/button";
 
 interface ArrayElement {
-  value: number | string
-  isHighlighted: boolean
-  isTarget: boolean
-  isFrequent: boolean
+  value: number | string;
+  isHighlighted: boolean;
+  isTarget: boolean;
+  isFrequent: boolean;
 }
 
 interface HashMapEntry {
-  key: string
-  value: number
-  isActive: boolean
+  key: string;
+  value: number;
+  isActive: boolean;
 }
 
 interface Step {
-  array: ArrayElement[]
-  hashMap: HashMapEntry[]
-  description: string
-  code: string
-  result?: string
+  array: ArrayElement[];
+  hashMap: HashMapEntry[];
+  description: string;
+  code: string;
+  result?: string;
 }
 
 function HashingPage() {
-  const [arrayInput, setArrayInput] = useState<string>("")
-  const [target, setTarget] = useState<number>(0)
-  const [steps, setSteps] = useState<Step[]>([])
-  const [currentStep, setCurrentStep] = useState<number>(0)
-  const [isVisualizing, setIsVisualizing] = useState<boolean>(false)
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState<"frequency" | "two-sum" | "duplicates" | "first-unique">(
-    "frequency",
-  )
-  const [showFullCode, setShowFullCode] = useState<boolean>(false)
-  
+  const [arrayInput, setArrayInput] = useState<string>("");
+  const [target, setTarget] = useState<number>(0);
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const [isVisualizing, setIsVisualizing] = useState<boolean>(false);
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState<
+    "frequency" | "two-sum" | "duplicates" | "first-unique"
+  >("frequency");
+  const [showFullCode, setShowFullCode] = useState<boolean>(false);
 
   const resetVisualization = () => {
-    setSteps([])
-    setCurrentStep(0)
-    setIsVisualizing(false)
-    setShowFullCode(false)
-  }
+    setSteps([]);
+    setCurrentStep(0);
+    setIsVisualizing(false);
+    setShowFullCode(false);
+  };
 
   const generateFrequencySteps = (array: (number | string)[]) => {
-    const newSteps: Step[] = []
-    const hashMap = new Map<string, number>()
+    const newSteps: Step[] = [];
+    const hashMap = new Map<string, number>();
 
     // Initial state
     newSteps.push({
@@ -60,37 +59,41 @@ function HashingPage() {
       description: "Initialize empty hash map for frequency counting",
       code: `# Initialize hash map
 frequency_map = {}`,
-    })
+    });
 
     // Process each element
     for (let i = 0; i < array.length; i++) {
-      const element = String(array[i])
-      const currentCount = hashMap.get(element) || 0
-      hashMap.set(element, currentCount + 1)
+      const element = String(array[i]);
+      const currentCount = hashMap.get(element) || 0;
+      hashMap.set(element, currentCount + 1);
 
       const currentArray = array.map((item, idx) => ({
         value: item,
         isHighlighted: idx === i,
         isTarget: false,
         isFrequent: false,
-      }))
+      }));
 
-      const currentHashMap = Array.from(hashMap.entries()).map(([key, value]) => ({
-        key,
-        value,
-        isActive: key === element,
-      }))
+      const currentHashMap = Array.from(hashMap.entries()).map(
+        ([key, value]) => ({
+          key,
+          value,
+          isActive: key === element,
+        })
+      );
 
       newSteps.push({
         array: currentArray,
         hashMap: currentHashMap,
-        description: `Processing element '${element}': frequency = ${hashMap.get(element)}`,
+        description: `Processing element '${element}': frequency = ${hashMap.get(
+          element
+        )}`,
         code: `# Update frequency count
 if element in frequency_map:
     frequency_map[element] += 1
 else:
     frequency_map[element] = 1`,
-      })
+      });
     }
 
     // Final result
@@ -98,7 +101,7 @@ else:
       key,
       value,
       isActive: false,
-    }))
+    }));
 
     newSteps.push({
       array: array.map((item) => ({
@@ -114,14 +117,14 @@ return frequency_map`,
       result: `Frequencies: ${Array.from(hashMap.entries())
         .map(([k, v]) => `${k}:${v}`)
         .join(", ")}`,
-    })
+    });
 
-    return newSteps
-  }
+    return newSteps;
+  };
 
   const generateTwoSumHashSteps = (array: number[]) => {
-    const newSteps: Step[] = []
-    const hashMap = new Map<number, number>()
+    const newSteps: Step[] = [];
+    const hashMap = new Map<number, number>();
 
     // Initial state
     newSteps.push({
@@ -136,27 +139,29 @@ return frequency_map`,
       code: `# Initialize hash map
 num_map = {}
 target = ${target}`,
-    })
+    });
 
     // Process each element
     for (let i = 0; i < array.length; i++) {
-      const complement = target - array[i]
+      const complement = target - array[i];
 
       if (hashMap.has(complement)) {
         // Found the pair
-        const complementIndex = hashMap.get(complement)!
+        const complementIndex = hashMap.get(complement)!;
         const currentArray = array.map((num, idx) => ({
           value: num,
           isHighlighted: idx === i || idx === complementIndex,
           isTarget: idx === i || idx === complementIndex,
           isFrequent: false,
-        }))
+        }));
 
-        const currentHashMap = Array.from(hashMap.entries()).map(([key, value]) => ({
-          key: String(key),
-          value,
-          isActive: key === complement,
-        }))
+        const currentHashMap = Array.from(hashMap.entries()).map(
+          ([key, value]) => ({
+            key: String(key),
+            value,
+            isActive: key === complement,
+          })
+        );
 
         newSteps.push({
           array: currentArray,
@@ -165,25 +170,27 @@ target = ${target}`,
           code: `# Found the complement
 return [num_map[complement], i]`,
           result: `Indices: [${complementIndex}, ${i}]`,
-        })
-        return newSteps
+        });
+        return newSteps;
       }
 
       // Add current number to hash map
-      hashMap.set(array[i], i)
+      hashMap.set(array[i], i);
 
       const currentArray = array.map((num, idx) => ({
         value: num,
         isHighlighted: idx === i,
         isTarget: false,
         isFrequent: false,
-      }))
+      }));
 
-      const currentHashMap = Array.from(hashMap.entries()).map(([key, value]) => ({
-        key: String(key),
-        value,
-        isActive: key === array[i],
-      }))
+      const currentHashMap = Array.from(hashMap.entries()).map(
+        ([key, value]) => ({
+          key: String(key),
+          value,
+          isActive: key === array[i],
+        })
+      );
 
       newSteps.push({
         array: currentArray,
@@ -194,7 +201,7 @@ complement = target - array[i]
 if complement in num_map:
     return [num_map[complement], i]
 num_map[array[i]] = i`,
-      })
+      });
     }
 
     // No solution found
@@ -214,15 +221,15 @@ num_map[array[i]] = i`,
       code: `# No solution found
 return []`,
       result: "No solution",
-    })
+    });
 
-    return newSteps
-  }
+    return newSteps;
+  };
 
   const generateDuplicatesSteps = (array: (number | string)[]) => {
-    const newSteps: Step[] = []
-    const hashMap = new Map<string, number>()
-    const duplicates: string[] = []
+    const newSteps: Step[] = [];
+    const hashMap = new Map<string, number>();
+    const duplicates: string[] = [];
 
     // Initial state
     newSteps.push({
@@ -237,17 +244,17 @@ return []`,
       code: `# Initialize hash map
 seen = {}
 duplicates = []`,
-    })
+    });
 
     // Process each element
     for (let i = 0; i < array.length; i++) {
-      const element = String(array[i])
-      const currentCount = hashMap.get(element) || 0
-      hashMap.set(element, currentCount + 1)
+      const element = String(array[i]);
+      const currentCount = hashMap.get(element) || 0;
+      hashMap.set(element, currentCount + 1);
 
-      const isDuplicate = currentCount > 0
+      const isDuplicate = currentCount > 0;
       if (isDuplicate && !duplicates.includes(element)) {
-        duplicates.push(element)
+        duplicates.push(element);
       }
 
       const currentArray = array.map((item, idx) => ({
@@ -255,23 +262,27 @@ duplicates = []`,
         isHighlighted: idx === i,
         isTarget: isDuplicate,
         isFrequent: duplicates.includes(String(item)),
-      }))
+      }));
 
-      const currentHashMap = Array.from(hashMap.entries()).map(([key, value]) => ({
-        key,
-        value,
-        isActive: key === element,
-      }))
+      const currentHashMap = Array.from(hashMap.entries()).map(
+        ([key, value]) => ({
+          key,
+          value,
+          isActive: key === element,
+        })
+      );
 
       newSteps.push({
         array: currentArray,
         hashMap: currentHashMap,
-        description: isDuplicate ? `Found duplicate: '${element}'` : `First occurrence of '${element}'`,
+        description: isDuplicate
+          ? `Found duplicate: '${element}'`
+          : `First occurrence of '${element}'`,
         code: `# Check for duplicates
 if element in seen:
     duplicates.append(element)
 seen[element] = seen.get(element, 0) + 1`,
-      })
+      });
     }
 
     // Final result
@@ -291,19 +302,19 @@ seen[element] = seen.get(element, 0) + 1`,
       code: `# Return duplicates
 return duplicates`,
       result: `Duplicates: [${duplicates.join(", ")}]`,
-    })
+    });
 
-    return newSteps
-  }
+    return newSteps;
+  };
 
   const generateFirstUniqueSteps = (array: (number | string)[]) => {
-    const newSteps: Step[] = []
-    const hashMap = new Map<string, number>()
+    const newSteps: Step[] = [];
+    const hashMap = new Map<string, number>();
 
     // First pass: count frequencies
     for (let i = 0; i < array.length; i++) {
-      const element = String(array[i])
-      hashMap.set(element, (hashMap.get(element) || 0) + 1)
+      const element = String(array[i]);
+      hashMap.set(element, (hashMap.get(element) || 0) + 1);
     }
 
     // Initial state
@@ -323,25 +334,27 @@ return duplicates`,
       code: `# Build frequency map
 for element in array:
     freq_map[element] = freq_map.get(element, 0) + 1`,
-    })
+    });
 
     // Second pass: find first unique
     for (let i = 0; i < array.length; i++) {
-      const element = String(array[i])
-      const frequency = hashMap.get(element)!
+      const element = String(array[i]);
+      const frequency = hashMap.get(element)!;
 
       const currentArray = array.map((item, idx) => ({
         value: item,
         isHighlighted: idx === i,
         isTarget: frequency === 1 && idx === i,
         isFrequent: hashMap.get(String(item))! > 1,
-      }))
+      }));
 
-      const currentHashMap = Array.from(hashMap.entries()).map(([key, value]) => ({
-        key,
-        value,
-        isActive: key === element,
-      }))
+      const currentHashMap = Array.from(hashMap.entries()).map(
+        ([key, value]) => ({
+          key,
+          value,
+          isActive: key === element,
+        })
+      );
 
       if (frequency === 1) {
         newSteps.push({
@@ -352,8 +365,8 @@ for element in array:
 if freq_map[element] == 1:
     return element`,
           result: `First unique: ${element}`,
-        })
-        return newSteps
+        });
+        return newSteps;
       }
 
       newSteps.push({
@@ -363,7 +376,7 @@ if freq_map[element] == 1:
         code: `# Check if element is unique
 if freq_map[element] == 1:
     return element`,
-      })
+      });
     }
 
     // No unique element found
@@ -383,57 +396,57 @@ if freq_map[element] == 1:
       code: `# No unique element
 return None`,
       result: "No unique element",
-    })
+    });
 
-    return newSteps
-  }
+    return newSteps;
+  };
 
   const handleVisualize = () => {
     try {
-      let processedArray: (number | string)[]
+      let processedArray: (number | string)[];
 
       if (selectedAlgorithm === "two-sum") {
         processedArray = arrayInput.split(",").map((num) => {
-          const parsed = Number.parseInt(num.trim())
-          if (isNaN(parsed)) throw new Error("Invalid number")
-          return parsed
-        })
+          const parsed = Number.parseInt(num.trim());
+          if (isNaN(parsed)) throw new Error("Invalid number");
+          return parsed;
+        });
       } else {
         // For other algorithms, allow both numbers and strings
         processedArray = arrayInput.split(",").map((item) => {
-          const trimmed = item.trim()
-          const parsed = Number.parseInt(trimmed)
-          return isNaN(parsed) ? trimmed : parsed
-        })
+          const trimmed = item.trim();
+          const parsed = Number.parseInt(trimmed);
+          return isNaN(parsed) ? trimmed : parsed;
+        });
       }
 
-      resetVisualization()
-      setIsVisualizing(true)
+      resetVisualization();
+      setIsVisualizing(true);
 
-      let newSteps: Step[]
+      let newSteps: Step[];
       switch (selectedAlgorithm) {
         case "frequency":
-          newSteps = generateFrequencySteps(processedArray)
-          break
+          newSteps = generateFrequencySteps(processedArray);
+          break;
         case "two-sum":
-          newSteps = generateTwoSumHashSteps(processedArray as number[])
-          break
+          newSteps = generateTwoSumHashSteps(processedArray as number[]);
+          break;
         case "duplicates":
-          newSteps = generateDuplicatesSteps(processedArray)
-          break
+          newSteps = generateDuplicatesSteps(processedArray);
+          break;
         case "first-unique":
-          newSteps = generateFirstUniqueSteps(processedArray)
-          break
+          newSteps = generateFirstUniqueSteps(processedArray);
+          break;
         default:
-          newSteps = []
+          newSteps = [];
       }
 
-      setSteps(newSteps)
-      setIsVisualizing(false)
+      setSteps(newSteps);
+      setIsVisualizing(false);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Please enter valid input")
+      alert(err instanceof Error ? err.message : "Please enter valid input");
     }
-  }
+  };
 
   const getFullCode = () => {
     switch (selectedAlgorithm) {
@@ -449,7 +462,7 @@ return None`,
         else:
             frequency_map[element] = 1
     
-    return frequency_map`
+    return frequency_map`;
 
       case "two-sum":
         return `def two_sum_hash(array, target):
@@ -463,7 +476,7 @@ return None`,
             return [num_map[complement], i]
         num_map[num] = i
     
-    return []  # No solution found`
+    return []  # No solution found`;
 
       case "duplicates":
         return `def find_duplicates(array):
@@ -478,7 +491,7 @@ return None`,
                 duplicates.append(element)
         seen[element] = seen.get(element, 0) + 1
     
-    return duplicates`
+    return duplicates`;
 
       case "first-unique":
         return `def first_unique_element(array):
@@ -492,12 +505,12 @@ return None`,
         if freq_map[element] == 1:
             return element
     
-    return None  # No unique element`
+    return None  # No unique element`;
 
       default:
-        return ""
+        return "";
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
@@ -505,7 +518,10 @@ return None`,
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Link to="/array-algorithms" className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors">
+              <Link
+                to="/array-algorithms"
+                className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors"
+              >
                 <ArrowLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
               </Link>
               <div className="p-2 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg">
@@ -522,7 +538,9 @@ return None`,
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Algorithm Selection */}
         <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Select Algorithm</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            Select Algorithm
+          </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <button
               onClick={() => setSelectedAlgorithm("frequency")}
@@ -569,11 +587,17 @@ return None`,
 
         {/* Input Section */}
         <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Input</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            Input
+          </h2>
           <div className="flex flex-col gap-4">
             <div>
-              <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Array (comma-separated {selectedAlgorithm === "two-sum" ? "numbers" : "values"})
+              <label
+                htmlFor="array-input"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Array (comma-separated{" "}
+                {selectedAlgorithm === "two-sum" ? "numbers" : "values"})
               </label>
               <input
                 id="array-input"
@@ -581,12 +605,19 @@ return None`,
                 value={arrayInput}
                 onChange={(e) => setArrayInput(e.target.value)}
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500"
-                placeholder={selectedAlgorithm === "two-sum" ? "e.g., 2, 7, 11, 15" : "e.g., a, b, c, a, b"}
+                placeholder={
+                  selectedAlgorithm === "two-sum"
+                    ? "e.g., 2, 7, 11, 15"
+                    : "e.g., a, b, c, a, b"
+                }
               />
             </div>
             {selectedAlgorithm === "two-sum" && (
               <div>
-                <label htmlFor="target-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor="target-input"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Target Sum
                 </label>
                 <input
@@ -614,7 +645,9 @@ return None`,
           <div className="space-y-8">
             {/* Array Visualization */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Array Visualization</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Array Visualization
+              </h2>
               <div className="flex flex-wrap gap-4 justify-center">
                 {steps[currentStep].array.map((element, index) => (
                   <div
@@ -623,10 +656,10 @@ return None`,
                       element.isTarget
                         ? "bg-green-500 text-white"
                         : element.isFrequent
-                          ? "bg-red-500 text-white"
-                          : element.isHighlighted
-                            ? "bg-red-100 text-red-700"
-                            : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300"
+                        ? "bg-red-500 text-white"
+                        : element.isHighlighted
+                        ? "bg-red-100 text-red-700"
+                        : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300"
                     }`}
                   >
                     {element.value}
@@ -637,17 +670,25 @@ return None`,
 
             {/* Hash Map Visualization */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Hash Map</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Hash Map
+              </h2>
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 {steps[currentStep].hashMap.map((entry, index) => (
                   <div
                     key={index}
                     className={`p-3 rounded-lg border-2 transition-all duration-200 ${
-                      entry.isActive ? "border-red-500 bg-red-50" : "border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-700"
+                      entry.isActive
+                        ? "border-red-500 bg-red-50"
+                        : "border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-700"
                     }`}
                   >
-                    <div className="text-sm font-medium text-gray-700 dark:text-gray-300">{entry.key}</div>
-                    <div className="text-lg font-bold text-red-600">{entry.value}</div>
+                    <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {entry.key}
+                    </div>
+                    <div className="text-lg font-bold text-red-600">
+                      {entry.value}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -655,18 +696,26 @@ return None`,
 
             {/* Step Information */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Step Information</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Step Information
+              </h2>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-gray-700 dark:text-gray-300">{steps[currentStep].description}</p>
+                    <p className="text-gray-700 dark:text-gray-300">
+                      {steps[currentStep].description}
+                    </p>
                     {steps[currentStep].result && (
-                      <p className="text-green-600 font-semibold mt-2">{steps[currentStep].result}</p>
+                      <p className="text-green-600 font-semibold mt-2">
+                        {steps[currentStep].result}
+                      </p>
                     )}
                   </div>
                   <div className="flex items-center space-x-4">
                     <button
-                      onClick={() => setCurrentStep((prev) => Math.max(0, prev - 1))}
+                      onClick={() =>
+                        setCurrentStep((prev) => Math.max(0, prev - 1))
+                      }
                       disabled={currentStep === 0}
                       className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -676,7 +725,11 @@ return None`,
                       Step {currentStep + 1} of {steps.length}
                     </span>
                     <button
-                      onClick={() => setCurrentStep((prev) => Math.min(steps.length - 1, prev + 1))}
+                      onClick={() =>
+                        setCurrentStep((prev) =>
+                          Math.min(steps.length - 1, prev + 1)
+                        )
+                      }
                       disabled={currentStep === steps.length - 1}
                       className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -684,7 +737,7 @@ return None`,
                     </button>
                   </div>
                 </div>
-                <Button onClick={()=> setCurrentStep(0)} variant="secondary">
+                <Button onClick={() => setCurrentStep(0)} variant="secondary">
                   Reset
                 </Button>
               </div>
@@ -693,26 +746,64 @@ return None`,
             {/* Code Section */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Code</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Code
+                </h2>
                 <button
                   onClick={() => setShowFullCode(!showFullCode)}
                   className="flex items-center space-x-2 text-red-600 hover:text-red-700"
                 >
                   <Code className="w-5 h-5" />
-                  <span>{showFullCode ? "Show Current Step" : "Show Full Code"}</span>
+                  <span>
+                    {showFullCode ? "Show Current Step" : "Show Full Code"}
+                  </span>
                 </button>
               </div>
               <pre className="bg-gray-50 dark:bg-slate-700 p-4 rounded-lg overflow-x-auto">
-                <code className="text-sm text-gray-800">{showFullCode ? getFullCode() : steps[currentStep].code}</code>
+                <code className="text-sm text-gray-800">
+                  {showFullCode ? getFullCode() : steps[currentStep].code}
+                </code>
               </pre>
             </div>
           </div>
         )}
+
+        {/* Practice Questions */}
+        <div className="mt-6 border-t pt-4">
+          <h4 className="text-xl font-bold text-black dark:text-gray-200 mb-3">
+            Practice Questions
+          </h4>
+          <div className="space-y-2"></div>
+          <>
+            <a
+              href="https://leetcode.com/problems/two-sum/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              • LeetCode: Two Sum
+            </a>
+            <a
+              href="https://leetcode.com/problems/group-anagrams/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              • LeetCode: Group Anagrams
+            </a>
+            <a
+              href="https://practice.geeksforgeeks.org/problems/count-frequency-in-a-range/1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              • GFG: Count Frequency in a Range
+            </a>
+          </>
+        </div>
       </main>
     </div>
-  )
+  );
 }
 
-export default HashingPage
-
-
+export default HashingPage;

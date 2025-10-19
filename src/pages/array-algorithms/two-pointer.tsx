@@ -497,7 +497,7 @@ return result`,
             </button>
           </div>
         </div>
-
+        
         {steps.length > 0 && (
           <>
             {/* Step Navigation */}
@@ -629,7 +629,43 @@ return result`,
             </div>
           </>
         )}
+
+         {/* Practice Questions */}
+        <div className="mt-6 border-t pt-4">
+          <h4 className="text-xl font-bold text-black dark:text-gray-200 mb-3">
+            Practice Questions
+          </h4>
+          <div className="space-y-2"></div>
+          <>
+            <a
+              href="https://leetcode.com/problems/two-sum/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              • LeetCode: Two Sum
+            </a>
+            <a
+              href="https://leetcode.com/problems/3sum/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              • LeetCode: 3Sum
+            </a>
+            <a
+              href="https://practice.geeksforgeeks.org/problems/find-pair-with-given-sum-in-the-array/0"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              • GFG: Find Pair with Given Sum
+            </a>
+          </>
+        </div>
       </main>
+
+      
 
       {showQuestionsModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">

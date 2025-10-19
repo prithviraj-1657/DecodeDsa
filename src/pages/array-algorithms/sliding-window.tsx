@@ -1,47 +1,51 @@
-"use client"
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { ArrowLeft, Grid, ChevronLeft, ChevronRight, Code } from "lucide-react"
-import { Button } from "../../components/ui/button"
+"use client";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowLeft, Grid, ChevronLeft, ChevronRight, Code } from "lucide-react";
+import { Button } from "../../components/ui/button";
 
 interface ArrayElement {
-  value: number
-  isHighlighted: boolean
-  isWindowStart: boolean
-  isWindowEnd: boolean
+  value: number;
+  isHighlighted: boolean;
+  isWindowStart: boolean;
+  isWindowEnd: boolean;
 }
 
 interface Step {
-  array: ArrayElement[]
-  windowSum: number
-  maxSum: number
-  description: string
-  code: string
-  windowStart: number
-  windowEnd: number
+  array: ArrayElement[];
+  windowSum: number;
+  maxSum: number;
+  description: string;
+  code: string;
+  windowStart: number;
+  windowEnd: number;
 }
 
 function SlidingWindowPage() {
-  const [arrayInput, setArrayInput] = useState<string>("1, 3, -1, -3, 5, 3, 6, 7")
-  const [windowSize, setWindowSize] = useState<number>(3)
-  const [steps, setSteps] = useState<Step[]>([])
-  const [currentStep, setCurrentStep] = useState<number>(0)
-  const [isVisualizing, setIsVisualizing] = useState<boolean>(false)
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState<"max-sum" | "min-sum" | "avg-sum">("max-sum")
-  const [showFullCode, setShowFullCode] = useState<boolean>(false)
+  const [arrayInput, setArrayInput] = useState<string>(
+    "1, 3, -1, -3, 5, 3, 6, 7"
+  );
+  const [windowSize, setWindowSize] = useState<number>(3);
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const [isVisualizing, setIsVisualizing] = useState<boolean>(false);
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState<
+    "max-sum" | "min-sum" | "avg-sum"
+  >("max-sum");
+  const [showFullCode, setShowFullCode] = useState<boolean>(false);
 
   const resetVisualization = () => {
-    setSteps([])
-    setCurrentStep(0)
-    setIsVisualizing(false)
-    setShowFullCode(false)
-  }
+    setSteps([]);
+    setCurrentStep(0);
+    setIsVisualizing(false);
+    setShowFullCode(false);
+  };
 
   const generateSlidingWindowSteps = (array: number[]) => {
-    const newSteps: Step[] = []
-    let currentSum = 0
-    let maxSum = Number.NEGATIVE_INFINITY
-    let minSum = Number.POSITIVE_INFINITY
+    const newSteps: Step[] = [];
+    let currentSum = 0;
+    let maxSum = Number.NEGATIVE_INFINITY;
+    let minSum = Number.POSITIVE_INFINITY;
 
     // Initial state
     newSteps.push({
@@ -60,45 +64,52 @@ currentSum = 0
 maxSum = -∞`,
       windowStart: 0,
       windowEnd: 0,
-    })
+    });
 
     // Calculate initial window sum
     for (let i = 0; i < windowSize; i++) {
-      currentSum += array[i]
+      currentSum += array[i];
     }
-    maxSum = currentSum
-    minSum = currentSum
+    maxSum = currentSum;
+    minSum = currentSum;
 
     const initialArray = array.map((value, index) => ({
       value,
       isHighlighted: index < windowSize,
       isWindowStart: index === 0,
       isWindowEnd: index === windowSize - 1,
-    }))
+    }));
 
     newSteps.push({
       array: initialArray,
       windowSum: currentSum,
-      maxSum: selectedAlgorithm === "max-sum" ? maxSum : selectedAlgorithm === "min-sum" ? minSum : currentSum,
-      description: `Calculate initial window sum: ${array.slice(0, windowSize).join(" + ")} = ${currentSum}`,
+      maxSum:
+        selectedAlgorithm === "max-sum"
+          ? maxSum
+          : selectedAlgorithm === "min-sum"
+          ? minSum
+          : currentSum,
+      description: `Calculate initial window sum: ${array
+        .slice(0, windowSize)
+        .join(" + ")} = ${currentSum}`,
       code: `# Calculate first window
 for i in range(windowSize):
     currentSum += array[i]
 maxSum = currentSum  # ${currentSum}`,
       windowStart: 0,
       windowEnd: windowSize - 1,
-    })
+    });
 
     // Slide the window
     for (let i = 1; i <= array.length - windowSize; i++) {
-      const removedElement = array[i - 1]
-      const addedElement = array[i + windowSize - 1]
-      currentSum = currentSum - removedElement + addedElement
+      const removedElement = array[i - 1];
+      const addedElement = array[i + windowSize - 1];
+      currentSum = currentSum - removedElement + addedElement;
 
       if (selectedAlgorithm === "max-sum") {
-        maxSum = Math.max(maxSum, currentSum)
+        maxSum = Math.max(maxSum, currentSum);
       } else if (selectedAlgorithm === "min-sum") {
-        minSum = Math.min(minSum, currentSum)
+        minSum = Math.min(minSum, currentSum);
       }
 
       const currentArray = array.map((value, index) => ({
@@ -106,26 +117,48 @@ maxSum = currentSum  # ${currentSum}`,
         isHighlighted: index >= i && index < i + windowSize,
         isWindowStart: index === i,
         isWindowEnd: index === i + windowSize - 1,
-      }))
+      }));
 
       newSteps.push({
         array: currentArray,
         windowSum: currentSum,
-        maxSum: selectedAlgorithm === "max-sum" ? maxSum : selectedAlgorithm === "min-sum" ? minSum : currentSum,
+        maxSum:
+          selectedAlgorithm === "max-sum"
+            ? maxSum
+            : selectedAlgorithm === "min-sum"
+            ? minSum
+            : currentSum,
         description: `Slide window: remove ${removedElement}, add ${addedElement}. New sum: ${currentSum}`,
         code: `# Slide window right
 currentSum = currentSum - array[${i - 1}] + array[${i + windowSize - 1}]
-# ${currentSum - addedElement + removedElement} - ${removedElement} + ${addedElement} = ${currentSum}
-${selectedAlgorithm === "max-sum" ? "maxSum" : selectedAlgorithm === "min-sum" ? "minSum" : "avgSum"} = ${
-          selectedAlgorithm === "max-sum" ? maxSum : selectedAlgorithm === "min-sum" ? minSum : currentSum
+# ${
+          currentSum - addedElement + removedElement
+        } - ${removedElement} + ${addedElement} = ${currentSum}
+${
+  selectedAlgorithm === "max-sum"
+    ? "maxSum"
+    : selectedAlgorithm === "min-sum"
+    ? "minSum"
+    : "avgSum"
+} = ${
+          selectedAlgorithm === "max-sum"
+            ? maxSum
+            : selectedAlgorithm === "min-sum"
+            ? minSum
+            : currentSum
         }`,
         windowStart: i,
         windowEnd: i + windowSize - 1,
-      })
+      });
     }
 
     // Final result
-    const finalResult = selectedAlgorithm === "max-sum" ? maxSum : selectedAlgorithm === "min-sum" ? minSum : currentSum
+    const finalResult =
+      selectedAlgorithm === "max-sum"
+        ? maxSum
+        : selectedAlgorithm === "min-sum"
+        ? minSum
+        : currentSum;
     newSteps.push({
       array: array.map((value) => ({
         value,
@@ -136,42 +169,57 @@ ${selectedAlgorithm === "max-sum" ? "maxSum" : selectedAlgorithm === "min-sum" ?
       windowSum: currentSum,
       maxSum: finalResult,
       description: `Algorithm complete! ${
-        selectedAlgorithm === "max-sum" ? "Maximum" : selectedAlgorithm === "min-sum" ? "Minimum" : "Final"
+        selectedAlgorithm === "max-sum"
+          ? "Maximum"
+          : selectedAlgorithm === "min-sum"
+          ? "Minimum"
+          : "Final"
       } window sum: ${finalResult}`,
       code: `# Return result
-return ${selectedAlgorithm === "max-sum" ? "maxSum" : selectedAlgorithm === "min-sum" ? "minSum" : "currentSum"}`,
+return ${
+        selectedAlgorithm === "max-sum"
+          ? "maxSum"
+          : selectedAlgorithm === "min-sum"
+          ? "minSum"
+          : "currentSum"
+      }`,
       windowStart: -1,
       windowEnd: -1,
-    })
+    });
 
-    return newSteps
-  }
+    return newSteps;
+  };
 
   const handleVisualize = () => {
     try {
       const numbers = arrayInput.split(",").map((num) => {
-        const parsed = Number.parseInt(num.trim())
-        if (isNaN(parsed)) throw new Error("Invalid number")
-        return parsed
-      })
+        const parsed = Number.parseInt(num.trim());
+        if (isNaN(parsed)) throw new Error("Invalid number");
+        return parsed;
+      });
 
       if (windowSize <= 0 || windowSize > numbers.length) {
-        throw new Error(`Window size must be between 1 and ${numbers.length}`)
+        throw new Error(`Window size must be between 1 and ${numbers.length}`);
       }
 
-      resetVisualization()
-      setIsVisualizing(true)
+      resetVisualization();
+      setIsVisualizing(true);
 
-      const newSteps = generateSlidingWindowSteps(numbers)
-      setSteps(newSteps)
-      setIsVisualizing(false)
+      const newSteps = generateSlidingWindowSteps(numbers);
+      setSteps(newSteps);
+      setIsVisualizing(false);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Please enter valid input")
+      alert(err instanceof Error ? err.message : "Please enter valid input");
     }
-  }
+  };
 
   const getFullCode = () => {
-    const algorithmType = selectedAlgorithm === "max-sum" ? "max" : selectedAlgorithm === "min-sum" ? "min" : "avg"
+    const algorithmType =
+      selectedAlgorithm === "max-sum"
+        ? "max"
+        : selectedAlgorithm === "min-sum"
+        ? "min"
+        : "avg";
     return `def sliding_window_${algorithmType}(array, windowSize):
     if len(array) < windowSize:
         return None
@@ -183,10 +231,12 @@ return ${selectedAlgorithm === "max-sum" ? "maxSum" : selectedAlgorithm === "min
     # Slide the window
     for i in range(1, len(array) - windowSize + 1):
         currentSum = currentSum - array[i-1] + array[i+windowSize-1]
-        ${algorithmType}Sum = ${algorithmType === "max" ? "max" : algorithmType === "min" ? "min" : ""}(${algorithmType}Sum, currentSum)
+        ${algorithmType}Sum = ${
+      algorithmType === "max" ? "max" : algorithmType === "min" ? "min" : ""
+    }(${algorithmType}Sum, currentSum)
     
-    return ${algorithmType}Sum`
-  }
+    return ${algorithmType}Sum`;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
@@ -194,7 +244,10 @@ return ${selectedAlgorithm === "max-sum" ? "maxSum" : selectedAlgorithm === "min
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Link to="/array-algorithms" className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors">
+              <Link
+                to="/array-algorithms"
+                className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors"
+              >
                 <ArrowLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
               </Link>
               <div className="p-2 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg">
@@ -211,7 +264,9 @@ return ${selectedAlgorithm === "max-sum" ? "maxSum" : selectedAlgorithm === "min
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Algorithm Selection */}
         <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Select Algorithm Variant</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            Select Algorithm Variant
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <button
               onClick={() => setSelectedAlgorithm("max-sum")}
@@ -248,10 +303,15 @@ return ${selectedAlgorithm === "max-sum" ? "maxSum" : selectedAlgorithm === "min
 
         {/* Input Section */}
         <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Input</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            Input
+          </h2>
           <div className="flex flex-col gap-4">
             <div>
-              <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="array-input"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Array (comma-separated numbers)
               </label>
               <input
@@ -264,7 +324,10 @@ return ${selectedAlgorithm === "max-sum" ? "maxSum" : selectedAlgorithm === "min
               />
             </div>
             <div>
-              <label htmlFor="window-size" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="window-size"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Window Size
               </label>
               <input
@@ -292,7 +355,9 @@ return ${selectedAlgorithm === "max-sum" ? "maxSum" : selectedAlgorithm === "min
           <div className="space-y-8">
             {/* Array Visualization */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Array Visualization</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Array Visualization
+              </h2>
               <div className="flex flex-wrap gap-4 justify-center">
                 {steps[currentStep].array.map((element, index) => (
                   <div key={index} className="relative text-center">
@@ -301,10 +366,10 @@ return ${selectedAlgorithm === "max-sum" ? "maxSum" : selectedAlgorithm === "min
                         element.isWindowStart
                           ? "bg-orange-500 text-white shadow-lg border-4 border-orange-300"
                           : element.isWindowEnd
-                            ? "bg-yellow-500 text-white shadow-lg border-4 border-yellow-300"
-                            : element.isHighlighted
-                              ? "bg-orange-100 text-orange-700 shadow-md"
-                              : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300"
+                          ? "bg-yellow-500 text-white shadow-lg border-4 border-yellow-300"
+                          : element.isHighlighted
+                          ? "bg-orange-100 text-orange-700 shadow-md"
+                          : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300"
                       }`}
                     >
                       {element.value}
@@ -319,7 +384,9 @@ return ${selectedAlgorithm === "max-sum" ? "maxSum" : selectedAlgorithm === "min
                         END
                       </div>
                     )}
-                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">i={index}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      i={index}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -327,31 +394,43 @@ return ${selectedAlgorithm === "max-sum" ? "maxSum" : selectedAlgorithm === "min
               {/* Window size indicator */}
               <div className="text-center mt-6">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 rounded-lg">
-                  <span className="text-orange-800 font-semibold">Window Size: {windowSize}</span>
+                  <span className="text-orange-800 font-semibold">
+                    Window Size: {windowSize}
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Window Analysis */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Window Analysis</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Window Analysis
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="p-4 bg-orange-50 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-orange-600">{steps[currentStep].windowSum}</div>
-                  <div className="text-sm text-orange-700">Current Window Sum</div>
+                  <div className="text-2xl font-bold text-orange-600">
+                    {steps[currentStep].windowSum}
+                  </div>
+                  <div className="text-sm text-orange-700">
+                    Current Window Sum
+                  </div>
                 </div>
                 <div className="p-4 bg-green-50 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-green-600">{steps[currentStep].maxSum}</div>
+                  <div className="text-2xl font-bold text-green-600">
+                    {steps[currentStep].maxSum}
+                  </div>
                   <div className="text-sm text-green-700">
                     {selectedAlgorithm === "max-sum"
                       ? "Maximum Sum Found"
                       : selectedAlgorithm === "min-sum"
-                        ? "Minimum Sum Found"
-                        : "Current Result"}
+                      ? "Minimum Sum Found"
+                      : "Current Result"}
                   </div>
                 </div>
                 <div className="p-4 bg-blue-50 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-blue-600">{windowSize}</div>
+                  <div className="text-2xl font-bold text-blue-600">
+                    {windowSize}
+                  </div>
                   <div className="text-sm text-blue-700">Window Size</div>
                 </div>
               </div>
@@ -359,15 +438,21 @@ return ${selectedAlgorithm === "max-sum" ? "maxSum" : selectedAlgorithm === "min
 
             {/* Step Information */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Step Information</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Step Information
+              </h2>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-gray-700 dark:text-gray-300">{steps[currentStep].description}</p>
+                    <p className="text-gray-700 dark:text-gray-300">
+                      {steps[currentStep].description}
+                    </p>
                   </div>
                   <div className="flex items-center space-x-4">
                     <button
-                      onClick={() => setCurrentStep((prev) => Math.max(0, prev - 1))}
+                      onClick={() =>
+                        setCurrentStep((prev) => Math.max(0, prev - 1))
+                      }
                       disabled={currentStep === 0}
                       className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -377,7 +462,11 @@ return ${selectedAlgorithm === "max-sum" ? "maxSum" : selectedAlgorithm === "min
                       Step {currentStep + 1} of {steps.length}
                     </span>
                     <button
-                      onClick={() => setCurrentStep((prev) => Math.min(steps.length - 1, prev + 1))}
+                      onClick={() =>
+                        setCurrentStep((prev) =>
+                          Math.min(steps.length - 1, prev + 1)
+                        )
+                      }
                       disabled={currentStep === steps.length - 1}
                       className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -385,7 +474,7 @@ return ${selectedAlgorithm === "max-sum" ? "maxSum" : selectedAlgorithm === "min
                     </button>
                   </div>
                 </div>
-                <Button onClick={()=> setCurrentStep(0)} variant="secondary">
+                <Button onClick={() => setCurrentStep(0)} variant="secondary">
                   Reset
                 </Button>
               </div>
@@ -394,49 +483,100 @@ return ${selectedAlgorithm === "max-sum" ? "maxSum" : selectedAlgorithm === "min
             {/* Code Section */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Code</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Code
+                </h2>
                 <button
                   onClick={() => setShowFullCode(!showFullCode)}
                   className="flex items-center space-x-2 text-orange-600 hover:text-orange-700"
                 >
                   <Code className="w-5 h-5" />
-                  <span>{showFullCode ? "Show Current Step" : "Show Full Code"}</span>
+                  <span>
+                    {showFullCode ? "Show Current Step" : "Show Full Code"}
+                  </span>
                 </button>
               </div>
               <pre className="bg-gray-50 dark:bg-slate-700 p-4 rounded-lg overflow-x-auto">
-                <code className="text-sm text-gray-800">{showFullCode ? getFullCode() : steps[currentStep].code}</code>
+                <code className="text-sm text-gray-800">
+                  {showFullCode ? getFullCode() : steps[currentStep].code}
+                </code>
               </pre>
             </div>
 
             {/* Algorithm Insights */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Algorithm Insights</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Algorithm Insights
+              </h2>
               <div className="space-y-3 text-sm">
                 <div className="p-3 bg-orange-50 rounded-lg">
-                  <div className="font-semibold text-orange-800">Efficiency:</div>
+                  <div className="font-semibold text-orange-800">
+                    Efficiency:
+                  </div>
                   <div className="text-orange-700">
-                    Sliding window reduces time complexity from O(n×k) to O(n) by reusing calculations
+                    Sliding window reduces time complexity from O(n×k) to O(n)
+                    by reusing calculations
                   </div>
                 </div>
                 <div className="p-3 bg-blue-50 rounded-lg">
-                  <div className="font-semibold text-blue-800">Key Technique:</div>
+                  <div className="font-semibold text-blue-800">
+                    Key Technique:
+                  </div>
                   <div className="text-blue-700">
-                    Remove the leftmost element and add the new rightmost element in each step
+                    Remove the leftmost element and add the new rightmost
+                    element in each step
                   </div>
                 </div>
                 <div className="p-3 bg-green-50 rounded-lg">
-                  <div className="font-semibold text-green-800">Applications:</div>
-                  <div className="text-green-700">Maximum/minimum subarray, moving averages, substring problems</div>
+                  <div className="font-semibold text-green-800">
+                    Applications:
+                  </div>
+                  <div className="text-green-700">
+                    Maximum/minimum subarray, moving averages, substring
+                    problems
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         )}
+
+        {/* Practice Questions */}
+        <div className="mt-6 border-t pt-4">
+          <h4 className="text-xl font-bold text-black dark:text-gray-200 mb-3">
+            Practice Questions
+          </h4>
+          <div className="space-y-2"></div>
+          <>
+            <a
+              href="https://leetcode.com/problems/longest-substring-without-repeating-characters/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              • LeetCode: Longest Substring Without Repeating Characters
+            </a>
+            <a
+              href="https://leetcode.com/problems/minimum-size-subarray-sum/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              • LeetCode: Minimum Size Subarray Sum
+            </a>
+            <a
+              href="https://practice.geeksforgeeks.org/problems/longest-subarray-with-sum-k/0"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              • GFG: Longest Subarray with Sum K
+            </a>
+          </>
+        </div>
       </main>
     </div>
-  )
+  );
 }
 
-export default SlidingWindowPage
-
-
+export default SlidingWindowPage;

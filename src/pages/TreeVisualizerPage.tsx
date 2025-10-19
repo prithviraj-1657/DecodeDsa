@@ -814,6 +814,125 @@ function TreeVisualizerPage() {
                 )}
               </div>
             </div>
+
+              {/* Practice Questions Section */}
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6 mt-8">
+                <h2 className="text-xl font-bold text-green-700 dark:text-green-300 mb-4">
+                  Practice Questions (Trees)
+                </h2>
+                <ul className="space-y-3">
+                  <li>
+                    <a
+                      href="https://leetcode.com/problems/binary-tree-inorder-traversal/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-600 dark:text-green-400 hover:underline"
+                    >
+                      Binary Tree Inorder Traversal (LeetCode)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://leetcode.com/problems/binary-search-tree-iterator/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-600 dark:text-green-400 hover:underline"
+                    >
+                      Binary Search Tree Iterator (LeetCode)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://leetcode.com/problems/serialize-and-deserialize-binary-tree/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-600 dark:text-green-400 hover:underline"
+                    >
+                      Serialize and Deserialize Binary Tree (LeetCode)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-600 dark:text-green-400 hover:underline"
+                    >
+                      Construct Binary Tree from Preorder and Inorder Traversal (LeetCode)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://leetcode.com/problems/maximum-depth-of-binary-tree/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-600 dark:text-green-400 hover:underline"
+                    >
+                      Maximum Depth of Binary Tree (LeetCode)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://practice.geeksforgeeks.org/problems/binary-tree-to-dll/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-600 dark:text-green-400 hover:underline"
+                    >
+                      Binary Tree to DLL (GFG)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://practice.geeksforgeeks.org/problems/lowest-common-ancestor-in-a-binary-tree/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-600 dark:text-green-400 hover:underline"
+                    >
+                      Lowest Common Ancestor in a Binary Tree (GFG)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://practice.geeksforgeeks.org/problems/check-for-bst/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-600 dark:text-green-400 hover:underline"
+                    >
+                      Check for BST (GFG)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://practice.geeksforgeeks.org/problems/avl-tree-insertion/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-600 dark:text-green-400 hover:underline"
+                    >
+                      AVL Tree Insertion (GFG)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://practice.geeksforgeeks.org/problems/heap-sort/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-600 dark:text-green-400 hover:underline"
+                    >
+                      Heap Sort (GFG)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://practice.geeksforgeeks.org/problems/b-tree-insertion/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-600 dark:text-green-400 hover:underline"
+                    >
+                      B-Tree Insertion (GFG)
+                    </a>
+                  </li>
+                </ul>
+              </div>
           </div>
         </div>
       </main>

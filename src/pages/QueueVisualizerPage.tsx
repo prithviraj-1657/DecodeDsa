@@ -756,6 +756,95 @@ print(f"Size: {queue.get_size()}")          # 2`;
               </div>
             </div>
 
+              {/* Practice Questions Section */}
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6 mt-8">
+                <h2 className="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">
+                  Practice Questions (Queue)
+                </h2>
+                <ul className="space-y-3">
+                  <li>
+                    <a
+                      href="https://leetcode.com/problems/implement-queue-using-stacks/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      Implement Queue using Stacks (LeetCode)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://leetcode.com/problems/design-circular-queue/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      Design Circular Queue (LeetCode)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://leetcode.com/problems/number-of-recent-calls/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      Number of Recent Calls (LeetCode)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://leetcode.com/problems/sliding-window-maximum/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      Sliding Window Maximum (LeetCode)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://practice.geeksforgeeks.org/problems/queue-reversal/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      Queue Reversal (GFG)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://practice.geeksforgeeks.org/problems/first-negative-integer-in-every-window-of-size-k/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      First Negative Integer in Every Window of Size K (GFG)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://practice.geeksforgeeks.org/problems/interleave-the-first-half-of-the-queue-with-second-half/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      Interleave the First Half of the Queue with Second Half (GFG)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://practice.geeksforgeeks.org/problems/queue-using-two-stacks/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      Queue using Two Stacks (GFG)
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
             {/* Full Code Implementation */}
             {showCode && (
               <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">

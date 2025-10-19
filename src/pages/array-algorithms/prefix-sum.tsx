@@ -1,151 +1,164 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { ArrowLeft, Calculator, ChevronLeft, ChevronRight, Code } from "lucide-react"
-import { Button } from "../../components/ui/button"
+import type React from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  ArrowLeft,
+  Calculator,
+  ChevronLeft,
+  ChevronRight,
+  Code,
+} from "lucide-react";
+import { Button } from "../../components/ui/button";
 
 interface ArrayElement {
-  value: number
-  isHighlighted: boolean
-  isPrefixSum: boolean
-  isRange: boolean
+  value: number;
+  isHighlighted: boolean;
+  isPrefixSum: boolean;
+  isRange: boolean;
 }
 
 interface Step {
-  array: ArrayElement[]
-  prefixSum: number[]
-  description: string
-  code: string
+  array: ArrayElement[];
+  prefixSum: number[];
+  description: string;
+  code: string;
 }
 
 function PrefixSumPage() {
-  const [arrayInput, setArrayInput] = useState<string>("")
-  const [rangeInput, setRangeInput] = useState<string>("")
-  const [steps, setSteps] = useState<Step[]>([])
-  const [currentStep, setCurrentStep] = useState<number>(0)
-  const [isVisualizing, setIsVisualizing] = useState<boolean>(false)
-  const [showFullCode, setShowFullCode] = useState<boolean>(false)
-  
-  const [operation, setOperation] = useState<"prefix" | "range">("prefix")
+  const [arrayInput, setArrayInput] = useState<string>("");
+  const [rangeInput, setRangeInput] = useState<string>("");
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const [isVisualizing, setIsVisualizing] = useState<boolean>(false);
+  const [showFullCode, setShowFullCode] = useState<boolean>(false);
+
+  const [operation, setOperation] = useState<"prefix" | "range">("prefix");
 
   const resetVisualization = () => {
-    setSteps([])
-    setCurrentStep(0)
-    setIsVisualizing(false)
-    setShowFullCode(false)
-  }
+    setSteps([]);
+    setCurrentStep(0);
+    setIsVisualizing(false);
+    setShowFullCode(false);
+  };
 
   const generatePrefixSumSteps = (array: number[]) => {
-    const newSteps: Step[] = []
-    const prefixSum: number[] = new Array(array.length + 1).fill(0)
+    const newSteps: Step[] = [];
+    const prefixSum: number[] = new Array(array.length + 1).fill(0);
 
     // Initial state
     newSteps.push({
-      array: array.map(num => ({
+      array: array.map((num) => ({
         value: num,
         isHighlighted: false,
         isPrefixSum: false,
-        isRange: false
+        isRange: false,
       })),
       prefixSum: [0],
       description: "Initialize prefix sum array with 0",
       code: `# Initialize prefix sum array
-prefix_sum = [0] * (len(array) + 1)`
-    })
+prefix_sum = [0] * (len(array) + 1)`,
+    });
 
     // Calculate prefix sum
     for (let i = 0; i < array.length; i++) {
-      prefixSum[i + 1] = prefixSum[i] + array[i]
-      
+      prefixSum[i + 1] = prefixSum[i] + array[i];
+
       const currentArray = array.map((num, idx) => ({
         value: num,
         isHighlighted: idx <= i,
         isPrefixSum: idx === i,
-        isRange: false
-      }))
+        isRange: false,
+      }));
 
       newSteps.push({
         array: currentArray,
         prefixSum: [...prefixSum],
         description: `Calculate prefix sum at index ${i}: ${prefixSum[i + 1]}`,
         code: `# Calculate prefix sum
-prefix_sum[i + 1] = prefix_sum[i] + array[i]`
-      })
+prefix_sum[i + 1] = prefix_sum[i] + array[i]`,
+      });
     }
 
-    return newSteps
-  }
+    return newSteps;
+  };
 
   const generateRangeSumSteps = (array: number[], range: string) => {
-    const [start, end] = range.split(',').map(num => parseInt(num.trim()))
-    if (isNaN(start) || isNaN(end) || start < 0 || end >= array.length || start > end) {
-      throw new Error("Invalid range")
+    const [start, end] = range.split(",").map((num) => parseInt(num.trim()));
+    if (
+      isNaN(start) ||
+      isNaN(end) ||
+      start < 0 ||
+      end >= array.length ||
+      start > end
+    ) {
+      throw new Error("Invalid range");
     }
 
-    const newSteps: Step[] = []
-    const prefixSum: number[] = new Array(array.length + 1).fill(0)
+    const newSteps: Step[] = [];
+    const prefixSum: number[] = new Array(array.length + 1).fill(0);
 
     // Calculate prefix sum
     for (let i = 0; i < array.length; i++) {
-      prefixSum[i + 1] = prefixSum[i] + array[i]
+      prefixSum[i + 1] = prefixSum[i] + array[i];
     }
 
     // Initial state
     newSteps.push({
-      array: array.map(num => ({
+      array: array.map((num) => ({
         value: num,
         isHighlighted: false,
         isPrefixSum: false,
-        isRange: false
+        isRange: false,
       })),
       prefixSum: [...prefixSum],
       description: "Calculate prefix sum array",
       code: `# Calculate prefix sum array
 prefix_sum = [0] * (len(array) + 1)
 for i in range(len(array)):
-    prefix_sum[i + 1] = prefix_sum[i] + array[i]`
-    })
+    prefix_sum[i + 1] = prefix_sum[i] + array[i]`,
+    });
 
     // Show range sum calculation
-    const rangeSum = prefixSum[end + 1] - prefixSum[start]
+    const rangeSum = prefixSum[end + 1] - prefixSum[start];
     const currentArray = array.map((num, idx) => ({
       value: num,
       isHighlighted: idx >= start && idx <= end,
       isPrefixSum: false,
-      isRange: true
-    }))
+      isRange: true,
+    }));
 
     newSteps.push({
       array: currentArray,
       prefixSum: [...prefixSum],
       description: `Range sum from index ${start} to ${end}: ${rangeSum}`,
       code: `# Calculate range sum
-range_sum = prefix_sum[end + 1] - prefix_sum[start]`
-    })
+range_sum = prefix_sum[end + 1] - prefix_sum[start]`,
+    });
 
-    return newSteps
-  }
+    return newSteps;
+  };
 
   const handleVisualize = () => {
     try {
-      const numbers = arrayInput.split(',').map(num => parseInt(num.trim()))
+      const numbers = arrayInput.split(",").map((num) => parseInt(num.trim()));
       if (numbers.some(isNaN)) {
-        throw new Error("Invalid number in array")
+        throw new Error("Invalid number in array");
       }
 
-      resetVisualization()
-      setIsVisualizing(true)
-      const newSteps = operation === "prefix"
-        ? generatePrefixSumSteps(numbers)
-        : generateRangeSumSteps(numbers, rangeInput)
-      setSteps(newSteps)
-      setIsVisualizing(false)
+      resetVisualization();
+      setIsVisualizing(true);
+      const newSteps =
+        operation === "prefix"
+          ? generatePrefixSumSteps(numbers)
+          : generateRangeSumSteps(numbers, rangeInput);
+      setSteps(newSteps);
+      setIsVisualizing(false);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Please enter valid input")
+      alert(err instanceof Error ? err.message : "Please enter valid input");
     }
-  }
+  };
 
   const getFullCode = () => {
     if (operation === "prefix") {
@@ -157,7 +170,7 @@ range_sum = prefix_sum[end + 1] - prefix_sum[start]`
     for i in range(len(array)):
         prefix_sum[i + 1] = prefix_sum[i] + array[i]
     
-    return prefix_sum`
+    return prefix_sum`;
     } else {
       return `def range_sum_query(array, start, end):
     # Calculate prefix sum array
@@ -166,11 +179,9 @@ range_sum = prefix_sum[end + 1] - prefix_sum[start]`
         prefix_sum[i + 1] = prefix_sum[i] + array[i]
     
     # Calculate range sum
-    return prefix_sum[end + 1] - prefix_sum[start]`
+    return prefix_sum[end + 1] - prefix_sum[start]`;
     }
-  }
-
-  
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
@@ -178,7 +189,10 @@ range_sum = prefix_sum[end + 1] - prefix_sum[start]`
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Link to="/array-algorithms" className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors">
+              <Link
+                to="/array-algorithms"
+                className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors"
+              >
                 <ArrowLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
               </Link>
               <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
@@ -195,7 +209,9 @@ range_sum = prefix_sum[end + 1] - prefix_sum[start]`
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Input Section */}
         <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Input</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            Input
+          </h2>
           <div className="flex flex-col gap-4">
             <div className="flex gap-4">
               <button
@@ -220,7 +236,10 @@ range_sum = prefix_sum[end + 1] - prefix_sum[start]`
               </button>
             </div>
             <div>
-              <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="array-input"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Array (comma-separated numbers)
               </label>
               <input
@@ -234,7 +253,10 @@ range_sum = prefix_sum[end + 1] - prefix_sum[start]`
             </div>
             {operation === "range" && (
               <div>
-                <label htmlFor="range-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor="range-input"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Range (start,end)
                 </label>
                 <input
@@ -262,17 +284,25 @@ range_sum = prefix_sum[end + 1] - prefix_sum[start]`
             {/* Step Navigation */}
             <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Step {currentStep + 1} of {steps.length}</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Step {currentStep + 1} of {steps.length}
+                </h2>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
+                    onClick={() =>
+                      setCurrentStep((prev) => Math.max(0, prev - 1))
+                    }
                     disabled={currentStep === 0}
                     className="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 disabled:opacity-50"
                   >
                     <ChevronLeft className="w-6 h-6" />
                   </button>
                   <button
-                    onClick={() => setCurrentStep(prev => Math.min(steps.length - 1, prev + 1))}
+                    onClick={() =>
+                      setCurrentStep((prev) =>
+                        Math.min(steps.length - 1, prev + 1)
+                      )
+                    }
                     disabled={currentStep === steps.length - 1}
                     className="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 disabled:opacity-50"
                   >
@@ -280,15 +310,19 @@ range_sum = prefix_sum[end + 1] - prefix_sum[start]`
                   </button>
                 </div>
               </div>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">{steps[currentStep].description}</p>
-              <Button onClick={()=> setCurrentStep(0)} variant="secondary">
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
+                {steps[currentStep].description}
+              </p>
+              <Button onClick={() => setCurrentStep(0)} variant="secondary">
                 Reset
               </Button>
             </div>
 
             {/* Array Visualization */}
             <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Array Visualization</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Array Visualization
+              </h2>
               <div className="flex flex-wrap gap-4 justify-center">
                 {steps[currentStep].array.map((element, index) => (
                   <div
@@ -311,7 +345,9 @@ range_sum = prefix_sum[end + 1] - prefix_sum[start]`
 
             {/* Prefix Sum Array */}
             <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Prefix Sum Array</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Prefix Sum Array
+              </h2>
               <div className="flex flex-wrap gap-4 justify-center">
                 {steps[currentStep].prefixSum.map((sum, index) => (
                   <div
@@ -327,7 +363,9 @@ range_sum = prefix_sum[end + 1] - prefix_sum[start]`
             {/* Code Display */}
             <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Code</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Code
+                </h2>
                 <button
                   onClick={() => setShowFullCode(!showFullCode)}
                   className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200"
@@ -344,11 +382,38 @@ range_sum = prefix_sum[end + 1] - prefix_sum[start]`
             </div>
           </>
         )}
+
+        {/* Practice Questions */}
+        <div className="mt-6 border-t pt-4">
+          <h4 className="text-xl font-bold text-black dark:text-gray-200 mb-3">
+            Practice Questions
+          </h4>
+          <div className="space-y-2"></div>
+          <>
+            <>
+              <a
+                href="https://leetcode.com/problems/range-sum-query-immutable/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                • LeetCode: Range Sum Query
+              </a>
+              <a
+                href="https://practice.geeksforgeeks.org/problems/prefix-sum-array/1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                • GFG: Prefix Sum Array
+              </a>
+            </>
+          </>
+        </div>
       </main>
     </div>
-  )
+  );
 }
 
-export default PrefixSumPage
-export {} 
-
+export default PrefixSumPage;
+export {};

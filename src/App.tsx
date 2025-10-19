@@ -16,6 +16,7 @@ const SearchingAlgorithmsPage = lazy(
 );
 const StackVisualizerPage = lazy(() => import("./pages/StackVisualizerPage"));
 const QueueVisualizerPage = lazy(() => import("./pages/QueueVisualizerPage"));
+const TrieVisualizerPage = lazy(() => import("./pages/TrieVisualizerPage")); // ✅ Added
 const ArrayAlgorithmsPage = lazy(() => import("./pages/array-algorithms"));
 const TwoPointerPage = lazy(
   () => import("./pages/array-algorithms/two-pointer")
@@ -68,11 +69,8 @@ function App() {
       duration: 2.5,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       wheelMultiplier: 0.7,
-      // CRITICAL FIX: Prevent Lenis from affecting sidebar scroll
-      prevent: (node) => {
-        // Check if the scroll event is within the sidebar
-        return node.closest('[data-lenis-prevent]') !== null;
-      },
+      // Prevent Lenis from affecting sidebar scroll
+      prevent: (node) => node.closest('[data-lenis-prevent]') !== null,
     });
 
     let rafId = 0;
@@ -99,66 +97,30 @@ function App() {
             <Routes>
               <Route path="/sorting" element={<SortingAlgorithmsPage />} />
               <Route path="/searching" element={<SearchingAlgorithmsPage />} />
-              <Route
-                path="/data-structures/stack"
-                element={<StackVisualizerPage />}
-              />
-              <Route
-                path="/data-structures/queue"
-                element={<QueueVisualizerPage />}
-              />
-              <Route
-                path="/data-structures/linked-list"
-                element={<LinkedListVisualizerPage />}
-              />
-              <Route
-                path="/data-structures/graph"
-                element={<GraphVisualizerPage />}
-              />
-              <Route
-                path="/array-algorithms"
-                element={<ArrayAlgorithmsPage />}
-              />
-              <Route
-                path="/array-algorithms/two-pointer"
-                element={<TwoPointerPage />}
-              />
-              <Route
-                path="/array-algorithms/prefix-sum"
-                element={<PrefixSumPage />}
-              />
-              <Route
-                path="/array-algorithms/kadanes"
-                element={<KadanesPage />}
-              />
-              <Route
-                path="/array-algorithms/sliding-window"
-                element={<SlidingWindowPage />}
-              />
-              <Route
-                path="/array-algorithms/hashing"
-                element={<HashingPage />}
-              />
-              <Route
-                path="/array-algorithms/monotonic-stack"
-                element={<MonotonicStackPage />}
-              />
-              <Route
-                path="/array-algorithms/bit-manipulation"
-                element={<BitManipulationPage />}
-              />
-              <Route
-                path="/array-algorithms/2d-arrays"
-                element={<TwoDArraysPage />}
-              />
-              <Route
-                path="/data-structures/binary-tree"
-                element={<TreeVisualizerPage />}
-              />
-              <Route
-                path="/operations/expression-converter"
-                element={<ExpressionConverterPage />}
-              />
+
+              {/* Data Structures */}
+              <Route path="/data-structures/stack" element={<StackVisualizerPage />} />
+              <Route path="/data-structures/queue" element={<QueueVisualizerPage />} />
+              <Route path="/data-structures/trie" element={<TrieVisualizerPage />} /> {/* ✅ Added */}
+              <Route path="/data-structures/linked-list" element={<LinkedListVisualizerPage />} />
+              <Route path="/data-structures/graph" element={<GraphVisualizerPage />} />
+              <Route path="/data-structures/binary-tree" element={<TreeVisualizerPage />} />
+
+              {/* Array Algorithms */}
+              <Route path="/array-algorithms" element={<ArrayAlgorithmsPage />} />
+              <Route path="/array-algorithms/two-pointer" element={<TwoPointerPage />} />
+              <Route path="/array-algorithms/prefix-sum" element={<PrefixSumPage />} />
+              <Route path="/array-algorithms/kadanes" element={<KadanesPage />} />
+              <Route path="/array-algorithms/sliding-window" element={<SlidingWindowPage />} />
+              <Route path="/array-algorithms/hashing" element={<HashingPage />} />
+              <Route path="/array-algorithms/monotonic-stack" element={<MonotonicStackPage />} />
+              <Route path="/array-algorithms/bit-manipulation" element={<BitManipulationPage />} />
+              <Route path="/array-algorithms/2d-arrays" element={<TwoDArraysPage />} />
+
+              {/* Operations */}
+              <Route path="/operations/expression-converter" element={<ExpressionConverterPage />} />
+
+              {/* Other pages */}
               <Route path="/about" element={<AboutUsPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/" element={<Home />} />

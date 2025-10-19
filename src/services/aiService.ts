@@ -21,10 +21,10 @@ class AIService {
   private apiKey: string | null = null;
   private baseUrl: string = 'https://api.openai.com/v1/chat/completions';
   
-  constructor() {
+  //constructor() {
     // Use the provided API key by default
    // this.apiKey = "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";
-  }
+ // }
 
   // Main method to get AI response for ANY DSA question
   async getResponse(query: string, context?: ConversationContext): Promise<AIResponse> {

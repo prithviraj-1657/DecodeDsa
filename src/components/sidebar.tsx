@@ -29,8 +29,12 @@ interface NavItem {
   subItems?: SubItem[];
 }
 
-export default function Sidebar() {
-  const [isOpen, setIsOpen] = useState(false);
+interface SidebarProps {
+  isOpen: boolean;
+  onToggle: () => void;
+}
+
+export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
@@ -107,20 +111,20 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Mobile Menu Button */}
+      {/* Menu Button */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed z-50 p-3 text-white transition-all shadow-lg top-4 left-4 lg:hidden bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl hover:shadow-xl"
+        onClick={onToggle}
+        className="fixed z-50 p-3 text-white transition-all shadow-lg top-4 left-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl hover:shadow-xl"
         aria-label="Toggle menu"
       >
         {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
       </button>
 
-      {/* Overlay for mobile */}
+      {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/50 lg:hidden"
-          onClick={() => setIsOpen(false)}
+          className="fixed inset-0 z-30 bg-black/50"
+          onClick={onToggle}
         />
       )}
 
@@ -129,14 +133,14 @@ export default function Sidebar() {
         data-lenis-prevent
         className={`fixed top-0 left-0 h-screen w-72 bg-gradient-to-b from-slate-50 via-slate-100 to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-slate-800 dark:text-white shadow-2xl z-40 transition-all duration-300 flex flex-col overflow-y-auto overflow-x-hidden ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0`}
+        }`}
       >
         {/* Logo */}
         <div className="flex-shrink-0 p-6 border-b border-slate-300 dark:border-slate-700">
           <Link
             to="/"
             className="flex items-center gap-3 group"
-            onClick={() => setIsOpen(false)}
+            onClick={onToggle}
           >
             <div className="flex items-center justify-center w-10 h-10 transition-transform rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 group-hover:scale-110">
               <Brain className="w-6 h-6 text-white" />
@@ -183,7 +187,7 @@ export default function Sidebar() {
                         <Link
                           key={subItem.path}
                           to={subItem.path}
-                          onClick={() => setIsOpen(false)}
+                          onClick={onToggle}
                           className={`block px-4 py-2 rounded-lg text-sm transition-all ${
                             isActive(subItem.path)
                               ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md"
@@ -200,7 +204,7 @@ export default function Sidebar() {
                 // Direct Link
                 <Link
                   to={item.path || "/"}
-                  onClick={() => setIsOpen(false)}
+                  onClick={onToggle}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                     isActive(item.path)
                       ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"

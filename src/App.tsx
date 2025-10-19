@@ -4,7 +4,6 @@ import Lenis from "lenis";
 import Sidebar from "./components/sidebar";
 import PageLoader from "./components/PageLoader";
 import { useTheme } from "./contexts/ThemeContext";
-import ScrollToTop from "./components/scrollToTop";
 
 // Lazy load all page components
 const Home = lazy(() => import("./page"));
@@ -130,6 +129,7 @@ useEffect(() => {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/" element={<Home />} />
               <Route path="*" element={<Placeholder />} />
+              <Route path="/ai-assistant" element={<AIAssistantPage />} />
             </Routes>
           </Suspense>
         </main>

@@ -6,8 +6,29 @@ import ParallelSortingVisualizer from "../components/ParallelSortingVisualizer";
 import { Link } from "react-router-dom";
 import { getAvailableAlgorithms } from "../utils/sortingAlgorithms";
 import { SortingAlgorithm } from "../types/algorithms";
+import { QuestionsDialog, QuestionInfo } from '../components/ui/QuestionsDialog';
 
 const sortingAlgorithms = getAvailableAlgorithms();
+
+// Define questions for sorting algorithms
+const QUESTIONS: QuestionInfo[] = [
+  {
+    id: "sort-colors",
+    title: "Sort Colors",
+    description: "Sort an array of colors represented as integers (0, 1, 2) using a single pass.",
+    comingSoon: true,
+  },
+  {
+    id: "sort-array-by-parity",
+    title: "Sort Array by Parity",
+    description: "Given an array of integers, group all even integers at the beginning followed by all odd integers.",
+    comingSoon: true,
+  },
+  
+];
+
+
+
 
 function SortingAlgorithmsPage() {
   const [selectedAlgorithm, setSelectedAlgorithm] =
@@ -17,6 +38,7 @@ function SortingAlgorithmsPage() {
   const [inputArray, setInputArray] = useState<string>("");
   const [showVisualization, setShowVisualization] = useState(false);
   const [comparisonMode, setComparisonMode] = useState(false);
+  const [showQuestionsModal, setShowQuestionsModal] = useState<boolean>(false);
   const vizRef = useRef<HTMLDivElement | null>(null);
 
   const handleAlgorithmSelect = (algorithm: SortingAlgorithm) => {
@@ -58,6 +80,12 @@ function SortingAlgorithmsPage() {
                     : "Explore how different sorting algorithms organize data step by step"}
                 </p>
               </div>
+              <button
+                onClick={() => setShowQuestionsModal(true)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              >
+                Questions
+              </button>
             </div>
 
             {/* Mode Toggle */}
@@ -357,6 +385,29 @@ function SortingAlgorithmsPage() {
           </div>
         )}
       </main>
+
+      {/* Questions Modal */}
+      {showQuestionsModal && (
+        <QuestionsDialog
+          title="Sorting Algorithm Problems"
+          questions={[...QUESTIONS]}
+          onQuestionSelect={(question) => {
+            const algorithm = sortingAlgorithms.find(
+              (algo) => algo.name.toLowerCase().includes(question.id.split('-')[0])
+            );
+            if (algorithm) {
+              setSelectedAlgorithm(algorithm);
+              setShowQuestionsModal(false);
+              setShowVisualization(false);
+              setInputArray("64 34 25 12 22 11 90");
+            }
+          }}
+          onClose={() => setShowQuestionsModal(false)}
+          selectedQuestionId={selectedAlgorithm?.name.toLowerCase().includes("bubble") ? "bubble-sort" : 
+                             selectedAlgorithm?.name.toLowerCase().includes("quick") ? "quick-sort" : 
+                             selectedAlgorithm?.name.toLowerCase().includes("merge") ? "merge-sort" : undefined}
+        />
+      )}
     </div>
   );
 }

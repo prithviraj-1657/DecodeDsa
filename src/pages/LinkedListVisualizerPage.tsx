@@ -11,7 +11,54 @@ import {
   Lightbulb,
   Target,
   Clock,
+  HelpCircle,
 } from "lucide-react";
+import { QuestionsDialog, QuestionInfo } from "../components/ui/QuestionsDialog";
+
+const QUESTIONS: QuestionInfo[] = [
+  {
+    id: "linked-list-1",
+    title: "Reverse a Linked List",
+    description: "Reverse a singly linked list in-place.",
+  },
+  {
+    id: "linked-list-2",
+    title: "Detect Cycle",
+    description: "Determine if a linked list has a cycle.",
+  },
+  {
+    id: "linked-list-3",
+    title: "Find Middle Node",
+    description: "Find the middle node of a linked list in one pass.",
+  },
+];
+
+const QUESTIONS_MODAL: QuestionInfo[] = [
+  {
+    id: "linked-list-4",
+    title: "Merge Two Sorted Lists",
+    description: "Merge two sorted linked lists into a single sorted linked list.",
+    comingSoon: true,
+  },
+  {
+    id: "linked-list-5",
+    title: "Remove Nth Node From End",
+    description: "Remove the nth node from the end of a linked list.",
+    comingSoon: true,
+  },
+  {
+    id: "linked-list-6",
+    title: "Palindrome Linked List",
+    description: "Determine if a linked list is a palindrome.",
+    comingSoon: true,
+  },
+  {
+    id: "linked-list-7",
+    title: "Intersection of Two Linked Lists",
+    description: "Find the node at which two linked lists intersect.",
+    comingSoon: true,
+  },
+];
 
 
 // Enhanced Node interface with animation states
@@ -49,6 +96,7 @@ function LinkedListVisualizerPage() {
   const [currentOperation, setCurrentOperation] = useState<
     CodeOperationType | ""
   >("");
+  const [showQuestionsModal, setShowQuestionsModal] = useState<boolean>(false);
 
   // Add these interfaces and types after existing interfaces
   interface CodeStructure {

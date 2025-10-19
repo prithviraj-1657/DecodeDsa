@@ -213,7 +213,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
                   <div className="text-sm text-gray-500">Total Steps</div>
                 </div>
               </div>
-              
+            </div>
               {sortResult.isDutchFlag && (
                 <div className="mt-4 border-t pt-4 border-gray-200 dark:border-gray-700">
                   <h4 className="font-medium text-sm mb-2">Dutch Flag Legend:</h4>
@@ -237,6 +237,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
                   </div>
                 </div>
               )}
+
             </CardContent>
           </Card>
       )}

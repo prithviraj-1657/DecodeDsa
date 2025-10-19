@@ -1128,6 +1128,7 @@ function GraphVisualizerPage() {
                   />
                 )}
               </div>
+             
 
               {/* Current Step Info */}
               {algorithmSteps.length > 0 && currentStep < algorithmSteps.length && (
@@ -1209,6 +1210,43 @@ function GraphVisualizerPage() {
                   ))
                 )}
               </div>
+            </div>
+
+            {/* Practice Questions Section - Card Style */}
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-blue-200 dark:border-blue-700 p-6 mt-8">
+              <h2 className="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">Practice Questions (Graph)</h2>
+              <ul className="space-y-3">
+                <li>
+                  <a href="https://leetcode.com/problems/course-schedule/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Course Schedule (Topological Sort) (LeetCode)</a>
+                </li>
+                <li>
+                  <a href="https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Number of Connected Components in an Undirected Graph (LeetCode)</a>
+                </li>
+                <li>
+                  <a href="https://leetcode.com/problems/shortest-path-in-binary-matrix/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Shortest Path in Binary Matrix (BFS) (LeetCode)</a>
+                </li>
+                <li>
+                  <a href="https://leetcode.com/problems/network-delay-time/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Network Delay Time (Dijkstra) (LeetCode)</a>
+                </li>
+                <li>
+                  <a href="https://leetcode.com/problems/clone-graph/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Clone Graph (DFS/BFS) (LeetCode)</a>
+                </li>
+                <li>
+                  <a href="https://leetcode.com/problems/find-the-town-judge/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Find the Town Judge (LeetCode)</a>
+                </li>
+                <li>
+                  <a href="https://practice.geeksforgeeks.org/problems/detect-cycle-in-an-undirected-graph/1" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Detect Cycle in an Undirected Graph (GFG)</a>
+                </li>
+                <li>
+                  <a href="https://practice.geeksforgeeks.org/problems/shortest-path-in-unweighted-graph/1" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Shortest Path in Unweighted Graph (GFG)</a>
+                </li>
+                <li>
+                  <a href="https://practice.geeksforgeeks.org/problems/kruskals-algorithm/1" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Kruskal's Algorithm (GFG)</a>
+                </li>
+                <li>
+                  <a href="https://practice.geeksforgeeks.org/problems/prim%E2%80%99s-algorithm/1" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Prim's Algorithm (GFG)</a>
+                </li>
+              </ul>
             </div>
 
             {/* Code Implementation */}

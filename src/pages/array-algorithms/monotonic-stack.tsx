@@ -1,53 +1,58 @@
-"use client"
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { ArrowLeft, Layers, ChevronLeft, ChevronRight, Code } from "lucide-react"
-import { Button } from "../../components/ui/button"
+"use client";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  ArrowLeft,
+  Layers,
+  ChevronLeft,
+  ChevronRight,
+  Code,
+} from "lucide-react";
+import { Button } from "../../components/ui/button";
 
 interface ArrayElement {
-  value: number
-  isHighlighted: boolean
-  isProcessed: boolean
-  hasResult: boolean
-  result?: number
+  value: number;
+  isHighlighted: boolean;
+  isProcessed: boolean;
+  hasResult: boolean;
+  result?: number;
 }
 
 interface StackElement {
-  value: number
-  index: number
-  isActive: boolean
+  value: number;
+  index: number;
+  isActive: boolean;
 }
 
 interface Step {
-  array: ArrayElement[]
-  stack: StackElement[]
-  description: string
-  code: string
-  currentIndex: number
+  array: ArrayElement[];
+  stack: StackElement[];
+  description: string;
+  code: string;
+  currentIndex: number;
 }
 
 function MonotonicStackPage() {
-  const [arrayInput, setArrayInput] = useState<string>("")
-  const [steps, setSteps] = useState<Step[]>([])
-  const [currentStep, setCurrentStep] = useState<number>(0)
-  const [isVisualizing, setIsVisualizing] = useState<boolean>(false)
+  const [arrayInput, setArrayInput] = useState<string>("");
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const [isVisualizing, setIsVisualizing] = useState<boolean>(false);
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<
     "next-greater" | "next-smaller" | "daily-temps" | "largest-rect"
-  >("next-greater")
-  const [showFullCode, setShowFullCode] = useState<boolean>(false)
-  
+  >("next-greater");
+  const [showFullCode, setShowFullCode] = useState<boolean>(false);
 
   const resetVisualization = () => {
-    setSteps([])
-    setCurrentStep(0)
-    setIsVisualizing(false)
-    setShowFullCode(false)
-  }
+    setSteps([]);
+    setCurrentStep(0);
+    setIsVisualizing(false);
+    setShowFullCode(false);
+  };
 
   const generateNextGreaterSteps = (array: number[]) => {
-    const newSteps: Step[] = []
-    const stack: number[] = []
-    const result = new Array(array.length).fill(-1)
+    const newSteps: Step[] = [];
+    const stack: number[] = [];
+    const result = new Array(array.length).fill(-1);
 
     // Initial state
     newSteps.push({
@@ -63,14 +68,14 @@ function MonotonicStackPage() {
 stack = []
 result = [-1] * len(array)`,
       currentIndex: -1,
-    })
+    });
 
     // Process each element
     for (let i = 0; i < array.length; i++) {
       // Pop elements smaller than current
       while (stack.length > 0 && array[stack[stack.length - 1]] < array[i]) {
-        const index = stack.pop()!
-        result[index] = array[i]
+        const index = stack.pop()!;
+        result[index] = array[i];
       }
 
       // Add current step showing popping
@@ -81,13 +86,13 @@ result = [-1] * len(array)`,
           isProcessed: idx < i,
           hasResult: result[idx] !== -1,
           result: result[idx] !== -1 ? result[idx] : undefined,
-        }))
+        }));
 
         const currentStack = stack.map((stackIdx, pos) => ({
           value: array[stackIdx],
           index: stackIdx,
           isActive: pos === stack.length - 1,
-        }))
+        }));
 
         newSteps.push({
           array: currentArray,
@@ -98,11 +103,11 @@ while stack and array[stack[-1]] < array[i]:
     index = stack.pop()
     result[index] = array[i]`,
           currentIndex: i,
-        })
+        });
       }
 
       // Push current index to stack
-      stack.push(i)
+      stack.push(i);
 
       const currentArray = array.map((num, idx) => ({
         value: num,
@@ -110,13 +115,13 @@ while stack and array[stack[-1]] < array[i]:
         isProcessed: idx <= i,
         hasResult: result[idx] !== -1,
         result: result[idx] !== -1 ? result[idx] : undefined,
-      }))
+      }));
 
       const currentStack = stack.map((stackIdx, pos) => ({
         value: array[stackIdx],
         index: stackIdx,
         isActive: stackIdx === i,
-      }))
+      }));
 
       newSteps.push({
         array: currentArray,
@@ -125,7 +130,7 @@ while stack and array[stack[-1]] < array[i]:
         code: `# Push current index to stack
 stack.append(i)`,
         currentIndex: i,
-      })
+      });
     }
 
     // Final state
@@ -142,15 +147,15 @@ stack.append(i)`,
       code: `# Return result
 return result`,
       currentIndex: -1,
-    })
+    });
 
-    return newSteps
-  }
+    return newSteps;
+  };
 
   const generateNextSmallerSteps = (array: number[]) => {
-    const newSteps: Step[] = []
-    const stack: number[] = []
-    const result = new Array(array.length).fill(-1)
+    const newSteps: Step[] = [];
+    const stack: number[] = [];
+    const result = new Array(array.length).fill(-1);
 
     newSteps.push({
       array: array.map((num) => ({
@@ -165,12 +170,12 @@ return result`,
 stack = []
 result = [-1] * len(array)`,
       currentIndex: -1,
-    })
+    });
 
     for (let i = 0; i < array.length; i++) {
       while (stack.length > 0 && array[stack[stack.length - 1]] > array[i]) {
-        const index = stack.pop()!
-        result[index] = array[i]
+        const index = stack.pop()!;
+        result[index] = array[i];
       }
 
       if (stack.length > 0 || i > 0) {
@@ -180,13 +185,13 @@ result = [-1] * len(array)`,
           isProcessed: idx < i,
           hasResult: result[idx] !== -1,
           result: result[idx] !== -1 ? result[idx] : undefined,
-        }))
+        }));
 
         const currentStack = stack.map((stackIdx, pos) => ({
           value: array[stackIdx],
           index: stackIdx,
           isActive: pos === stack.length - 1,
-        }))
+        }));
 
         newSteps.push({
           array: currentArray,
@@ -197,10 +202,10 @@ while stack and array[stack[-1]] > array[i]:
     index = stack.pop()
     result[index] = array[i]`,
           currentIndex: i,
-        })
+        });
       }
 
-      stack.push(i)
+      stack.push(i);
 
       const currentArray = array.map((num, idx) => ({
         value: num,
@@ -208,13 +213,13 @@ while stack and array[stack[-1]] > array[i]:
         isProcessed: idx <= i,
         hasResult: result[idx] !== -1,
         result: result[idx] !== -1 ? result[idx] : undefined,
-      }))
+      }));
 
       const currentStack = stack.map((stackIdx, pos) => ({
         value: array[stackIdx],
         index: stackIdx,
         isActive: stackIdx === i,
-      }))
+      }));
 
       newSteps.push({
         array: currentArray,
@@ -223,7 +228,7 @@ while stack and array[stack[-1]] > array[i]:
         code: `# Push current index to stack
 stack.append(i)`,
         currentIndex: i,
-      })
+      });
     }
 
     newSteps.push({
@@ -239,15 +244,15 @@ stack.append(i)`,
       code: `# Return result
 return result`,
       currentIndex: -1,
-    })
+    });
 
-    return newSteps
-  }
+    return newSteps;
+  };
 
   const generateDailyTempsSteps = (array: number[]) => {
-    const newSteps: Step[] = []
-    const stack: number[] = []
-    const result = new Array(array.length).fill(0)
+    const newSteps: Step[] = [];
+    const stack: number[] = [];
+    const result = new Array(array.length).fill(0);
 
     newSteps.push({
       array: array.map((num) => ({
@@ -262,12 +267,12 @@ return result`,
 stack = []
 result = [0] * len(temperatures)`,
       currentIndex: -1,
-    })
+    });
 
     for (let i = 0; i < array.length; i++) {
       while (stack.length > 0 && array[stack[stack.length - 1]] < array[i]) {
-        const index = stack.pop()!
-        result[index] = i - index
+        const index = stack.pop()!;
+        result[index] = i - index;
       }
 
       if (stack.length > 0 || i > 0) {
@@ -277,13 +282,13 @@ result = [0] * len(temperatures)`,
           isProcessed: idx < i,
           hasResult: result[idx] !== 0,
           result: result[idx] !== 0 ? result[idx] : undefined,
-        }))
+        }));
 
         const currentStack = stack.map((stackIdx, pos) => ({
           value: array[stackIdx],
           index: stackIdx,
           isActive: pos === stack.length - 1,
-        }))
+        }));
 
         newSteps.push({
           array: currentArray,
@@ -294,10 +299,10 @@ while stack and temperatures[stack[-1]] < temperatures[i]:
     index = stack.pop()
     result[index] = i - index`,
           currentIndex: i,
-        })
+        });
       }
 
-      stack.push(i)
+      stack.push(i);
 
       const currentArray = array.map((num, idx) => ({
         value: num,
@@ -305,13 +310,13 @@ while stack and temperatures[stack[-1]] < temperatures[i]:
         isProcessed: idx <= i,
         hasResult: result[idx] !== 0,
         result: result[idx] !== 0 ? result[idx] : undefined,
-      }))
+      }));
 
       const currentStack = stack.map((stackIdx, pos) => ({
         value: array[stackIdx],
         index: stackIdx,
         isActive: stackIdx === i,
-      }))
+      }));
 
       newSteps.push({
         array: currentArray,
@@ -320,7 +325,7 @@ while stack and temperatures[stack[-1]] < temperatures[i]:
         code: `# Push current day to stack
 stack.append(i)`,
         currentIndex: i,
-      })
+      });
     }
 
     newSteps.push({
@@ -336,42 +341,48 @@ stack.append(i)`,
       code: `# Return result
 return result`,
       currentIndex: -1,
-    })
+    });
 
-    return newSteps
-  }
+    return newSteps;
+  };
 
   const handleVisualize = () => {
     try {
-      const numbers = arrayInput.split(",").map((num) => Number.parseInt(num.trim()))
+      const numbers = arrayInput
+        .split(",")
+        .map((num) => Number.parseInt(num.trim()));
       if (numbers.some(isNaN)) {
-        throw new Error("Invalid number in array")
+        throw new Error("Invalid number in array");
       }
 
-      resetVisualization()
-      setIsVisualizing(true)
+      resetVisualization();
+      setIsVisualizing(true);
 
-      let newSteps: Step[]
+      let newSteps: Step[];
       switch (selectedAlgorithm) {
         case "next-greater":
-          newSteps = generateNextGreaterSteps(numbers)
-          break
+          newSteps = generateNextGreaterSteps(numbers);
+          break;
         case "next-smaller":
-          newSteps = generateNextSmallerSteps(numbers)
-          break
+          newSteps = generateNextSmallerSteps(numbers);
+          break;
         case "daily-temps":
-          newSteps = generateDailyTempsSteps(numbers)
-          break
+          newSteps = generateDailyTempsSteps(numbers);
+          break;
         default:
-          newSteps = []
+          newSteps = [];
       }
 
-      setSteps(newSteps)
-      setIsVisualizing(false)
+      setSteps(newSteps);
+      setIsVisualizing(false);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Please enter valid numbers separated by commas")
+      alert(
+        err instanceof Error
+          ? err.message
+          : "Please enter valid numbers separated by commas"
+      );
     }
-  }
+  };
 
   const getFullCode = () => {
     switch (selectedAlgorithm) {
@@ -386,7 +397,7 @@ return result`,
             result[index] = array[i]
         stack.append(i)
     
-    return result`
+    return result`;
 
       case "next-smaller":
         return `def next_smaller_element(array):
@@ -399,7 +410,7 @@ return result`,
             result[index] = array[i]
         stack.append(i)
     
-    return result`
+    return result`;
 
       case "daily-temps":
         return `def daily_temperatures(temperatures):
@@ -412,12 +423,12 @@ return result`,
             result[index] = i - index
         stack.append(i)
     
-    return result`
+    return result`;
 
       default:
-        return ""
+        return "";
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
@@ -425,7 +436,10 @@ return result`,
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Link to="/array-algorithms" className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors">
+              <Link
+                to="/array-algorithms"
+                className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors"
+              >
                 <ArrowLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
               </Link>
               <div className="p-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg">
@@ -442,7 +456,9 @@ return result`,
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Algorithm Selection */}
         <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Select Algorithm</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            Select Algorithm
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <button
               onClick={() => setSelectedAlgorithm("next-greater")}
@@ -479,10 +495,15 @@ return result`,
 
         {/* Input Section */}
         <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Input</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            Input
+          </h2>
           <div className="flex flex-col gap-4">
             <div>
-              <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="array-input"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Array (comma-separated numbers)
               </label>
               <input
@@ -492,7 +513,9 @@ return result`,
                 onChange={(e) => setArrayInput(e.target.value)}
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500"
                 placeholder={
-                  selectedAlgorithm === "daily-temps" ? "e.g., 73, 74, 75, 71, 69, 72, 76, 73" : "e.g., 4, 5, 2, 25"
+                  selectedAlgorithm === "daily-temps"
+                    ? "e.g., 73, 74, 75, 71, 69, 72, 76, 73"
+                    : "e.g., 4, 5, 2, 25"
                 }
               />
             </div>
@@ -511,7 +534,9 @@ return result`,
           <div className="space-y-8">
             {/* Array Visualization */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Array Visualization</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Array Visualization
+              </h2>
               <div className="flex flex-wrap gap-4 justify-center">
                 {steps[currentStep].array.map((element, index) => (
                   <div key={index} className="text-center">
@@ -520,16 +545,20 @@ return result`,
                         element.isHighlighted
                           ? "bg-indigo-500 text-white"
                           : element.isProcessed
-                            ? "bg-indigo-100 text-indigo-700"
-                            : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300"
+                          ? "bg-indigo-100 text-indigo-700"
+                          : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300"
                       }`}
                     >
                       {element.value}
                     </div>
                     {element.hasResult && (
-                      <div className="mt-2 text-sm font-medium text-green-600">{element.result}</div>
+                      <div className="mt-2 text-sm font-medium text-green-600">
+                        {element.result}
+                      </div>
                     )}
-                    <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">{index}</div>
+                    <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      {index}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -537,10 +566,14 @@ return result`,
 
             {/* Stack Visualization */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Stack State</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Stack State
+              </h2>
               <div className="flex flex-col-reverse items-center gap-2 min-h-[100px]">
                 {steps[currentStep].stack.length === 0 ? (
-                  <div className="text-gray-500 dark:text-gray-400 italic">Stack is empty</div>
+                  <div className="text-gray-500 dark:text-gray-400 italic">
+                    Stack is empty
+                  </div>
                 ) : (
                   steps[currentStep].stack.map((element, index) => (
                     <div
@@ -552,8 +585,12 @@ return result`,
                       }`}
                     >
                       <div className="text-center">
-                        <div className="text-sm font-semibold">{element.value}</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">i:{element.index}</div>
+                        <div className="text-sm font-semibold">
+                          {element.value}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          i:{element.index}
+                        </div>
                       </div>
                     </div>
                   ))
@@ -563,15 +600,21 @@ return result`,
 
             {/* Step Information */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Step Information</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Step Information
+              </h2>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-gray-700 dark:text-gray-300">{steps[currentStep].description}</p>
+                    <p className="text-gray-700 dark:text-gray-300">
+                      {steps[currentStep].description}
+                    </p>
                   </div>
                   <div className="flex items-center space-x-4">
                     <button
-                      onClick={() => setCurrentStep((prev) => Math.max(0, prev - 1))}
+                      onClick={() =>
+                        setCurrentStep((prev) => Math.max(0, prev - 1))
+                      }
                       disabled={currentStep === 0}
                       className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -581,7 +624,11 @@ return result`,
                       Step {currentStep + 1} of {steps.length}
                     </span>
                     <button
-                      onClick={() => setCurrentStep((prev) => Math.min(steps.length - 1, prev + 1))}
+                      onClick={() =>
+                        setCurrentStep((prev) =>
+                          Math.min(steps.length - 1, prev + 1)
+                        )
+                      }
                       disabled={currentStep === steps.length - 1}
                       className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -589,7 +636,7 @@ return result`,
                     </button>
                   </div>
                 </div>
-                <Button onClick={()=> setCurrentStep(0)} variant="secondary">
+                <Button onClick={() => setCurrentStep(0)} variant="secondary">
                   Reset
                 </Button>
               </div>
@@ -598,26 +645,64 @@ return result`,
             {/* Code Section */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Code</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Code
+                </h2>
                 <button
                   onClick={() => setShowFullCode(!showFullCode)}
                   className="flex items-center space-x-2 text-indigo-600 hover:text-indigo-700"
                 >
                   <Code className="w-5 h-5" />
-                  <span>{showFullCode ? "Show Current Step" : "Show Full Code"}</span>
+                  <span>
+                    {showFullCode ? "Show Current Step" : "Show Full Code"}
+                  </span>
                 </button>
               </div>
               <pre className="bg-gray-50 dark:bg-slate-700 p-4 rounded-lg overflow-x-auto">
-                <code className="text-sm text-gray-800">{showFullCode ? getFullCode() : steps[currentStep].code}</code>
+                <code className="text-sm text-gray-800">
+                  {showFullCode ? getFullCode() : steps[currentStep].code}
+                </code>
               </pre>
             </div>
           </div>
         )}
+
+        {/* Practice Questions */}
+        <div className="mt-6 border-t pt-4">
+          <h4 className="text-xl font-bold text-black dark:text-gray-200 mb-3">
+            Practice Questions
+          </h4>
+          <div className="space-y-2"></div>
+          <>
+            <a
+              href="https://leetcode.com/problems/next-greater-element-ii/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              • LeetCode: Next Greater Element II
+            </a>
+            <a
+              href="https://leetcode.com/problems/daily-temperatures/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              • LeetCode: Daily Temperatures
+            </a>
+            <a
+              href="https://practice.geeksforgeeks.org/problems/next-larger-element-1587115620/1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              • GFG: Next Larger Element
+            </a>
+          </>
+        </div>
       </main>
     </div>
-  )
+  );
 }
 
-export default MonotonicStackPage
-
-
+export default MonotonicStackPage;

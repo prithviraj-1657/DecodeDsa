@@ -1,49 +1,59 @@
-"use client"
-import { useState, useEffect } from "react"
-import { Link } from "react-router-dom"
-import { ArrowLeft, TrendingUp, ChevronLeft, ChevronRight, Code, Play, Pause, RotateCcw } from "lucide-react"
-import { Button } from "../../components/ui/button"
+"use client";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import {
+  ArrowLeft,
+  TrendingUp,
+  ChevronLeft,
+  ChevronRight,
+  Code,
+  Play,
+  Pause,
+  RotateCcw,
+} from "lucide-react";
+import { Button } from "../../components/ui/button";
 
 interface ArrayElement {
-  value: number
-  isHighlighted: boolean
-  isCurrentSum: boolean
-  isMaxSum: boolean
+  value: number;
+  isHighlighted: boolean;
+  isCurrentSum: boolean;
+  isMaxSum: boolean;
 }
 
 interface Step {
-  array: ArrayElement[]
-  maxSoFar: number
-  currentMax: number
-  start: number
-  end: number
-  description: string
-  code: string
+  array: ArrayElement[];
+  maxSoFar: number;
+  currentMax: number;
+  start: number;
+  end: number;
+  description: string;
+  code: string;
 }
 
 const KadanesAlgorithm = () => {
-  const [arrayInput, setArrayInput] = useState<string>("-2, 1, -3, 4, -1, 2, 1, -5, 4")
-  const [steps, setSteps] = useState<Step[]>([])
-  const [currentStep, setCurrentStep] = useState<number>(0)
-  const [isRunning, setIsRunning] = useState<boolean>(false)
-  const [animationSpeed, setAnimationSpeed] = useState<number>(1000)
-  const [showFullCode, setShowFullCode] = useState<boolean>(false)
-  
+  const [arrayInput, setArrayInput] = useState<string>(
+    "-2, 1, -3, 4, -1, 2, 1, -5, 4"
+  );
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const [isRunning, setIsRunning] = useState<boolean>(false);
+  const [animationSpeed, setAnimationSpeed] = useState<number>(1000);
+  const [showFullCode, setShowFullCode] = useState<boolean>(false);
 
   const resetVisualization = () => {
-    setSteps([])
-    setCurrentStep(0)
-    setIsRunning(false)
-    setShowFullCode(false)
-  }
+    setSteps([]);
+    setCurrentStep(0);
+    setIsRunning(false);
+    setShowFullCode(false);
+  };
 
   const generateKadaneSteps = (array: number[]) => {
-    const newSteps: Step[] = []
-    let maxSoFar = Number.NEGATIVE_INFINITY
-    let currentMax = 0
-    let start = 0
-    let end = 0
-    let j = 0
+    const newSteps: Step[] = [];
+    let maxSoFar = Number.NEGATIVE_INFINITY;
+    let currentMax = 0;
+    let start = 0;
+    let end = 0;
+    let j = 0;
 
     // Initial state
     newSteps.push({
@@ -62,13 +72,13 @@ const KadanesAlgorithm = () => {
 maxSoFar = -∞
 currentMax = 0
 start = 0, end = 0`,
-    })
+    });
 
     for (let i = 0; i < array.length; i++) {
-      const currentJ = j
-      const stepStart = start
-      const stepEnd = end
-      currentMax += array[i]
+      const currentJ = j;
+      const stepStart = start;
+      const stepEnd = end;
+      currentMax += array[i];
 
       // Step: Add current element
       const currentArray = array.map((value, index) => ({
@@ -76,7 +86,7 @@ start = 0, end = 0`,
         isHighlighted: index >= currentJ && index <= i,
         isCurrentSum: index === i,
         isMaxSum: index >= stepStart && index <= stepEnd,
-      }))
+      }));
 
       newSteps.push({
         array: currentArray,
@@ -84,24 +94,26 @@ start = 0, end = 0`,
         currentMax,
         start: stepStart,
         end: stepEnd,
-        description: `Add element ${array[i]} to current sum: ${currentMax - array[i]} + ${array[i]} = ${currentMax}`,
+        description: `Add element ${array[i]} to current sum: ${
+          currentMax - array[i]
+        } + ${array[i]} = ${currentMax}`,
         code: `# Add current element to sum
 currentMax += array[${i}]  # ${currentMax}`,
-      })
+      });
 
       // Check if we found a new maximum
       if (currentMax > maxSoFar) {
-        maxSoFar = currentMax
-        start = j
-        end = i
-        const maxStart = start
-        const maxEnd = end
+        maxSoFar = currentMax;
+        start = j;
+        end = i;
+        const maxStart = start;
+        const maxEnd = end;
         const maxArray = array.map((value, index) => ({
           value,
           isHighlighted: index >= currentJ && index <= i,
           isCurrentSum: index === i,
           isMaxSum: index >= maxStart && index <= maxEnd,
-        }))
+        }));
 
         newSteps.push({
           array: maxArray,
@@ -114,21 +126,21 @@ currentMax += array[${i}]  # ${currentMax}`,
 if currentMax > maxSoFar:
     maxSoFar = ${maxSoFar}
     start = ${maxStart}, end = ${maxEnd}`,
-        })
+        });
       }
 
       // Reset if current sum becomes negative
       if (currentMax < 0) {
-        currentMax = 0
-        j = i + 1
-        const resetStart = start
-        const resetEnd = end
+        currentMax = 0;
+        j = i + 1;
+        const resetStart = start;
+        const resetEnd = end;
         const resetArray = array.map((value, index) => ({
           value,
           isHighlighted: false,
           isCurrentSum: false,
           isMaxSum: index >= resetStart && index <= resetEnd,
-        }))
+        }));
 
         newSteps.push({
           array: resetArray,
@@ -136,24 +148,26 @@ if currentMax > maxSoFar:
           currentMax,
           start: resetStart,
           end: resetEnd,
-          description: `Current sum is negative (${currentMax + array[i]}), reset to 0 and start new subarray`,
+          description: `Current sum is negative (${
+            currentMax + array[i]
+          }), reset to 0 and start new subarray`,
           code: `# Reset negative sum
 if currentMax < 0:
     currentMax = 0
     start = ${j}`,
-        })
+        });
       }
     }
 
     // Final result
-    const finalStart = start
-    const finalEnd = end
+    const finalStart = start;
+    const finalEnd = end;
     const finalArray = array.map((value, index) => ({
       value,
       isHighlighted: false,
       isCurrentSum: false,
       isMaxSum: index >= finalStart && index <= finalEnd,
-    }))
+    }));
 
     newSteps.push({
       array: finalArray,
@@ -164,54 +178,58 @@ if currentMax < 0:
       description: `Algorithm complete! Maximum subarray sum is ${maxSoFar}`,
       code: `# Final result
 return maxSoFar  # ${maxSoFar}`,
-    })
+    });
 
-    return newSteps
-  }
+    return newSteps;
+  };
 
   const handleVisualize = () => {
     try {
       const numbers = arrayInput.split(",").map((num) => {
-        const parsed = Number.parseInt(num.trim())
-        if (isNaN(parsed)) throw new Error("Invalid number")
-        return parsed
-      })
+        const parsed = Number.parseInt(num.trim());
+        if (isNaN(parsed)) throw new Error("Invalid number");
+        return parsed;
+      });
 
-      resetVisualization()
-      setIsRunning(true)
+      resetVisualization();
+      setIsRunning(true);
 
-      const newSteps = generateKadaneSteps(numbers)
-      setSteps(newSteps)
-      setIsRunning(false)
+      const newSteps = generateKadaneSteps(numbers);
+      setSteps(newSteps);
+      setIsRunning(false);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Please enter valid numbers separated by commas")
+      alert(
+        err instanceof Error
+          ? err.message
+          : "Please enter valid numbers separated by commas"
+      );
     }
-  }
+  };
 
   const handleAutoPlay = () => {
     if (isRunning) {
-      setIsRunning(false)
+      setIsRunning(false);
     } else {
-      setIsRunning(true)
+      setIsRunning(true);
       if (currentStep >= steps.length - 1) {
-        setCurrentStep(0)
+        setCurrentStep(0);
       }
     }
-  }
+  };
 
   useEffect(() => {
-    if (!isRunning) return
+    if (!isRunning) return;
 
     const timeoutId = setTimeout(() => {
       if (currentStep < steps.length - 1) {
-        setCurrentStep(currentStep + 1)
+        setCurrentStep(currentStep + 1);
       } else {
-        setIsRunning(false)
+        setIsRunning(false);
       }
-    }, animationSpeed)
+    }, animationSpeed);
 
-    return () => clearTimeout(timeoutId) // Cleanup on unmount or re-render
-  }, [isRunning, currentStep, steps, animationSpeed])
+    return () => clearTimeout(timeoutId); // Cleanup on unmount or re-render
+  }, [isRunning, currentStep, steps, animationSpeed]);
 
   const getFullCode = () => {
     return `def kadanes_algorithm(array):
@@ -233,8 +251,8 @@ return maxSoFar  # ${maxSoFar}`,
             currentMax = 0
             temp_start = i + 1
     
-    return maxSoFar, start, end`
-  }
+    return maxSoFar, start, end`;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
@@ -242,7 +260,10 @@ return maxSoFar  # ${maxSoFar}`,
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Link to="/array-algorithms" className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors">
+              <Link
+                to="/array-algorithms"
+                className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors"
+              >
                 <ArrowLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
               </Link>
               <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
@@ -259,17 +280,24 @@ return maxSoFar  # ${maxSoFar}`,
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Algorithm Info */}
         <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Maximum Subarray Problem</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            Maximum Subarray Problem
+          </h2>
           <p className="text-gray-600 dark:text-gray-300 mb-4">
-            Kadane's algorithm efficiently finds the maximum sum of any contiguous subarray in O(n) time.
+            Kadane's algorithm efficiently finds the maximum sum of any
+            contiguous subarray in O(n) time.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-3 bg-purple-50 rounded-lg">
-              <div className="font-semibold text-purple-800">Time Complexity</div>
+              <div className="font-semibold text-purple-800">
+                Time Complexity
+              </div>
               <div className="text-purple-700">O(n)</div>
             </div>
             <div className="p-3 bg-pink-50 rounded-lg">
-              <div className="font-semibold text-pink-800">Space Complexity</div>
+              <div className="font-semibold text-pink-800">
+                Space Complexity
+              </div>
               <div className="text-pink-700">O(1)</div>
             </div>
             <div className="p-3 bg-blue-50 rounded-lg">
@@ -281,10 +309,15 @@ return maxSoFar  # ${maxSoFar}`,
 
         {/* Input Section */}
         <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Input</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            Input
+          </h2>
           <div className="flex flex-col gap-4">
             <div>
-              <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="array-input"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Array (comma-separated numbers)
               </label>
               <input
@@ -309,7 +342,11 @@ return maxSoFar  # ${maxSoFar}`,
                   onClick={handleAutoPlay}
                   className="flex items-center space-x-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200"
                 >
-                  {isRunning ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                  {isRunning ? (
+                    <Pause className="w-4 h-4" />
+                  ) : (
+                    <Play className="w-4 h-4" />
+                  )}
                   <span>{isRunning ? "Pause" : "Auto Play"}</span>
                 </button>
               )}
@@ -322,7 +359,9 @@ return maxSoFar  # ${maxSoFar}`,
           <div className="space-y-8">
             {/* Array Visualization */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Array Visualization</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Array Visualization
+              </h2>
               <div className="flex flex-wrap gap-4 justify-center">
                 {steps[currentStep].array.map((element, index) => (
                   <div key={index} className="text-center">
@@ -331,15 +370,17 @@ return maxSoFar  # ${maxSoFar}`,
                         element.isMaxSum
                           ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg scale-105"
                           : element.isCurrentSum
-                            ? "bg-blue-100 text-blue-700 shadow-md border-2 border-blue-300"
-                            : element.isHighlighted
-                              ? "bg-purple-100 text-purple-700 shadow-md"
-                              : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300"
+                          ? "bg-blue-100 text-blue-700 shadow-md border-2 border-blue-300"
+                          : element.isHighlighted
+                          ? "bg-purple-100 text-purple-700 shadow-md"
+                          : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300"
                       }`}
                     >
                       {element.value}
                     </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">i={index}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      i={index}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -363,22 +404,32 @@ return maxSoFar  # ${maxSoFar}`,
 
             {/* Algorithm State */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Algorithm State</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Algorithm State
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="p-4 bg-purple-50 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-purple-600">{steps[currentStep].maxSoFar}</div>
+                  <div className="text-2xl font-bold text-purple-600">
+                    {steps[currentStep].maxSoFar}
+                  </div>
                   <div className="text-sm text-purple-700">Max So Far</div>
                 </div>
                 <div className="p-4 bg-blue-50 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-blue-600">{steps[currentStep].currentMax}</div>
+                  <div className="text-2xl font-bold text-blue-600">
+                    {steps[currentStep].currentMax}
+                  </div>
                   <div className="text-sm text-blue-700">Current Sum</div>
                 </div>
                 <div className="p-4 bg-green-50 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-green-600">{steps[currentStep].start}</div>
+                  <div className="text-2xl font-bold text-green-600">
+                    {steps[currentStep].start}
+                  </div>
                   <div className="text-sm text-green-700">Start Index</div>
                 </div>
                 <div className="p-4 bg-orange-50 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-orange-600">{steps[currentStep].end}</div>
+                  <div className="text-2xl font-bold text-orange-600">
+                    {steps[currentStep].end}
+                  </div>
                   <div className="text-sm text-orange-700">End Index</div>
                 </div>
               </div>
@@ -386,15 +437,21 @@ return maxSoFar  # ${maxSoFar}`,
 
             {/* Step Information */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Step Information</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Step Information
+              </h2>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-gray-700 dark:text-gray-300">{steps[currentStep].description}</p>
+                    <p className="text-gray-700 dark:text-gray-300">
+                      {steps[currentStep].description}
+                    </p>
                   </div>
                   <div className="flex items-center space-x-4">
                     <button
-                      onClick={() => setCurrentStep((prev) => Math.max(0, prev - 1))}
+                      onClick={() =>
+                        setCurrentStep((prev) => Math.max(0, prev - 1))
+                      }
                       disabled={currentStep === 0}
                       className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -404,7 +461,11 @@ return maxSoFar  # ${maxSoFar}`,
                       Step {currentStep + 1} of {steps.length}
                     </span>
                     <button
-                      onClick={() => setCurrentStep((prev) => Math.min(steps.length - 1, prev + 1))}
+                      onClick={() =>
+                        setCurrentStep((prev) =>
+                          Math.min(steps.length - 1, prev + 1)
+                        )
+                      }
                       disabled={currentStep === steps.length - 1}
                       className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -412,7 +473,7 @@ return maxSoFar  # ${maxSoFar}`,
                     </button>
                   </div>
                 </div>
-                <Button onClick={()=> setCurrentStep(0)} variant="secondary">
+                <Button onClick={() => setCurrentStep(0)} variant="secondary">
                   Reset
                 </Button>
               </div>
@@ -421,7 +482,9 @@ return maxSoFar  # ${maxSoFar}`,
             {/* Animation Controls */}
             {steps.length > 0 && (
               <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Animation Controls</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                  Animation Controls
+                </h2>
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-4">
                     <button
@@ -434,7 +497,11 @@ return maxSoFar  # ${maxSoFar}`,
                       onClick={handleAutoPlay}
                       className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
                     >
-                      {isRunning ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                      {isRunning ? (
+                        <Pause className="w-4 h-4" />
+                      ) : (
+                        <Play className="w-4 h-4" />
+                      )}
                       <span>{isRunning ? "Pause" : "Play"}</span>
                     </button>
                   </div>
@@ -443,7 +510,9 @@ return maxSoFar  # ${maxSoFar}`,
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Animation Speed</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Animation Speed
+                  </label>
                   <input
                     type="range"
                     min="200"
@@ -464,43 +533,84 @@ return maxSoFar  # ${maxSoFar}`,
             {/* Code Section */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Code</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Code
+                </h2>
                 <button
                   onClick={() => setShowFullCode(!showFullCode)}
                   className="flex items-center space-x-2 text-purple-600 hover:text-purple-700"
                 >
                   <Code className="w-5 h-5" />
-                  <span>{showFullCode ? "Show Current Step" : "Show Full Code"}</span>
+                  <span>
+                    {showFullCode ? "Show Current Step" : "Show Full Code"}
+                  </span>
                 </button>
               </div>
               <pre className="bg-gray-50 dark:bg-slate-700 p-4 rounded-lg overflow-x-auto">
-                <code className="text-sm text-gray-800">{showFullCode ? getFullCode() : steps[currentStep]?.code}</code>
+                <code className="text-sm text-gray-800">
+                  {showFullCode ? getFullCode() : steps[currentStep]?.code}
+                </code>
               </pre>
             </div>
 
             {/* Algorithm Insights */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Algorithm Insights</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Algorithm Insights
+              </h2>
               <div className="space-y-3 text-sm">
                 <div className="p-3 bg-purple-50 rounded-lg">
-                  <div className="font-semibold text-purple-800">Key Principle:</div>
+                  <div className="font-semibold text-purple-800">
+                    Key Principle:
+                  </div>
                   <div className="text-purple-700">
-                    At each position, decide whether to extend the current subarray or start a new one
+                    At each position, decide whether to extend the current
+                    subarray or start a new one
                   </div>
                 </div>
                 <div className="p-3 bg-blue-50 rounded-lg">
-                  <div className="font-semibold text-blue-800">Decision Rule:</div>
-                  <div className="text-blue-700">current_sum = max(current_sum + arr[i], arr[i])</div>
+                  <div className="font-semibold text-blue-800">
+                    Decision Rule:
+                  </div>
+                  <div className="text-blue-700">
+                    current_sum = max(current_sum + arr[i], arr[i])
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         )}
+
+        {/* Practice Questions */}
+        <div className="mt-6 border-t pt-4">
+          <h4 className="text-xl font-bold text-black dark:text-gray-200 mb-3">
+            Practice Questions
+          </h4>
+          <div className="space-y-2"></div>
+          <>
+            <>
+              <a
+                href="https://leetcode.com/problems/maximum-subarray/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                • LeetCode: Maximum Subarray
+              </a>
+              <a
+                href="https://practice.geeksforgeeks.org/problems/kadanes-algorithm-maximum-subarray-problem/0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                • GFG: Kadane's Algorithm
+              </a>
+            </>
+          </>
+        </div>
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default KadanesAlgorithm
-
-
+export default KadanesAlgorithm;

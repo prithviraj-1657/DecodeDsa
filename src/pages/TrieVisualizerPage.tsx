@@ -457,6 +457,95 @@ class Trie:
               </div>
             </div>
 
+              {/* Practice Questions Section */}
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6 mt-8">
+                <h2 className="text-xl font-bold text-purple-700 dark:text-purple-300 mb-4">
+                  Practice Questions (Trie)
+                </h2>
+                <ul className="space-y-3">
+                  <li>
+                    <a
+                      href="https://leetcode.com/problems/implement-trie-prefix-tree/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-purple-600 dark:text-purple-400 hover:underline"
+                    >
+                      Implement Trie (Prefix Tree) (LeetCode)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://leetcode.com/problems/word-search-ii/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-purple-600 dark:text-purple-400 hover:underline"
+                    >
+                      Word Search II (LeetCode)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://leetcode.com/problems/replace-words/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-purple-600 dark:text-purple-400 hover:underline"
+                    >
+                      Replace Words (LeetCode)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://leetcode.com/problems/longest-word-in-dictionary/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-purple-600 dark:text-purple-400 hover:underline"
+                    >
+                      Longest Word in Dictionary (LeetCode)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://practice.geeksforgeeks.org/problems/trie-insert-and-search/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-purple-600 dark:text-purple-400 hover:underline"
+                    >
+                      Trie Insert and Search (GFG)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://practice.geeksforgeeks.org/problems/word-break/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-purple-600 dark:text-purple-400 hover:underline"
+                    >
+                      Word Break (GFG)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://practice.geeksforgeeks.org/problems/phone-directory/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-purple-600 dark:text-purple-400 hover:underline"
+                    >
+                      Phone Directory (GFG)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://practice.geeksforgeeks.org/problems/unique-prefix-for-every-word/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-purple-600 dark:text-purple-400 hover:underline"
+                    >
+                      Unique Prefix for Every Word (GFG)
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
             {showCode && (
               <div className="bg-gray-900 rounded-2xl shadow-lg p-6 overflow-x-auto custom-scrollbar">
                 <pre className="text-green-400 text-xs"><code>{getFullTrieCode()}</code></pre>

@@ -195,6 +195,79 @@ function SortingAlgorithmsPage() {
                     </span>
                   </div>
                 </div>
+
+                {/* Practice Questions Section */}
+                <div className="mt-6 border-t pt-4">
+                  <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-3">
+                    Practice Questions
+                  </h4>
+                  <div className="space-y-2">
+                    {algorithm.name === "Bubble Sort" && (
+                      <>
+                        <a href="https://leetcode.com/problems/sort-colors/" target="_blank" rel="noopener noreferrer" 
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Sort Colors</a>
+                        <a href="https://practice.geeksforgeeks.org/problems/bubble-sort/1" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Bubble Sort Implementation</a>
+                      </>
+                    )}
+                    {algorithm.name === "Quick Sort" && (
+                      <>
+                        <a href="https://leetcode.com/problems/sort-an-array/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Sort an Array</a>
+                        <a href="https://leetcode.com/problems/kth-largest-element-in-an-array/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Kth Largest Element</a>
+                      </>
+                    )}
+                    {algorithm.name === "Merge Sort" && (
+                      <>
+                        <a href="https://leetcode.com/problems/sort-list/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Sort List</a>
+                        <a href="https://leetcode.com/problems/merge-k-sorted-lists/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Merge k Sorted Lists</a>
+                      </>
+                    )}
+                    {algorithm.name === "Heap Sort" && (
+                      <>
+                        <a href="https://leetcode.com/problems/top-k-frequent-elements/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Top K Frequent Elements</a>
+                        <a href="https://practice.geeksforgeeks.org/problems/heap-sort/1" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Heap Sort Implementation</a>
+                      </>
+                    )}
+                    {algorithm.name === "Selection Sort" && (
+                      <>
+                        <a href="https://practice.geeksforgeeks.org/problems/selection-sort/1" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Selection Sort Implementation</a>
+                        <a href="https://leetcode.com/problems/sort-array-by-parity/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Sort Array By Parity</a>
+                      </>
+                    )}
+                    {algorithm.name === "Insertion Sort" && (
+                      <>
+                        <a href="https://leetcode.com/problems/insertion-sort-list/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Insertion Sort List</a>
+                        <a href="https://practice.geeksforgeeks.org/problems/insertion-sort/1" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Insertion Sort Implementation</a>
+                      </>
+                    )}
+                    {algorithm.name === "Shell Sort" && (
+                      <>
+                        <a href="https://practice.geeksforgeeks.org/problems/shell-sort/1" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Shell Sort Implementation</a>
+                        <a href="https://www.geeksforgeeks.org/shellsort/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Shell Sort Tutorial</a>
+                      </>
+                    )}
+                    {algorithm.name === "Radix Sort" && (
+                      <>
+                        <a href="https://practice.geeksforgeeks.org/problems/radix-sort/1" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Radix Sort Implementation</a>
+                        <a href="https://leetcode.com/problems/maximum-gap/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Maximum Gap</a>
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           ))}

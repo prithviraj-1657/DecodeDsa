@@ -189,6 +189,59 @@ function SearchingAlgorithmsPage() {
                     </span>
                   </div>
                 </div>
+
+                {/* Practice Questions Section */}
+                <div className="mt-6 border-t pt-4">
+                  <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-3">
+                    Practice Questions
+                  </h4>
+                  <div className="space-y-2">
+                    {algorithm.name === "Linear Search" && (
+                      <>
+                        <a href="https://leetcode.com/problems/linear-search/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• LeetCode: Linear Search (Discuss)</a>
+                        <a href="https://practice.geeksforgeeks.org/problems/searching-a-number0324/1" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• GFG: Searching a Number</a>
+                        <a href="https://leetcode.com/problems/find-numbers-with-even-number-of-digits/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• LeetCode: Find Numbers with Even Number of Digits</a>
+                      </>
+                    )}
+                    {algorithm.name === "Binary Search" && (
+                      <>
+                        <a href="https://leetcode.com/problems/binary-search/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• LeetCode: Binary Search</a>
+                        <a href="https://leetcode.com/problems/search-in-rotated-sorted-array/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• LeetCode: Search in Rotated Sorted Array</a>
+                        <a href="https://practice.geeksforgeeks.org/problems/binary-search-1587115620/1" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• GFG: Binary Search</a>
+                      </>
+                    )}
+                    {algorithm.name === "Jump Search" && (
+                      <>
+                        <a href="https://www.geeksforgeeks.org/jump-search/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• GFG: Jump Search Tutorial</a>
+                        <a href="https://leetcode.com/problems/search-insert-position/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• LeetCode: Search Insert Position</a>
+                      </>
+                    )}
+                    {algorithm.name === "Exponential Search" && (
+                      <>
+                        <a href="https://www.geeksforgeeks.org/exponential-search/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• GFG: Exponential Search Tutorial</a>
+                        <a href="https://leetcode.com/problems/search-in-rotated-sorted-array-ii/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• LeetCode: Search in Rotated Sorted Array II</a>
+                      </>
+                    )}
+                    {algorithm.name === "Ternary Search" && (
+                      <>
+                        <a href="https://www.geeksforgeeks.org/ternary-search/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• GFG: Ternary Search Tutorial</a>
+                        <a href="https://leetcode.com/problems/peak-index-in-a-mountain-array/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• LeetCode: Peak Index in a Mountain Array</a>
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
               </div>
           ))}

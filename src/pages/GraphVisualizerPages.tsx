@@ -164,6 +164,8 @@ function GraphVisualizerPage() {
   const [, setNodeCounter] = useState(0);
   const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
   const [algorithmResult, setAlgorithmResult] = useState<any>(null);
+  // Keep track of a single active timer to avoid runaway loops
+  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Helper functions
   // Use a ref so IDs are unique even when generating many nodes in a loop
@@ -658,18 +660,8 @@ function GraphVisualizerPage() {
     addToHistory(`🛣️ Started Dijkstra from node ${startValue}`);
   };
 
-  // Animation control
-  const playAnimation = useCallback(() => {
-    if (currentStep >= algorithmSteps.length - 1) {
-      setIsAnimating(false);
-      return;
-    }
-
-    if (isPaused) return;
-
-    const step = algorithmSteps[currentStep];
-
-    // Apply step to graph visualization
+  // Helper to apply a single step to the graph and log it
+  const applyStep = useCallback((step: any, index: number) => {
     setGraph((prev) => ({
       ...prev,
       nodes: prev.nodes.map((node) => ({
@@ -687,62 +679,98 @@ function GraphVisualizerPage() {
         isVisited: step.visited?.has(edge.from) && step.visited?.has(edge.to),
       })),
     }));
-
-    addToHistory(`📍 Step ${currentStep + 1}: ${step.message}`);
-    setCurrentStep((prev) => prev + 1);
-
-    if (currentStep < algorithmSteps.length - 1) {
-      setTimeout(() => playAnimation(), animationSpeed);
-    } else {
-      setIsAnimating(false);
-      setAlgorithmResult(step);
+    if (step?.message) {
+      addToHistory(`📍 Step ${index + 1}: ${step.message}`);
     }
-  }, [currentStep, algorithmSteps, isPaused, animationSpeed]);
+  }, []);
 
+  // Single controlled animation loop driven by currentStep
   useEffect(() => {
-    if (isAnimating && !isPaused && algorithmSteps.length > 0) {
-      playAnimation();
+    // Clear any previous timer to avoid multiple concurrent timers
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current as unknown as number);
+      timeoutRef.current = null;
     }
-  }, [isAnimating, isPaused, playAnimation, algorithmSteps.length]);
+
+    if (!isAnimating || isPaused || algorithmSteps.length === 0) return;
+
+    if (currentStep >= algorithmSteps.length) {
+      // Completed
+      setIsAnimating(false);
+      const last = algorithmSteps[algorithmSteps.length - 1];
+      if (last) setAlgorithmResult(last);
+      return;
+    }
+
+    const step = algorithmSteps[currentStep];
+    applyStep(step, currentStep);
+
+    timeoutRef.current = setTimeout(() => {
+      setCurrentStep((prev) => prev + 1);
+    }, animationSpeed) as unknown as ReturnType<typeof setTimeout>;
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current as unknown as number);
+        timeoutRef.current = null;
+      }
+    };
+  }, [
+    isAnimating,
+    isPaused,
+    currentStep,
+    animationSpeed,
+    algorithmSteps,
+    applyStep,
+  ]);
 
   const startAnimation = () => {
     if (algorithmSteps.length === 0) return;
+    // Clear any pending timer before starting
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current as unknown as number);
+      timeoutRef.current = null;
+    }
     setIsAnimating(true);
     setIsPaused(false);
     setCurrentStep(0);
   };
 
   const pauseAnimation = () => {
-    setIsPaused(!isPaused);
+    // Toggle pause and clear any scheduled tick when pausing
+    setIsPaused((prev) => {
+      const next = !prev;
+      if (next && timeoutRef.current) {
+        clearTimeout(timeoutRef.current as unknown as number);
+        timeoutRef.current = null;
+      }
+      return next;
+    });
   };
 
   const stepForward = () => {
     if (currentStep < algorithmSteps.length - 1) {
-      setCurrentStep((prev) => prev + 1);
-      const step = algorithmSteps[currentStep + 1];
+      // Manual step should not run the auto-loop
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current as unknown as number);
+        timeoutRef.current = null;
+      }
+      if (isAnimating) setIsAnimating(false);
+      if (!isPaused) setIsPaused(true);
 
-      setGraph((prev) => ({
-        ...prev,
-        nodes: prev.nodes.map((node) => ({
-          ...node,
-          isHighlighted: step.nodeId === node.id,
-          isVisited: step.visited?.has(node.id) || false,
-          distance: step.distances?.get(node.id),
-        })),
-        edges: prev.edges.map((edge) => ({
-          ...edge,
-          isHighlighted:
-            (step.edgeFrom === edge.from && step.edgeTo === edge.to) ||
-            (step.edgeFrom === edge.to && step.edgeTo === edge.from),
-          isVisited: step.visited?.has(edge.from) && step.visited?.has(edge.to),
-        })),
-      }));
-
-      addToHistory(`📍 Step ${currentStep + 2}: ${step.message}`);
+      const nextIndex = currentStep + 1;
+      const step = algorithmSteps[nextIndex];
+      applyStep(step, nextIndex);
+      setCurrentStep(nextIndex);
     }
   };
 
   const resetAnimation = () => {
+    // Stop any running timer and animation
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current as unknown as number);
+      timeoutRef.current = null;
+    }
     setIsAnimating(false);
     setIsPaused(false);
     setCurrentStep(0);
@@ -766,6 +794,16 @@ function GraphVisualizerPage() {
       })),
     }));
   };
+
+  // Cleanup on unmount to prevent stray timers
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current as unknown as number);
+        timeoutRef.current = null;
+      }
+    };
+  }, []);
 
   // Update graph type
   useEffect(() => {

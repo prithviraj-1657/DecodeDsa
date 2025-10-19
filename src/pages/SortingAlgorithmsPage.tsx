@@ -24,7 +24,30 @@ const QUESTIONS: QuestionInfo[] = [
     description: "Given an array of integers, group all even integers at the beginning followed by all odd integers.",
     comingSoon: true,
   },
-  
+  {
+    id: "merge-k-sorted-lists",
+    title: "Merge K Sorted Lists",
+    description: "Given k sorted linked lists, merge them into a single sorted linked list.",
+    comingSoon: true,
+  },
+  {
+    id: "kth-largest-element  ",
+    title: "Kth Largest Element",
+    description: "Find the kth largest element in an unsorted array.",
+    comingSoon: true,
+  },
+  {
+    id: "top-k-frequesnt-elements",
+    title: "Top K Frequent Elements",
+    description: "Given an array of integers, find the k most frequent elements.",
+    comingSoon: true,
+  },
+  {
+    id: "maximum-gap",
+    title: "Maximum Gap",
+    description: "Given an array of integers, find the maximum gap between the sorted elements.",
+    comingSoon: true,
+  },
 ];
 
 

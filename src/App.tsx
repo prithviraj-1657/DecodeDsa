@@ -4,6 +4,8 @@ import Lenis from "lenis";
 import Sidebar from "./components/sidebar";
 import PageLoader from "./components/PageLoader";
 import { useTheme } from "./contexts/ThemeContext";
+import ScrollToTop from "./components/scrollToTop";
+import AIAssistantPage from "./pages/AIAssistantPage"
 
 // Lazy load all page components
 const Home = lazy(() => import("./page"));
@@ -52,6 +54,7 @@ const LoadingFallback = ({ isDark }: { isDark: boolean }) => (
 
 function App() {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { theme } = useTheme();
 
   useEffect(() => {
@@ -63,35 +66,39 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    const lenis = new Lenis({
-      duration: 2.5,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      wheelMultiplier: 0.7,
-      // Prevent Lenis from affecting sidebar scroll
-      prevent: (node) => node.closest('[data-lenis-prevent]') !== null,
-    });
+const [lenis, setLenis] = useState<Lenis | null>(null);
 
-    let rafId = 0;
-    function raf(time: number) {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    }
+useEffect(() => {
+  const lenisInstance = new Lenis({
+    duration: 2.5,
+    easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    wheelMultiplier: 0.7,
+    prevent: (node) => node.closest('[data-lenis-prevent]') !== null,
+  });
+
+  setLenis(lenisInstance);
+
+  let rafId = 0;
+  function raf(time: number) {
+    lenisInstance.raf(time);
     rafId = requestAnimationFrame(raf);
+  }
+  rafId = requestAnimationFrame(raf);
 
-    return () => {
-      cancelAnimationFrame(rafId);
-      if (typeof lenis.destroy === "function") lenis.destroy();
-    };
-  }, []);
+  return () => {
+    cancelAnimationFrame(rafId);
+    if (typeof lenisInstance.destroy === "function") lenisInstance.destroy();
+  };
+}, []);
 
   return (
     <>
       {isInitialLoad && <PageLoader isDark={theme === "dark"} />}
 
       <div className="flex min-h-screen bg-white dark:bg-slate-900 transition-colors duration-300">
-        <Sidebar />
-        <main className="flex-1 lg:ml-72 dark:text-white">
+        <Sidebar isOpen={isSidebarOpen} onToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
+        <main className={`flex-1 dark:text-white ${isSidebarOpen ? 'lg:ml-72' : 'lg:ml-0'}`}>
+          {lenis && <ScrollToTop lenis={lenis} />}  
           <Suspense fallback={<LoadingFallback isDark={theme === "dark"} />}>
             <Routes>
               <Route path="/sorting" element={<SortingAlgorithmsPage />} />
@@ -124,6 +131,7 @@ function App() {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/" element={<Home />} />
               <Route path="*" element={<Placeholder />} />
+              <Route path="/ai-assistant" element={<AIAssistantPage />} />
             </Routes>
           </Suspense>
         </main>

@@ -1,30 +1,37 @@
-"use client"
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { ArrowLeft, ChevronLeft, ChevronRight, Code, X } from "lucide-react"
-import { Button } from "../../components/ui/button"
+"use client";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowLeft, ChevronLeft, ChevronRight, Code, X } from "lucide-react";
+import { Button } from "../../components/ui/button";
 
 interface ArrayElement {
-  value: number
-  isHighlighted: boolean
-  isPointer1: boolean
-  isPointer2: boolean
-  isPointer3: boolean
+  value: number;
+  isHighlighted: boolean;
+  isPointer1: boolean;
+  isPointer2: boolean;
+  isPointer3: boolean;
 }
 
 interface Step {
-  array: ArrayElement[]
-  description: string
-  code: string
-  waterHeight?: number[]
+  array: ArrayElement[];
+  description: string;
+  code: string;
+  waterHeight?: number[];
+  foundPairs?: [number, number][];
+  foundTriplets?: [number, number, number][];
 }
 
-type ProblemType = "two-sum" | "three-sum" | "container-water" | "remove-duplicates" | "move-zeroes"
+type ProblemType =
+  | "two-sum"
+  | "three-sum"
+  | "container-water"
+  | "remove-duplicates"
+  | "move-zeroes";
 
 interface QuestionInfo {
-  id: ProblemType
-  title: string
-  description: string
+  id: ProblemType;
+  title: string;
+  description: string;
 }
 
 const QUESTIONS: QuestionInfo[] = [
@@ -36,9 +43,10 @@ const QUESTIONS: QuestionInfo[] = [
   {
     id: "three-sum",
     title: "Three Sum",
-    description: "Find three numbers in the array that add up to the target sum.",
+    description:
+      "Find three numbers in the array that add up to the target sum.",
   },
-]
+];
 
 const QUESTIONS_MODAL: QuestionInfo[] = [
   {
@@ -56,33 +64,35 @@ const QUESTIONS_MODAL: QuestionInfo[] = [
   {
     id: "move-zeroes",
     title: "Move Zeroes",
-    description: "Move all zeroes to the end of the array while maintaining the relative order of non-zero elements.",
+    description:
+      "Move all zeroes to the end of the array while maintaining the relative order of non-zero elements.",
   },
-]
+];
 
 function TwoPointerPage() {
-  const [selectedProblem, setSelectedProblem] = useState<ProblemType>("two-sum")
-  const [arrayInput, setArrayInput] = useState<string>("")
-  const [target, setTarget] = useState<number>(0)
-  const [steps, setSteps] = useState<Step[]>([])
-  const [currentStep, setCurrentStep] = useState<number>(0)
-  const [isVisualizing, setIsVisualizing] = useState<boolean>(false)
-  const [showFullCode, setShowFullCode] = useState<boolean>(false)
-  const [showQuestionsModal, setShowQuestionsModal] = useState<boolean>(false)
+  const [selectedProblem, setSelectedProblem] =
+    useState<ProblemType>("two-sum");
+  const [arrayInput, setArrayInput] = useState<string>("");
+  const [target, setTarget] = useState<number>(0);
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const [isVisualizing, setIsVisualizing] = useState<boolean>(false);
+  const [showFullCode, setShowFullCode] = useState<boolean>(false);
+  const [showQuestionsModal, setShowQuestionsModal] = useState<boolean>(false);
 
   const resetVisualization = () => {
-    setSteps([])
-    setCurrentStep(0)
-    setIsVisualizing(false)
-    setShowFullCode(false)
-  }
-
+    setSteps([]);
+    setCurrentStep(0);
+    setIsVisualizing(false);
+    setShowFullCode(false);
+  };
 
   const generateTwoSumSteps = (array: number[]) => {
-    const sortedArray = [...array].sort((a, b) => a - b)
-    const newSteps: Step[] = []
-    let left = 0
-    let right = sortedArray.length - 1
+    const sortedArray = [...array].sort((a, b) => a - b);
+    const newSteps: Step[] = [];
+    const foundPairs: [number, number][] = [];
+    let left = 0;
+    let right = sortedArray.length - 1;
 
     newSteps.push({
       array: sortedArray.map((num) => ({
@@ -95,52 +105,63 @@ function TwoPointerPage() {
       description: "Initial sorted array",
       code: `# Sort the array
 array.sort()`,
-    })
+      foundPairs: [],
+    });
 
     while (left < right) {
-      const currentLeft = left
-      const currentRight = right
+      const currentLeft = left;
+      const currentRight = right;
       const currentArray = sortedArray.map((num, i) => ({
         value: num,
         isHighlighted: false,
         isPointer1: i === currentLeft,
         isPointer2: i === currentRight,
         isPointer3: false,
-      }))
+      }));
       newSteps.push({
         array: currentArray,
-        description: `Checking ${sortedArray[currentLeft]} + ${sortedArray[currentRight]} = ${sortedArray[currentLeft] + sortedArray[currentRight]}`,
+        description: `Checking ${sortedArray[currentLeft]} + ${
+          sortedArray[currentRight]
+        } = ${sortedArray[currentLeft] + sortedArray[currentRight]}`,
         code: `# Check sum of elements at left and right pointers
 sum = array[left] + array[right]
 if sum == target:
-  return [left, right]
+  result.append([array[left], array[right]])
+  left += 1
+  right -= 1
 elif sum < target:
   left += 1
 else:
     right -= 1`,
-      })
+        foundPairs: [...foundPairs],
+      });
 
-      const sum = sortedArray[left] + sortedArray[right]
+      const sum = sortedArray[left] + sortedArray[right];
       if (sum === target) {
+        foundPairs.push([sortedArray[currentLeft], sortedArray[currentRight]]);
         const finalArray = currentArray.map((el, i) => ({
           ...el,
           isHighlighted: i === currentLeft || i === currentRight,
-        }))
+        }));
         newSteps.push({
           array: finalArray,
           description: `Found pair: ${sortedArray[currentLeft]} + ${sortedArray[currentRight]} = ${target}`,
-          code: `# Found the target sum
-return [left, right]`,
-        })
-        break
+          code: `# Found a target sum pair
+result.append([array[left], array[right]])
+left += 1
+right -= 1`,
+          foundPairs: [...foundPairs],
+        });
+        left++;
+        right--;
       } else if (sum < target) {
-        left++
+        left++;
       } else {
-        right--
+        right--;
       }
     }
 
-    if (left >= right) {
+    if (foundPairs.length === 0) {
       newSteps.push({
         array: sortedArray.map((num) => ({
           value: num,
@@ -149,18 +170,34 @@ return [left, right]`,
           isPointer2: false,
           isPointer3: false,
         })),
-        description: "No pair found that sums to target",
+        description: "No pairs found that sum to target",
         code: `# No solution found
 return []`,
-      })
+        foundPairs: [],
+      });
+    } else {
+      newSteps.push({
+        array: sortedArray.map((num) => ({
+          value: num,
+          isHighlighted: false,
+          isPointer1: false,
+          isPointer2: false,
+          isPointer3: false,
+        })),
+        description: `Search complete! Found ${foundPairs.length} pair(s) that sum to ${target}`,
+        code: `# All pairs found
+return result`,
+        foundPairs: [...foundPairs],
+      });
     }
 
-    return newSteps
-  }
+    return newSteps;
+  };
 
   const generateThreeSumSteps = (array: number[]) => {
-    const sortedArray = [...array].sort((a, b) => a - b)
-    const newSteps: Step[] = []
+    const sortedArray = [...array].sort((a, b) => a - b);
+    const newSteps: Step[] = [];
+    const foundTriplets: [number, number, number][] = [];
 
     newSteps.push({
       array: sortedArray.map((num) => ({
@@ -173,96 +210,134 @@ return []`,
       description: "Initial sorted array",
       code: `# Sort the array
 array.sort()`,
-    })
+      foundTriplets: [],
+    });
 
     for (let i = 0; i < sortedArray.length - 2; i++) {
-      let left = i + 1
-      let right = sortedArray.length - 1
+      let left = i + 1;
+      let right = sortedArray.length - 1;
 
       while (left < right) {
-        const currentI = i
-        const currentLeft = left
-        const currentRight = right
+        const currentI = i;
+        const currentLeft = left;
+        const currentRight = right;
         const currentArray = sortedArray.map((num, idx) => ({
           value: num,
           isHighlighted: false,
           isPointer1: idx === currentI,
           isPointer2: idx === currentLeft,
           isPointer3: idx === currentRight,
-        }))
+        }));
         newSteps.push({
           array: currentArray,
-          description: `Checking ${sortedArray[currentI]} + ${sortedArray[currentLeft]} + ${sortedArray[currentRight]} = ${sortedArray[currentI] + sortedArray[currentLeft] + sortedArray[currentRight]}`,
+          description: `Checking ${sortedArray[currentI]} + ${
+            sortedArray[currentLeft]
+          } + ${sortedArray[currentRight]} = ${
+            sortedArray[currentI] +
+            sortedArray[currentLeft] +
+            sortedArray[currentRight]
+          }`,
           code: `# Check sum of three elements
 sum = array[i] + array[left] + array[right]
 if sum == target:
-  return [i, left, right]
+  result.append([array[i], array[left], array[right]])
+  left += 1
+  right -= 1
 elif sum < target:
   left += 1
 else:
     right -= 1`,
-        })
+          foundTriplets: [...foundTriplets],
+        });
 
-        const sum = sortedArray[i] + sortedArray[left] + sortedArray[right]
+        const sum = sortedArray[i] + sortedArray[left] + sortedArray[right];
         if (sum === target) {
+          foundTriplets.push([
+            sortedArray[currentI],
+            sortedArray[currentLeft],
+            sortedArray[currentRight],
+          ]);
           const finalArray = currentArray.map((el, idx) => ({
             ...el,
-            isHighlighted: idx === currentI || idx === currentLeft || idx === currentRight,
-          }))
+            isHighlighted:
+              idx === currentI || idx === currentLeft || idx === currentRight,
+          }));
           newSteps.push({
             array: finalArray,
             description: `Found triplet: ${sortedArray[currentI]} + ${sortedArray[currentLeft]} + ${sortedArray[currentRight]} = ${target}`,
-            code: `# Found the target sum
-return [i, left, right]`,
-          })
-          return newSteps
+            code: `# Found a target sum triplet
+result.append([array[i], array[left], array[right]])
+left += 1
+right -= 1`,
+            foundTriplets: [...foundTriplets],
+          });
+          left++;
+          right--;
         } else if (sum < target) {
-          left++
+          left++;
         } else {
-          right--
+          right--;
         }
       }
     }
 
-    newSteps.push({
-      array: sortedArray.map((num) => ({
-        value: num,
-        isHighlighted: false,
-        isPointer1: false,
-        isPointer2: false,
-        isPointer3: false,
-      })),
-      description: "No triplet found that sums to target",
-      code: `# No solution found
+    if (foundTriplets.length === 0) {
+      newSteps.push({
+        array: sortedArray.map((num) => ({
+          value: num,
+          isHighlighted: false,
+          isPointer1: false,
+          isPointer2: false,
+          isPointer3: false,
+        })),
+        description: "No triplets found that sum to target",
+        code: `# No solution found
 return []`,
-    })
+        foundTriplets: [],
+      });
+    } else {
+      newSteps.push({
+        array: sortedArray.map((num) => ({
+          value: num,
+          isHighlighted: false,
+          isPointer1: false,
+          isPointer2: false,
+          isPointer3: false,
+        })),
+        description: `Search complete! Found ${foundTriplets.length} triplet(s) that sum to ${target}`,
+        code: `# All triplets found
+return result`,
+        foundTriplets: [...foundTriplets],
+      });
+    }
 
-    return newSteps
-  }
-
+    return newSteps;
+  };
 
   const handleVisualize = () => {
     try {
-      const numbers = arrayInput.split(",").map((num) => Number.parseInt(num.trim()))
+      const numbers = arrayInput
+        .split(",")
+        .map((num) => Number.parseInt(num.trim()));
       if (numbers.some(isNaN)) {
-        throw new Error("Invalid number in array")
+        throw new Error("Invalid number in array");
       }
-      resetVisualization()
-      setIsVisualizing(true)
+      resetVisualization();
+      setIsVisualizing(true);
 
-      let newSteps: Step[] = []
+      let newSteps: Step[] = [];
       if (selectedProblem === "two-sum") {
-        newSteps = generateTwoSumSteps(numbers)
+        newSteps = generateTwoSumSteps(numbers);
       } else if (selectedProblem === "three-sum") {
-        newSteps = generateThreeSumSteps(numbers)
+        newSteps = generateThreeSumSteps(numbers);
       }
 
-      setSteps(newSteps)
-      setIsVisualizing(false)
+      setSteps(newSteps);
+      setIsVisualizing(false);
     } catch (err) {
-      alert("Please enter valid numbers separated by commas")
+      alert("Please enter valid numbers separated by commas");
     }
-  }
+  };
 
   const getFullCode = () => {
     if (selectedProblem === "two-sum") {
@@ -270,21 +345,25 @@ return []`,
   # Sort the array
   array.sort()
   left, right = 0, len(array) - 1
+  result = []
   
   while left < right:
       sum = array[left] + array[right]
       if sum == target:
-          return [left, right]
+          result.append([array[left], array[right]])
+          left += 1
+          right -= 1
       elif sum < target:
           left += 1
       else:
           right -= 1
   
-  return []  # No solution found`
+  return result`;
     } else if (selectedProblem === "three-sum") {
       return `def three_sum(array, target):
   # Sort the array
   array.sort()
+  result = []
   
   for i in range(len(array) - 2):
       left, right = i + 1, len(array) - 1
@@ -292,21 +371,23 @@ return []`,
       while left < right:
           sum = array[i] + array[left] + array[right]
           if sum == target:
-              return [i, left, right]
+              result.append([array[i], array[left], array[right]])
+              left += 1
+              right -= 1
           elif sum < target:
               left += 1
           else:
               right -= 1
   
-  return []  # No solution found`
+  return result`;
     }
-    return ""
-  }
+    return "";
+  };
 
   const getProblemDescription = () => {
-    const question = QUESTIONS.find((q) => q.id === selectedProblem)
-    return question?.description || ""
-  }
+    const question = QUESTIONS.find((q) => q.id === selectedProblem);
+    return question?.description || "";
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
@@ -337,16 +418,18 @@ return []`,
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Algorithm Selection */}
         <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Select Algorithm</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            Select Algorithm
+          </h2>
           <div className="flex gap-3">
             {QUESTIONS.map((question) => (
               <button
                 key={question.id}
                 onClick={() => {
-                  setSelectedProblem(question.id)
-                  resetVisualization()
-                  setTarget(0)
-                  setArrayInput("")
+                  setSelectedProblem(question.id);
+                  resetVisualization();
+                  setTarget(0);
+                  setArrayInput("");
                 }}
                 className={`px-6 py-3 rounded-lg font-medium transition-all ${
                   selectedProblem === question.id
@@ -365,11 +448,16 @@ return []`,
           <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
             {QUESTIONS.find((q) => q.id === selectedProblem)?.title}
           </h2>
-          <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">{getProblemDescription()}</p>
+          <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
+            {getProblemDescription()}
+          </p>
 
           <div className="flex flex-col gap-4">
             <div>
-              <label htmlFor="array-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="array-input"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Array (comma-separated numbers)
               </label>
               <input
@@ -381,7 +469,8 @@ return []`,
                 placeholder="e.g., 1, 2, 3, 4, 5"
               />
             </div>
-            {(selectedProblem === "two-sum" || selectedProblem === "three-sum") && (
+            {(selectedProblem === "two-sum" ||
+              selectedProblem === "three-sum") && (
               <div>
                 <label
                   htmlFor="target-input"
@@ -408,7 +497,7 @@ return []`,
             </button>
           </div>
         </div>
-
+        
         {steps.length > 0 && (
           <>
             {/* Step Navigation */}
@@ -419,14 +508,20 @@ return []`,
                 </h2>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => setCurrentStep((prev) => Math.max(0, prev - 1))}
+                    onClick={() =>
+                      setCurrentStep((prev) => Math.max(0, prev - 1))
+                    }
                     disabled={currentStep === 0}
                     className="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 disabled:opacity-50"
                   >
                     <ChevronLeft className="w-6 h-6" />
                   </button>
                   <button
-                    onClick={() => setCurrentStep((prev) => Math.min(steps.length - 1, prev + 1))}
+                    onClick={() =>
+                      setCurrentStep((prev) =>
+                        Math.min(steps.length - 1, prev + 1)
+                      )
+                    }
                     disabled={currentStep === steps.length - 1}
                     className="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 disabled:opacity-50"
                   >
@@ -434,7 +529,52 @@ return []`,
                   </button>
                 </div>
               </div>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">{steps[currentStep].description}</p>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
+                {steps[currentStep].description}
+              </p>
+
+              {/* Display Found Pairs/Triplets */}
+              {selectedProblem === "two-sum" &&
+                steps[currentStep].foundPairs &&
+                steps[currentStep].foundPairs!.length > 0 && (
+                  <div className="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                    <h3 className="font-semibold text-green-800 dark:text-green-300 mb-2">
+                      Found Pairs ({steps[currentStep].foundPairs!.length}):
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {steps[currentStep].foundPairs!.map((pair, idx) => (
+                        <span
+                          key={idx}
+                          className="px-3 py-1 bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200 rounded-md font-medium"
+                        >
+                          [{pair[0]}, {pair[1]}]
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              {selectedProblem === "three-sum" &&
+                steps[currentStep].foundTriplets &&
+                steps[currentStep].foundTriplets!.length > 0 && (
+                  <div className="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                    <h3 className="font-semibold text-green-800 dark:text-green-300 mb-2">
+                      Found Triplets ({steps[currentStep].foundTriplets!.length}
+                      ):
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {steps[currentStep].foundTriplets!.map((triplet, idx) => (
+                        <span
+                          key={idx}
+                          className="px-3 py-1 bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200 rounded-md font-medium"
+                        >
+                          [{triplet[0]}, {triplet[1]}, {triplet[2]}]
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
               <Button onClick={() => setCurrentStep(0)} variant="secondary">
                 Reset
               </Button>
@@ -442,7 +582,9 @@ return []`,
 
             {/* Array Visualization */}
             <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Array Visualization</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Array Visualization
+              </h2>
               <div className="flex flex-wrap gap-4 justify-center">
                 {steps[currentStep].array.map((element, index) => (
                   <div
@@ -451,12 +593,12 @@ return []`,
                       element.isHighlighted
                         ? "bg-green-500 text-white"
                         : element.isPointer1
-                          ? "bg-blue-500 text-white"
-                          : element.isPointer2
-                            ? "bg-purple-500 text-white"
-                            : element.isPointer3
-                              ? "bg-orange-500 text-white"
-                              : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300"
+                        ? "bg-blue-500 text-white"
+                        : element.isPointer2
+                        ? "bg-purple-500 text-white"
+                        : element.isPointer3
+                        ? "bg-orange-500 text-white"
+                        : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300"
                     }`}
                   >
                     {element.value}
@@ -468,7 +610,9 @@ return []`,
             {/* Code Display */}
             <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Code</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Code
+                </h2>
                 <button
                   onClick={() => setShowFullCode(!showFullCode)}
                   className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-600"
@@ -485,13 +629,51 @@ return []`,
             </div>
           </>
         )}
+
+         {/* Practice Questions */}
+        <div className="mt-6 border-t pt-4">
+          <h4 className="text-xl font-bold text-black dark:text-gray-200 mb-3">
+            Practice Questions
+          </h4>
+          <div className="space-y-2"></div>
+          <>
+            <a
+              href="https://leetcode.com/problems/two-sum/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              • LeetCode: Two Sum
+            </a>
+            <a
+              href="https://leetcode.com/problems/3sum/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              • LeetCode: 3Sum
+            </a>
+            <a
+              href="https://practice.geeksforgeeks.org/problems/find-pair-with-given-sum-in-the-array/0"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              • GFG: Find Pair with Given Sum
+            </a>
+          </>
+        </div>
       </main>
+
+      
 
       {showQuestionsModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-96 overflow-y-auto">
             <div className="sticky top-0 bg-white dark:bg-slate-800 border-b dark:border-slate-700 p-6 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Additional Two Pointer Problems</h2>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Additional Two Pointer Problems
+              </h2>
               <button
                 onClick={() => setShowQuestionsModal(false)}
                 className="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
@@ -504,11 +686,11 @@ return []`,
                 <button
                   key={question.id}
                   onClick={() => {
-                    setSelectedProblem(question.id)
-                    resetVisualization()
-                    setTarget(0)
-                    setArrayInput("")
-                    setShowQuestionsModal(false)
+                    setSelectedProblem(question.id);
+                    resetVisualization();
+                    setTarget(0);
+                    setArrayInput("");
+                    setShowQuestionsModal(false);
                   }}
                   className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
                     selectedProblem === question.id
@@ -516,8 +698,12 @@ return []`,
                       : "border-gray-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-400"
                   }`}
                 >
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">{question.title}</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{question.description}</p>
+                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">
+                    {question.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {question.description}
+                  </p>
                 </button>
               ))}
             </div>
@@ -525,7 +711,7 @@ return []`,
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default TwoPointerPage
+export default TwoPointerPage;

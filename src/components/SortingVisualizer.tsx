@@ -29,6 +29,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
   const [sortResult, setSortResult] = useState<SortResult | null>(null)
   const [copiedStep, setCopiedStep] = useState(false)
   const [copiedFull, setCopiedFull] = useState(false)
+  const [showCompleteCode, setShowCompleteCode] = useState(false) // New state for showing complete code
 
   const copyToClipboard = async (
     text: string,
@@ -322,7 +323,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
       </div>
 
       <div className="flex items-center justify-center md:justify-between flex-wrap gap-4 md:gap-2 bg-white rounded-lg p-4 shadow-sm border">
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap space-x-2 gap-y-2">
           <Button onClick={handleReset} variant="secondary">
             <RotateCcw className="w-4 h-4 mr-1" />
             Reset
@@ -336,6 +337,15 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
           </Button>
           <Button onClick={handleNext} disabled={currentStep === steps.length - 1} aria-label="Go to next step">
             Next
+          </Button>
+          {/* New toggle button for complete code */}
+          <Button 
+            onClick={() => setShowCompleteCode(!showCompleteCode)} 
+            variant="secondary"
+            className="ml-2"
+          >
+            <Code className="w-4 h-4 mr-1" />
+            {showCompleteCode ? "Hide Complete Code" : "Show Complete Code"}
           </Button>
         </div>
         <div className="flex items-center space-x-4">
@@ -392,7 +402,47 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
         </CardContent>
       </Card>
 
-      {currentStep === steps.length - 1 && (
+      {/* Complete Code Section */}
+      {showCompleteCode && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Complete {algorithm.name} Implementation</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="relative">
+              <button
+                className="absolute top-2 right-4 inline-flex items-center gap-1 rounded px-2 py-1 text-xs bg-green-600 hover:bg-green-700 text-white shadow z-10"
+                onClick={() => copyToClipboard(algorithm.code ?? '', setCopiedFull)}
+                aria-label="Copy complete implementation"
+              >
+                {copiedFull ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                {copiedFull ? 'Copied' : 'Copy'}
+              </button>
+              <div 
+                className="bg-gray-900 text-green-400 p-4 rounded-md text-sm font-mono max-h-96 overflow-auto pr-16"
+                onWheel={(e) => {
+                  // Prevent page scroll when scrolling within code block
+                  e.stopPropagation();
+                }}
+                style={{ scrollbarWidth: 'thin' }}
+              >
+                <pre>
+                  <code>{algorithm.code}</code>
+                </pre>
+              </div>
+            </div>
+            <div className="mt-4 p-3 bg-blue-50 rounded-md">
+              <p className="text-sm text-blue-800">
+                <strong>💡 Complete Implementation:</strong> This is the full {algorithm.name} algorithm. 
+                No need to go through all {steps.length} steps - get the complete code instantly!
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Original implementation section - only shown at the end */}
+      {currentStep === steps.length - 1 && !showCompleteCode && (
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Complete {algorithm.name} Implementation</CardTitle>

@@ -7,6 +7,7 @@ import { MergeSort } from "./mergeSort"
 import { HeapSort } from "./heapSort"
 import { RadixSort } from "./radixSort"
 import { ShellSort } from "./shellSort"
+import { DutchFlagSort } from "./dutchFlagSort"
 import { SortingAlgorithm } from "../../types/algorithms"
 
 /**
@@ -22,7 +23,8 @@ export class SortingAlgorithmFactory {
     [SortingAlgorithms.QuickSort, new QuickSort()],
     [SortingAlgorithms.HeapSort, new HeapSort()],
     [SortingAlgorithms.RadixSort, new RadixSort()],
-    [SortingAlgorithms.ShellSort, new ShellSort()]
+    [SortingAlgorithms.ShellSort, new ShellSort()],
+    [SortingAlgorithms.DutchFlagSort, new DutchFlagSort()]
   ])
 
   /**

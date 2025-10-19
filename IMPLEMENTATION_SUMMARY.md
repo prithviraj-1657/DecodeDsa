@@ -1,4 +1,6 @@
-# Implementation Summary: Canvas-Based Zoom & Pan for Large Arrays
+# Implementation Summary
+
+## 1. Canvas-Based Zoom & Pan for Large Arrays
 
 ## ✅ What Was Implemented
 
@@ -48,6 +50,49 @@ This enhancement automatically switches from DOM-based rendering to an optimized
    - Added `getElementColorHex()` function
    - Added `prepareCanvasElements()` helper
    - Both comparison panels now support Canvas mode
+
+## 2. Dutch Flag Algorithm Implementation
+
+### Core Feature
+**Three-way partitioning algorithm visualizer (Dutch Flag Sort)**
+
+This feature adds the Dutch Flag Sort algorithm to the sorting visualizer, demonstrating an efficient approach for handling arrays with many duplicate values.
+
+---
+
+### Files Created/Modified
+
+#### New Files Created
+1. **`src/utils/sortingAlgorithms/dutchFlagSort.ts`** (New Algorithm Implementation)
+   - Complete implementation of Dutch Flag sorting algorithm
+   - Step-by-step visualization capabilities
+   - Special handling of the three partitioning sections
+   - Time complexity: O(n)
+
+2. **`DUTCH_FLAG_IMPLEMENTATION.md`** (Documentation)
+   - Comprehensive overview of the algorithm
+   - Technical implementation details
+   - Visual representation explanation
+   - Applications and future enhancements
+
+#### Files Modified
+
+1. **`src/enums/SortingAlgorithms.ts`**
+   - Added `DutchFlagSort` enum value
+
+2. **`src/utils/sortingAlgorithms/factory.ts`**
+   - Added import for `DutchFlagSort`
+   - Added registration of algorithm in the factory
+
+3. **`src/types/steps.d.ts`**
+   - Enhanced `SortStep` interface with `dutchFlags` property
+   - Added support for three-section partitioning visualization
+
+4. **`src/components/SortingVisualizer.tsx`**
+   - Added Dutch Flag specific coloring in `getElementColor` and `getElementColorHex`
+   - Added Dutch Flag legend to explain color representation
+   - Enhanced `SortResult` interface with `isDutchFlag` property
+   - Updated colors legend to conditionally show Dutch Flag information
    - Responsive canvas sizing for side-by-side view
 
 4. **`src/components/ParallelSearchingVisualizer.tsx`**

@@ -7,4 +7,5 @@ export enum SortingAlgorithms {
   HeapSort,
   RadixSort,
   ShellSort,
+  DutchFlagSort,
 }

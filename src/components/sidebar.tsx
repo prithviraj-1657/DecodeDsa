@@ -74,6 +74,7 @@ export default function Sidebar() {
         { name: "Binary Tree", path: "/data-structures/binary-tree" },
         { name: "Stack", path: "/data-structures/stack" },
         { name: "Queue", path: "/data-structures/queue" },
+        { name: "Trie", path: "/data-structures/trie" },   // ✅ Added
         { name: "Graph", path: "/data-structures/graph" },
       ],
     },
@@ -124,7 +125,7 @@ export default function Sidebar() {
         />
       )}
 
-      {/* Sidebar - FIXED: Added data-lenis-prevent and overflow-y-auto */}
+      {/* Sidebar */}
       <aside
         data-lenis-prevent
         className={`fixed top-0 left-0 h-screen w-72 bg-gradient-to-b from-slate-50 via-slate-100 to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-slate-800 dark:text-white shadow-2xl z-40 transition-all duration-300 flex flex-col overflow-y-auto overflow-x-hidden ${
@@ -150,12 +151,11 @@ export default function Sidebar() {
           </Link>
         </div>
 
-        {/* Navigation - FIXED: Removed overflow-y-auto from nav, it's now on the aside */}
+        {/* Navigation */}
         <nav className="flex-1 p-4 space-y-2">
           {navItems.map((item) => (
             <div key={item.name}>
               {item.subItems ? (
-                // Expandable Section
                 <div>
                   <button
                     onClick={() => toggleSection(item.name)}
@@ -176,7 +176,6 @@ export default function Sidebar() {
                     )}
                   </button>
 
-                  {/* Sub Items */}
                   {expandedSections.includes(item.name) && (
                     <div className="pl-4 mt-2 ml-4 space-y-1 border-l-2 border-slate-300 dark:border-slate-700">
                       {item.subItems.map((subItem) => (
@@ -197,7 +196,6 @@ export default function Sidebar() {
                   )}
                 </div>
               ) : (
-                // Direct Link
                 <Link
                   to={item.path || "/"}
                   onClick={() => setIsOpen(false)}
@@ -217,14 +215,11 @@ export default function Sidebar() {
 
         {/* Footer */}
         <div className="flex-shrink-0 p-4 border-t border-slate-300 dark:border-slate-700 space-y-3">
-          {/* Theme Toggle Button */}
           <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-slate-200 dark:bg-slate-800">
             <div className="flex items-center gap-2">
               <Sun className="w-4 h-4 text-slate-700 dark:text-slate-500" />
               <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Theme</span>
             </div>
-            
-            {/* Toggle Switch */}
             <button
               onClick={toggleTheme}
               className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 bg-slate-400 dark:bg-blue-600"
@@ -232,14 +227,13 @@ export default function Sidebar() {
             >
               <span
                 className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  theme === 'dark' ? 'translate-x-6' : 'translate-x-1'
+                  theme === "dark" ? "translate-x-6" : "translate-x-1"
                 }`}
               />
             </button>
-            
             <Moon className="w-4 h-4 text-slate-500 dark:text-slate-300" />
           </div>
-          
+
           <div className="p-4 border bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-xl backdrop-blur-sm border-blue-500/20">
             <p className="mb-2 text-xs text-slate-700 dark:text-slate-300">
               Interactive DSA Learning

@@ -9,6 +9,11 @@ export interface SortStep extends Step {
   swapping?: number[]
   sorted?: number[]
   pivot?: number
+  dutchFlags?: {
+    lowSection: number[]
+    midSection: number[]
+    highSection: number[]
+  }
 }
 
 

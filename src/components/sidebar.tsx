@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Home,
   ArrowUpDown,
@@ -180,24 +181,31 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                     )}
                   </button>
 
-                  {expandedSections.includes(item.name) && (
-                    <div className="pl-4 mt-2 ml-4 space-y-1 border-l-2 border-slate-300 dark:border-slate-700">
-                      {item.subItems.map((subItem) => (
-                        <Link
-                          key={subItem.path}
-                          to={subItem.path}
-                          onClick={onToggle}
-                          className={`block px-4 py-2 rounded-lg text-sm transition-all ${
-                            isActive(subItem.path)
-                              ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md"
-                              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800/50"
-                          }`}
-                        >
-                          {subItem.name}
-                        </Link>
+                  <AnimatePresence>
+                    {expandedSections.includes(item.name) && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className="pl-4 mt-2 ml-4 border-l-2 border-slate-300 dark:border-slate-700 space-y-1 overflow-hidden"
+                      >
+                        {item.subItems.map((subItem) => (
+                          <Link
+                            key={subItem.path}
+                            to={subItem.path}
+                            onClick={onToggle}
+                            className={`block px-4 py-2 rounded-lg text-sm transition-all ${isActive(subItem.path)
+                                ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md"
+                                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800/50"
+                              }`}
+                          >
+                            {subItem.name}
+                          </Link>
                       ))}
-                    </div>
+                    </motion.div>
                   )}
+                  </AnimatePresence>
                 </div>
               ) : (
                 <Link

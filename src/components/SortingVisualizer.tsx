@@ -200,6 +200,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
                 </div>
               </div>
             </div>
+          
           </CardContent>
         </Card>
       )}
@@ -237,6 +238,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
               </div>
             ))}
           </div>
+          
         )}
       </div>
 
@@ -299,6 +301,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({ algorithm, inputA
           </Badge>
         </div>
       </div>
+      
 
       <Card>
         <CardHeader>

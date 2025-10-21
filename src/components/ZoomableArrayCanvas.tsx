@@ -165,7 +165,7 @@ const ZoomableArrayCanvas: React.FC<ZoomableArrayCanvasProps> = ({
 
     useEffect(() => {
         if (elements.length >= 100) handleFitToView()
-    }, [elements.length])
+    })
 
     return (
         <div ref={containerRef} className="relative">

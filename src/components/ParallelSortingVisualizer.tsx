@@ -3,11 +3,11 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import { Button } from "../components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
+
 import { Badge } from "../components/ui/badge"
-import { ArrowUpDown, Code, Play, Pause, RotateCcw, Zap } from "lucide-react"
+import { Play, Pause, RotateCcw} from "lucide-react"
 import { generateSteps } from "../utils/sortingAlgorithms"
-import ZoomableArrayCanvas from "./ZoomableArrayCanvas"
+
 import Algorithm from "../types/algorithms"
 import { SortingAlgorithms } from "../enums/SortingAlgorithms"
 import { SortStep } from "../types/steps"
@@ -102,8 +102,7 @@ const ParallelSortingVisualizer: React.FC<ParallelSortingVisualizerProps> = ({
     // keep all as-is
 
     const maxSteps = Math.max(steps1.length, steps2.length)
-    const currentStep1 = Math.min(currentStep, steps1.length - 1)
-    const currentStep2 = Math.min(currentStep, steps2.length - 1)
+    
 
     return (
         <div className="space-y-6">

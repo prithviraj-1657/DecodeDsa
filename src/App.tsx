@@ -54,7 +54,7 @@ const LoadingFallback = ({ isDark }: { isDark: boolean }) => (
 
 function App() {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-  const [isOperationRunning, setIsOperationRunning] = useState(false);
+  
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { theme } = useTheme();
 

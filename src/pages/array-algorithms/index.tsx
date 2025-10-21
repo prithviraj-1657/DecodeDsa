@@ -95,6 +95,16 @@ const algorithms: Algorithm[] = [
     color: "from-teal-500 to-cyan-500",
     difficulty: "Medium",
   },
+  {
+    name: "Sieve of Eratosthenes",
+    description: "Find all prime numbers up to a specified integer using an ancient, efficient method.",
+    timeComplexity: "O(n log n)",
+    spaceComplexity: "O(n)",
+    path: "/array-algorithms/sieve",
+    icon: Target,
+    color: "from-yellow-500 to-orange-500",
+    difficulty: "Medium",
+  },
 ]
 
 function ArrayAlgorithmsPage() {

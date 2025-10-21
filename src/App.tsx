@@ -35,6 +35,7 @@ const HashingPage = lazy(() => import("./pages/array-algorithms/hashing"));
 const MonotonicStackPage = lazy(
   () => import("./pages/array-algorithms/monotonic-stack")
 );
+const SievePage = lazy(() => import("./pages/array-algorithms/sieve"));
 const BitManipulationPage = lazy(
   () => import("./pages/array-algorithms/bit-manipulation")
 );
@@ -120,6 +121,7 @@ useEffect(() => {
               <Route path="/array-algorithms/sliding-window" element={<SlidingWindowPage />} />
               <Route path="/array-algorithms/hashing" element={<HashingPage />} />
               <Route path="/array-algorithms/monotonic-stack" element={<MonotonicStackPage />} />
+              <Route path="/array-algorithms/sieve" element={<SievePage />} />
               <Route path="/array-algorithms/bit-manipulation" element={<BitManipulationPage />} />
               <Route path="/array-algorithms/2d-arrays" element={<TwoDArraysPage />} />
 

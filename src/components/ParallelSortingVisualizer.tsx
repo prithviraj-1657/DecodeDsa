@@ -34,8 +34,8 @@ const ParallelSortingVisualizer: React.FC<ParallelSortingVisualizerProps> = ({
     const [currentStep, setCurrentStep] = useState(0)
     const [isPlaying, setIsPlaying] = useState(false)
     const [playSpeed, setPlaySpeed] = useState(1000)
-    const [sortResult1, setSortResult1] = useState<SortResult | null>(null)
-    const [sortResult2, setSortResult2] = useState<SortResult | null>(null)
+    const [, setSortResult1] = useState<SortResult | null>(null);
+    const [, setSortResult2] = useState<SortResult | null>(null);
     const [isOperationRunning, setIsOperationRunning] = useState(false) // ✅ new
 
     useEffect(() => {

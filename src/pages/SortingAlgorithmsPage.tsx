@@ -31,13 +31,13 @@ const QUESTIONS: QuestionInfo[] = [
     comingSoon: true,
   },
   {
-    id: "kth-largest-element  ",
+    id: "kth-largest-element",
     title: "Kth Largest Element",
     description: "Find the kth largest element in an unsorted array.",
     comingSoon: true,
   },
   {
-    id: "top-k-frequesnt-elements",
+    id: "top-k-frequent-elements",
     title: "Top K Frequent Elements",
     description: "Given an array of integers, find the k most frequent elements.",
     comingSoon: true,

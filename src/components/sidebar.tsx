@@ -69,6 +69,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
         { name: "Monotonic Stack", path: "/array-algorithms/monotonic-stack" },
         { name: "Bit Manipulation", path: "/array-algorithms/bit-manipulation" },
         { name: "2D Arrays", path: "/array-algorithms/2d-arrays" },
+        { name: "Sieve of Eratosthenes", path: "/array-algorithms/sieve" },
       ],
     },
     {

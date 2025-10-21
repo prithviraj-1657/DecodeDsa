@@ -19,6 +19,8 @@ import {
   ArrowUp,
 } from "lucide-react";
 
+import Navbar from '../src/components/Navbar';
+
 export default function Page() {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
@@ -135,9 +137,10 @@ export default function Page() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 pt-20">
+      <Navbar />
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
+      <section id="top" className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-600/20 dark:to-purple-600/20"></div>
         <div className="container relative px-6 py-24 mx-auto text-center">
           <div className="inline-flex items-center px-4 py-2 mb-6 font-medium text-blue-800 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/50 rounded-full">
@@ -232,7 +235,7 @@ export default function Page() {
 
 
 
-         <section className="relative py-20 overflow-hidden text-white bg-gradient-to-br from-purple-700 via-indigo-600 to-blue-500">
+         <section id="how-it-works" className="relative py-20 overflow-hidden text-white bg-gradient-to-br from-purple-700 via-indigo-600 to-blue-500">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
         <div className="container relative z-10 px-6 mx-auto">
           <h2 className="mb-8 text-4xl font-extrabold text-center md:text-5xl">
@@ -300,7 +303,7 @@ export default function Page() {
       </section>
 
       {/* Categories Section */}
-      <section className="py-20 bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
+      <section id="categories" className="py-20 bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
         <div className="container px-6 mx-auto text-center">
           <h2 className="mb-6 text-3xl font-bold text-gray-900 dark:text-white">
             Explore Categories
@@ -363,7 +366,7 @@ export default function Page() {
 
       {/* FAQ Section */}
     {/* FAQ Section */}
-<section className="relative py-24 overflow-hidden text-white bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-700">
+<section id="faq" className="relative py-24 overflow-hidden text-white bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-700">
   <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
   <div className="container relative z-10 px-6 mx-auto">
     <h2 className="mb-6 text-4xl font-extrabold text-center md:text-5xl">

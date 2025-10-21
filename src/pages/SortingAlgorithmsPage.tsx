@@ -115,20 +115,22 @@ function SortingAlgorithmsPage() {
             <div className="flex items-center space-x-2 bg-gray-100 dark:bg-slate-700 rounded-lg p-1">
               <button
                 onClick={() => setComparisonMode(false)}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all ${!comparisonMode
+                className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all ${
+                  !comparisonMode
                     ? "bg-white dark:bg-slate-600 shadow-sm text-blue-600 dark:text-blue-400"
                     : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
-                  }`}
+                }`}
               >
                 <Eye className="w-5 h-5 md:w-6 md:h-6" />
                 <span className="text-sm font-medium">Single View</span>
               </button>
               <button
                 onClick={() => setComparisonMode(true)}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all ${comparisonMode
+                className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all ${
+                  comparisonMode
                     ? "bg-white dark:bg-slate-600 shadow-sm text-purple-600 dark:text-purple-400"
                     : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
-                  }`}
+                }`}
               >
                 <GitCompare className="w-5 h-5 md:w-6 md:h-6" />
                 <span className="text-sm font-medium">Compare</span>
@@ -143,16 +145,17 @@ function SortingAlgorithmsPage() {
           {sortingAlgorithms.map((algorithm) => (
             <div
               key={algorithm.name}
-              className={`bg-white dark:bg-slate-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border-2 transform hover:-translate-y-1 ${comparisonMode
+              className={`bg-white dark:bg-slate-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border-2 transform hover:-translate-y-1 ${
+                comparisonMode
                   ? selectedAlgorithm?.name === algorithm.name
                     ? "border-blue-500 ring-2 ring-blue-200 dark:ring-blue-800"
                     : selectedAlgorithm2?.name === algorithm.name
-                      ? "border-purple-500 ring-2 ring-purple-200 dark:ring-purple-800"
-                      : "border-gray-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600"
+                    ? "border-purple-500 ring-2 ring-purple-200 dark:ring-purple-800"
+                    : "border-gray-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600"
                   : selectedAlgorithm?.name === algorithm.name
-                    ? "border-blue-500 ring-2 ring-blue-200"
-                    : "border-gray-200 hover:border-blue-300"
-                }`}
+                  ? "border-blue-500 ring-2 ring-blue-200"
+                  : "border-gray-200 hover:border-blue-300"
+              }`}
               onClick={() => {
                 if (comparisonMode) {
                   if (!selectedAlgorithm) {
@@ -255,66 +258,162 @@ function SortingAlgorithmsPage() {
                   <div className="space-y-2">
                     {algorithm.name === "Bubble Sort" && (
                       <>
-                        <a href="https://leetcode.com/problems/sort-colors/" target="_blank" rel="noopener noreferrer" 
-                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Sort Colors</a>
-                        <a href="https://practice.geeksforgeeks.org/problems/bubble-sort/1" target="_blank" rel="noopener noreferrer"
-                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Bubble Sort Implementation</a>
+                        <a
+                          href="https://leetcode.com/problems/sort-colors/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          • LeetCode: Sort Colors
+                        </a>
+                        <a
+                          href="https://practice.geeksforgeeks.org/problems/bubble-sort/1"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          • GFG: Bubble Sort Implementation
+                        </a>
                       </>
                     )}
                     {algorithm.name === "Quick Sort" && (
                       <>
-                        <a href="https://leetcode.com/problems/sort-an-array/" target="_blank" rel="noopener noreferrer"
-                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Sort an Array</a>
-                        <a href="https://leetcode.com/problems/kth-largest-element-in-an-array/" target="_blank" rel="noopener noreferrer"
-                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Kth Largest Element</a>
+                        <a
+                          href="https://leetcode.com/problems/sort-an-array/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          • LeetCode: Sort an Array
+                        </a>
+                        <a
+                          href="https://leetcode.com/problems/kth-largest-element-in-an-array/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          • LeetCode: Kth Largest Element
+                        </a>
                       </>
                     )}
                     {algorithm.name === "Merge Sort" && (
                       <>
-                        <a href="https://leetcode.com/problems/sort-list/" target="_blank" rel="noopener noreferrer"
-                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Sort List</a>
-                        <a href="https://leetcode.com/problems/merge-k-sorted-lists/" target="_blank" rel="noopener noreferrer"
-                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Merge k Sorted Lists</a>
+                        <a
+                          href="https://leetcode.com/problems/sort-list/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          • LeetCode: Sort List
+                        </a>
+                        <a
+                          href="https://leetcode.com/problems/merge-k-sorted-lists/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          • LeetCode: Merge k Sorted Lists
+                        </a>
                       </>
                     )}
                     {algorithm.name === "Heap Sort" && (
                       <>
-                        <a href="https://leetcode.com/problems/top-k-frequent-elements/" target="_blank" rel="noopener noreferrer"
-                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Top K Frequent Elements</a>
-                        <a href="https://practice.geeksforgeeks.org/problems/heap-sort/1" target="_blank" rel="noopener noreferrer"
-                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Heap Sort Implementation</a>
+                        <a
+                          href="https://leetcode.com/problems/top-k-frequent-elements/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          • LeetCode: Top K Frequent Elements
+                        </a>
+                        <a
+                          href="https://practice.geeksforgeeks.org/problems/heap-sort/1"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          • GFG: Heap Sort Implementation
+                        </a>
                       </>
                     )}
                     {algorithm.name === "Selection Sort" && (
                       <>
-                        <a href="https://practice.geeksforgeeks.org/problems/selection-sort/1" target="_blank" rel="noopener noreferrer"
-                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Selection Sort Implementation</a>
-                        <a href="https://leetcode.com/problems/sort-array-by-parity/" target="_blank" rel="noopener noreferrer"
-                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Sort Array By Parity</a>
+                        <a
+                          href="https://practice.geeksforgeeks.org/problems/selection-sort/1"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          • GFG: Selection Sort Implementation
+                        </a>
+                        <a
+                          href="https://leetcode.com/problems/sort-array-by-parity/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          • LeetCode: Sort Array By Parity
+                        </a>
                       </>
                     )}
                     {algorithm.name === "Insertion Sort" && (
                       <>
-                        <a href="https://leetcode.com/problems/insertion-sort-list/" target="_blank" rel="noopener noreferrer"
-                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Insertion Sort List</a>
-                        <a href="https://practice.geeksforgeeks.org/problems/insertion-sort/1" target="_blank" rel="noopener noreferrer"
-                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Insertion Sort Implementation</a>
+                        <a
+                          href="https://leetcode.com/problems/insertion-sort-list/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          • LeetCode: Insertion Sort List
+                        </a>
+                        <a
+                          href="https://practice.geeksforgeeks.org/problems/insertion-sort/1"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          • GFG: Insertion Sort Implementation
+                        </a>
                       </>
                     )}
                     {algorithm.name === "Shell Sort" && (
                       <>
-                        <a href="https://practice.geeksforgeeks.org/problems/shell-sort/1" target="_blank" rel="noopener noreferrer"
-                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Shell Sort Implementation</a>
-                        <a href="https://www.geeksforgeeks.org/shellsort/" target="_blank" rel="noopener noreferrer"
-                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Shell Sort Tutorial</a>
+                        <a
+                          href="https://practice.geeksforgeeks.org/problems/shell-sort/1"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          • GFG: Shell Sort Implementation
+                        </a>
+                        <a
+                          href="https://www.geeksforgeeks.org/shellsort/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          • GFG: Shell Sort Tutorial
+                        </a>
                       </>
                     )}
                     {algorithm.name === "Radix Sort" && (
                       <>
-                        <a href="https://practice.geeksforgeeks.org/problems/radix-sort/1" target="_blank" rel="noopener noreferrer"
-                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Radix Sort Implementation</a>
-                        <a href="https://leetcode.com/problems/maximum-gap/" target="_blank" rel="noopener noreferrer"
-                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Maximum Gap</a>
+                        <a
+                          href="https://practice.geeksforgeeks.org/problems/radix-sort/1"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          • GFG: Radix Sort Implementation
+                        </a>
+                        <a
+                          href="https://leetcode.com/problems/maximum-gap/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          • LeetCode: Maximum Gap
+                        </a>
                       </>
                     )}
                   </div>
@@ -326,69 +425,70 @@ function SortingAlgorithmsPage() {
 
         {((comparisonMode && selectedAlgorithm && selectedAlgorithm2) ||
           (!comparisonMode && selectedAlgorithm)) && (
-            <div className="bg-white border border-gray-200 shadow-lg rounded-2xl">
-              <div className="p-6">
-                <h3 className="mb-4 text-xl font-bold text-gray-900">
-                  {comparisonMode
-                    ? `Compare ${selectedAlgorithm.name} vs ${selectedAlgorithm2?.name}`
-                    : `Visualize ${selectedAlgorithm.name}`}
-                </h3>
+          <div className="bg-white border border-gray-200 shadow-lg rounded-2xl">
+            <div className="p-6">
+              <h3 className="mb-4 text-xl font-bold text-gray-900">
+                {comparisonMode
+                  ? `Compare ${selectedAlgorithm.name} vs ${selectedAlgorithm2?.name}`
+                  : `Visualize ${selectedAlgorithm.name}`}
+              </h3>
 
-                <form onSubmit={handleInputSubmit} className="space-y-4">
-                  <div>
-                    <label
-                      htmlFor="array-input"
-                      className="block mb-2 text-sm font-medium text-gray-700"
-                    >
-                      Array Elements
-                    </label>
-                    <input
-                      id="array-input"
-                      type="text"
-                      value={inputArray}
-                      onChange={(e) => setInputArray(e.target.value)}
-                      placeholder="Enter array (e.g., 64 34 25 12 22 11 90)"
-                      className="w-full px-4 py-3 transition-colors border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                    <p className="mt-2 text-sm text-gray-500">
-                      Tip: For arrays with 100+ elements, zoom and pan controls will be automatically enabled for better visualization.
-                    </p>
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full md:w-auto inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:-translate-y-0.5"
+              <form onSubmit={handleInputSubmit} className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="array-input"
+                    className="block mb-2 text-sm font-medium text-gray-700"
                   >
-                    {comparisonMode ? (
-                      <GitCompare className="w-5 h-5 mr-2" />
-                    ) : (
-                      <ArrowUpDown className="w-5 h-5 mr-2" />
-                    )}
-                    {comparisonMode
-                      ? "Start Comparison"
-                      : "Start Sorting Visualization"}
-                  </button>
-                </form>
+                    Array Elements
+                  </label>
+                  <input
+                    id="array-input"
+                    type="text"
+                    value={inputArray}
+                    onChange={(e) => setInputArray(e.target.value)}
+                    placeholder="Enter array (e.g., 64 34 25 12 22 11 90)"
+                    className="w-full px-4 py-3 transition-colors border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:text-black"
+                  />
+                  <p className="mt-2 text-sm text-gray-500">
+                    Tip: For arrays with 100+ elements, zoom and pan controls
+                    will be automatically enabled for better visualization.
+                  </p>
+                </div>
 
-                {showVisualization && (
-                  <div ref={vizRef} className="pt-8 mt-8 border-t">
-                    {comparisonMode && selectedAlgorithm2 ? (
-                      <ParallelSortingVisualizer
-                        algorithm1={selectedAlgorithm}
-                        algorithm2={selectedAlgorithm2}
-                        inputArray={inputArray}
-                      />
-                    ) : (
-                      <SortingVisualizer
-                        algorithm={selectedAlgorithm}
-                        inputArray={inputArray}
-                      />
-                    )}
-                  </div>
-                )}
-              </div>
+                <button
+                  type="submit"
+                  className="w-full md:w-auto inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:-translate-y-0.5"
+                >
+                  {comparisonMode ? (
+                    <GitCompare className="w-5 h-5 mr-2" />
+                  ) : (
+                    <ArrowUpDown className="w-5 h-5 mr-2" />
+                  )}
+                  {comparisonMode
+                    ? "Start Comparison"
+                    : "Start Sorting Visualization"}
+                </button>
+              </form>
+
+              {showVisualization && (
+                <div ref={vizRef} className="pt-8 mt-8 border-t">
+                  {comparisonMode && selectedAlgorithm2 ? (
+                    <ParallelSortingVisualizer
+                      algorithm1={selectedAlgorithm}
+                      algorithm2={selectedAlgorithm2}
+                      inputArray={inputArray}
+                    />
+                  ) : (
+                    <SortingVisualizer
+                      algorithm={selectedAlgorithm}
+                      inputArray={inputArray}
+                    />
+                  )}
+                </div>
+              )}
             </div>
-          )}
+          </div>
+        )}
 
         {comparisonMode && (!selectedAlgorithm || !selectedAlgorithm2) && (
           <div className="p-6 border-2 border-purple-300 border-dashed bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl">
@@ -401,8 +501,8 @@ function SortingAlgorithmsPage() {
                 {!selectedAlgorithm
                   ? "Choose your first algorithm from the cards above"
                   : !selectedAlgorithm2
-                    ? `Selected: ${selectedAlgorithm.name}. Now choose a second algorithm to compare with.`
-                    : ""}
+                  ? `Selected: ${selectedAlgorithm.name}. Now choose a second algorithm to compare with.`
+                  : ""}
               </p>
             </div>
           </div>
@@ -415,8 +515,8 @@ function SortingAlgorithmsPage() {
           title="Sorting Algorithm Problems"
           questions={[...QUESTIONS]}
           onQuestionSelect={(question) => {
-            const algorithm = sortingAlgorithms.find(
-              (algo) => algo.name.toLowerCase().includes(question.id.split('-')[0])
+            const algorithm = sortingAlgorithms.find((algo) =>
+              algo.name.toLowerCase().includes(question.id.split("-")[0])
             );
             if (algorithm) {
               setSelectedAlgorithm(algorithm);
@@ -426,9 +526,15 @@ function SortingAlgorithmsPage() {
             }
           }}
           onClose={() => setShowQuestionsModal(false)}
-          selectedQuestionId={selectedAlgorithm?.name.toLowerCase().includes("bubble") ? "bubble-sort" : 
-                             selectedAlgorithm?.name.toLowerCase().includes("quick") ? "quick-sort" : 
-                             selectedAlgorithm?.name.toLowerCase().includes("merge") ? "merge-sort" : undefined}
+          selectedQuestionId={
+            selectedAlgorithm?.name.toLowerCase().includes("bubble")
+              ? "bubble-sort"
+              : selectedAlgorithm?.name.toLowerCase().includes("quick")
+              ? "quick-sort"
+              : selectedAlgorithm?.name.toLowerCase().includes("merge")
+              ? "merge-sort"
+              : undefined
+          }
         />
       )}
     </div>

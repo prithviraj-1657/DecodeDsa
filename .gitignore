@@ -1,6 +1,12 @@
 # Node modules
 node_modules/
 
+#api keys
+# Ignore environment files
+src/.env
+src/.env.local
+src/.env.*
+
 # Logs
 logs
 *.log

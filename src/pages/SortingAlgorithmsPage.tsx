@@ -6,8 +6,52 @@ import ParallelSortingVisualizer from "../components/ParallelSortingVisualizer";
 import { Link } from "react-router-dom";
 import { getAvailableAlgorithms } from "../utils/sortingAlgorithms";
 import { SortingAlgorithm } from "../types/algorithms";
+import { QuestionsDialog, QuestionInfo } from '../components/ui/QuestionsDialog';
 
 const sortingAlgorithms = getAvailableAlgorithms();
+
+// Define questions for sorting algorithms
+const QUESTIONS: QuestionInfo[] = [
+  {
+    id: "sort-colors",
+    title: "Sort Colors",
+    description: "Sort an array of colors represented as integers (0, 1, 2) using a single pass.",
+    comingSoon: true,
+  },
+  {
+    id: "sort-array-by-parity",
+    title: "Sort Array by Parity",
+    description: "Given an array of integers, group all even integers at the beginning followed by all odd integers.",
+    comingSoon: true,
+  },
+  {
+    id: "merge-k-sorted-lists",
+    title: "Merge K Sorted Lists",
+    description: "Given k sorted linked lists, merge them into a single sorted linked list.",
+    comingSoon: true,
+  },
+  {
+    id: "kth-largest-element  ",
+    title: "Kth Largest Element",
+    description: "Find the kth largest element in an unsorted array.",
+    comingSoon: true,
+  },
+  {
+    id: "top-k-frequesnt-elements",
+    title: "Top K Frequent Elements",
+    description: "Given an array of integers, find the k most frequent elements.",
+    comingSoon: true,
+  },
+  {
+    id: "maximum-gap",
+    title: "Maximum Gap",
+    description: "Given an array of integers, find the maximum gap between the sorted elements.",
+    comingSoon: true,
+  },
+];
+
+
+
 
 function SortingAlgorithmsPage() {
   const [selectedAlgorithm, setSelectedAlgorithm] =
@@ -17,6 +61,7 @@ function SortingAlgorithmsPage() {
   const [inputArray, setInputArray] = useState<string>("");
   const [showVisualization, setShowVisualization] = useState(false);
   const [comparisonMode, setComparisonMode] = useState(false);
+  const [showQuestionsModal, setShowQuestionsModal] = useState<boolean>(false);
   const vizRef = useRef<HTMLDivElement | null>(null);
 
   const handleAlgorithmSelect = (algorithm: SortingAlgorithm) => {
@@ -58,6 +103,12 @@ function SortingAlgorithmsPage() {
                     : "Explore how different sorting algorithms organize data step by step"}
                 </p>
               </div>
+              <button
+                onClick={() => setShowQuestionsModal(true)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              >
+                Questions
+              </button>
             </div>
 
             {/* Mode Toggle */}
@@ -195,6 +246,79 @@ function SortingAlgorithmsPage() {
                     </span>
                   </div>
                 </div>
+
+                {/* Practice Questions Section */}
+                <div className="mt-6 border-t pt-4">
+                  <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-3">
+                    Practice Questions
+                  </h4>
+                  <div className="space-y-2">
+                    {algorithm.name === "Bubble Sort" && (
+                      <>
+                        <a href="https://leetcode.com/problems/sort-colors/" target="_blank" rel="noopener noreferrer" 
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Sort Colors</a>
+                        <a href="https://practice.geeksforgeeks.org/problems/bubble-sort/1" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Bubble Sort Implementation</a>
+                      </>
+                    )}
+                    {algorithm.name === "Quick Sort" && (
+                      <>
+                        <a href="https://leetcode.com/problems/sort-an-array/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Sort an Array</a>
+                        <a href="https://leetcode.com/problems/kth-largest-element-in-an-array/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Kth Largest Element</a>
+                      </>
+                    )}
+                    {algorithm.name === "Merge Sort" && (
+                      <>
+                        <a href="https://leetcode.com/problems/sort-list/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Sort List</a>
+                        <a href="https://leetcode.com/problems/merge-k-sorted-lists/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Merge k Sorted Lists</a>
+                      </>
+                    )}
+                    {algorithm.name === "Heap Sort" && (
+                      <>
+                        <a href="https://leetcode.com/problems/top-k-frequent-elements/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Top K Frequent Elements</a>
+                        <a href="https://practice.geeksforgeeks.org/problems/heap-sort/1" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Heap Sort Implementation</a>
+                      </>
+                    )}
+                    {algorithm.name === "Selection Sort" && (
+                      <>
+                        <a href="https://practice.geeksforgeeks.org/problems/selection-sort/1" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Selection Sort Implementation</a>
+                        <a href="https://leetcode.com/problems/sort-array-by-parity/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Sort Array By Parity</a>
+                      </>
+                    )}
+                    {algorithm.name === "Insertion Sort" && (
+                      <>
+                        <a href="https://leetcode.com/problems/insertion-sort-list/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Insertion Sort List</a>
+                        <a href="https://practice.geeksforgeeks.org/problems/insertion-sort/1" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Insertion Sort Implementation</a>
+                      </>
+                    )}
+                    {algorithm.name === "Shell Sort" && (
+                      <>
+                        <a href="https://practice.geeksforgeeks.org/problems/shell-sort/1" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Shell Sort Implementation</a>
+                        <a href="https://www.geeksforgeeks.org/shellsort/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Shell Sort Tutorial</a>
+                      </>
+                    )}
+                    {algorithm.name === "Radix Sort" && (
+                      <>
+                        <a href="https://practice.geeksforgeeks.org/problems/radix-sort/1" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• GFG: Radix Sort Implementation</a>
+                        <a href="https://leetcode.com/problems/maximum-gap/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-blue-600 dark:text-blue-400 hover:underline">• LeetCode: Maximum Gap</a>
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           ))}
@@ -284,6 +408,29 @@ function SortingAlgorithmsPage() {
           </div>
         )}
       </main>
+
+      {/* Questions Modal */}
+      {showQuestionsModal && (
+        <QuestionsDialog
+          title="Sorting Algorithm Problems"
+          questions={[...QUESTIONS]}
+          onQuestionSelect={(question) => {
+            const algorithm = sortingAlgorithms.find(
+              (algo) => algo.name.toLowerCase().includes(question.id.split('-')[0])
+            );
+            if (algorithm) {
+              setSelectedAlgorithm(algorithm);
+              setShowQuestionsModal(false);
+              setShowVisualization(false);
+              setInputArray("64 34 25 12 22 11 90");
+            }
+          }}
+          onClose={() => setShowQuestionsModal(false)}
+          selectedQuestionId={selectedAlgorithm?.name.toLowerCase().includes("bubble") ? "bubble-sort" : 
+                             selectedAlgorithm?.name.toLowerCase().includes("quick") ? "quick-sort" : 
+                             selectedAlgorithm?.name.toLowerCase().includes("merge") ? "merge-sort" : undefined}
+        />
+      )}
     </div>
   );
 }

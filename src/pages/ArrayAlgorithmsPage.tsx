@@ -10,8 +10,61 @@ import {
   Binary, 
   Layers,
   Grid,
-  ArrowRight
+  ArrowRight,
+  HelpCircle
 } from "lucide-react"
+import { QuestionsDialog, QuestionInfo } from "../components/ui/QuestionsDialog"
+
+const QUESTIONS: QuestionInfo[] = [
+  {
+    id: "two-pointer-1",
+    title: "Two Sum Problem",
+    description: "Find two numbers in an array that add up to a specific target value.",
+  },
+  {
+    id: "prefix-sum-1",
+    title: "Range Sum Query",
+    description: "Compute the sum of elements between indices i and j (i ≤ j).",
+  },
+  {
+    id: "kadanes-1",
+    title: "Maximum Subarray Sum",
+    description: "Find the contiguous subarray with the largest sum.",
+  },
+]
+
+const QUESTIONS_MODAL: QuestionInfo[] = [
+  {
+    id: "sliding-window-1",
+    title: "Maximum Sum Subarray of Size K",
+    description: "Find the maximum sum of any contiguous subarray of size k.",
+    comingSoon: true,
+  },
+  {
+    id: "hashing-1",
+    title: "Count Pairs with Given Sum",
+    description: "Count the number of pairs with a given sum in an array.",
+    comingSoon: true,
+  },
+  {
+    id: "monotonic-stack-1",
+    title: "Next Greater Element",
+    description: "Find the next greater element for each element in an array.",
+    comingSoon: true,
+  },
+  {
+    id: "bit-manipulation-1",
+    title: "Find the Single Number",
+    description: "Find the number that appears only once in an array where every other number appears twice.",
+    comingSoon: true,
+  },
+  {
+    id: "2d-arrays-1",
+    title: "Spiral Matrix Traversal",
+    description: "Print elements of a matrix in spiral order.",
+    comingSoon: true,
+  },
+]
 
 interface Algorithm {
   name: string
@@ -101,6 +154,7 @@ const algorithms: Algorithm[] = [
 function ArrayAlgorithmsPage() {
   const [arrayInput, setArrayInput] = useState<string>("")
   const [error, setError] = useState<string>("")
+  const [showQuestionsModal, setShowQuestionsModal] = useState<boolean>(false)
 
   const handleArraySubmit = () => {
     try {
@@ -120,13 +174,22 @@ function ArrayAlgorithmsPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
-              <Calculator className="w-6 h-6 text-white" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+                <Calculator className="w-6 h-6 text-white" />
+              </div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Array Algorithms
+              </h1>
             </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Array Algorithms
-            </h1>
+            <button
+              onClick={() => setShowQuestionsModal(true)}
+              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <HelpCircle className="w-5 h-5" />
+              <span>Questions</span>
+            </button>
           </div>
           <p className="mt-2 text-gray-600">Visualize array algorithms step by step</p>
         </div>
@@ -191,8 +254,29 @@ function ArrayAlgorithmsPage() {
           ))}
         </div>
       </main>
+      
+      {showQuestionsModal && (
+        <QuestionsDialog
+          title="Array Algorithm Problems"
+          questions={[...QUESTIONS, ...QUESTIONS_MODAL]}
+          onQuestionSelect={(question) => {
+            setShowQuestionsModal(false);
+            // Set array input based on selected question
+            if (question.id.includes("two-pointer")) {
+              setArrayInput("2, 7, 11, 15");
+            } else if (question.id.includes("prefix-sum")) {
+              setArrayInput("1, 2, 3, 4, 5, 6, 7, 8, 9, 10");
+            } else if (question.id.includes("kadanes")) {
+              setArrayInput("-2, 1, -3, 4, -1, 2, 1, -5, 4");
+            } else {
+              setArrayInput("1, 2, 3, 4, 5");
+            }
+          }}
+          onClose={() => setShowQuestionsModal(false)}
+        />
+      )}
     </div>
   )
 }
 
-export default ArrayAlgorithmsPage 
+export default ArrayAlgorithmsPage

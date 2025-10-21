@@ -81,16 +81,21 @@ export class DutchFlagSort implements SortingAlgorithm {
     })
 
     while (mid <= high) {
+      // Capture current values to avoid unsafe references in loop
+      const currentLow = low;
+      const currentMid = mid;
+      const currentHigh = high;
+      
       steps.push({
         array: [...arr],
-        description: `Current state: low=${low}, mid=${mid}, high=${high}. Comparing arr[${mid}]=${arr[mid]} with pivot ${pivot}`,
-        code: `while (mid <= high) {\n  // Current: low=${low}, mid=${mid}, high=${high}\n  // Comparing arr[${mid}]=${arr[mid]} with pivot=${pivot}\n}`,
-        comparing: [mid, arr.length - 1],
+        description: `Current state: low=${currentLow}, mid=${currentMid}, high=${currentHigh}. Comparing arr[${currentMid}]=${arr[currentMid]} with pivot ${pivot}`,
+        code: `while (mid <= high) {\n  // Current: low=${currentLow}, mid=${currentMid}, high=${currentHigh}\n  // Comparing arr[${currentMid}]=${arr[currentMid]} with pivot=${pivot}\n}`,
+        comparing: [currentMid, arr.length - 1],
         // Custom property to highlight the three sections
         dutchFlags: {
-          lowSection: Array.from({ length: low }, (_, i) => i),
-          midSection: Array.from({ length: mid - low }, (_, i) => i + low),
-          highSection: Array.from({ length: arr.length - high - 1 }, (_, i) => i + high + 1)
+          lowSection: Array.from({ length: currentLow }, (_, i) => i),
+          midSection: Array.from({ length: currentMid - currentLow }, (_, i) => i + currentLow),
+          highSection: Array.from({ length: arr.length - currentHigh - 1 }, (_, i) => i + currentHigh + 1)
         }
       })
 
@@ -132,11 +137,15 @@ export class DutchFlagSort implements SortingAlgorithm {
       array: [...arr],
       description: `Dutch Flag partition complete! Array is now partitioned into three sections: < ${pivot}, = ${pivot}, > ${pivot}`,
       code: `// Dutch Flag partitioning complete\n// arr: [${arr.join(", ")}]\n// Elements before index ${low} are less than ${pivot}\n// Elements from index ${low} to ${high} are equal to ${pivot}\n// Elements after index ${high} are greater than ${pivot}`,
-      dutchFlags: {
-        lowSection: Array.from({ length: low }, (_, i) => i),
-        midSection: Array.from({ length: high - low + 1 }, (_, i) => i + low),
-        highSection: Array.from({ length: arr.length - high - 1 }, (_, i) => i + high + 1)
-      }
+      dutchFlags: (() => {
+        const currentLow = low;
+        const currentHigh = high;
+        return {
+          lowSection: Array.from({ length: currentLow }, (_, i) => i),
+          midSection: Array.from({ length: currentHigh - currentLow + 1 }, (_, i) => i + currentLow),
+          highSection: Array.from({ length: arr.length - currentHigh - 1 }, (_, i) => i + currentHigh + 1)
+        };
+      })()
     })
   }
 }

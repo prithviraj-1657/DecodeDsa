@@ -4,6 +4,42 @@ import SearchingVisualizer from '../components/SearchingVisualizer';
 import ParallelSearchingVisualizer from '../components/ParallelSearchingVisualizer';
 import { getAvailableAlgorithms } from '../utils/searchingAlgorithms';
 import type { SearchingAlgorithm } from '../types/algorithms';
+import { QuestionsDialog, QuestionInfo } from '../components/ui/QuestionsDialog';
+
+// Define questions for searching algorithms
+const QUESTIONS: QuestionInfo[] = [
+  {
+    id: "linear-search",
+    title: "Linear Search",
+    description: "Find an element in an array by checking each element sequentially.",
+  },
+  {
+    id: "binary-search",
+    title: "Binary Search",
+    description: "Find an element in a sorted array by repeatedly dividing the search interval in half.",
+  },
+];
+
+const QUESTIONS_MODAL: QuestionInfo[] = [
+  {
+    id: "jump-search",
+    title: "Jump Search",
+    description: "Find an element by jumping ahead by fixed steps and then performing a linear search.",
+    comingSoon: true,
+  },
+  {
+    id: "interpolation-search",
+    title: "Interpolation Search",
+    description: "An improved variant of binary search for uniformly distributed sorted arrays.",
+    comingSoon: true,
+  },
+  {
+    id: "exponential-search",
+    title: "Exponential Search",
+    description: "Find a range where element is present, then do binary search in that range.",
+    comingSoon: true,
+  },
+];
 
 function SearchingAlgorithmsPage() {
   const searchingAlgorithms = getAvailableAlgorithms();
@@ -14,6 +50,7 @@ function SearchingAlgorithmsPage() {
   const [targetValue, setTargetValue] = useState<string>('');
   const [showVisualization, setShowVisualization] = useState(false);
   const [comparisonMode, setComparisonMode] = useState(false);
+  const [showQuestionsModal, setShowQuestionsModal] = useState<boolean>(false);
 
   const handleAlgorithmSelect = (algorithm: SearchingAlgorithm) => {
     setSelectedAlgorithm(algorithm);
@@ -62,6 +99,13 @@ function SearchingAlgorithmsPage() {
                 </p>
               </div>
             </div>
+            
+            <button
+              onClick={() => setShowQuestionsModal(true)}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+            >
+              Questions
+            </button>
             
             <div className="flex items-center space-x-2 bg-gray-100 dark:bg-slate-700 rounded-lg p-1">
               <button
@@ -189,6 +233,59 @@ function SearchingAlgorithmsPage() {
                     </span>
                   </div>
                 </div>
+
+                {/* Practice Questions Section */}
+                <div className="mt-6 border-t pt-4">
+                  <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-3">
+                    Practice Questions
+                  </h4>
+                  <div className="space-y-2">
+                    {algorithm.name === "Linear Search" && (
+                      <>
+                        <a href="https://leetcode.com/problems/linear-search/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• LeetCode: Linear Search (Discuss)</a>
+                        <a href="https://practice.geeksforgeeks.org/problems/searching-a-number0324/1" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• GFG: Searching a Number</a>
+                        <a href="https://leetcode.com/problems/find-numbers-with-even-number-of-digits/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• LeetCode: Find Numbers with Even Number of Digits</a>
+                      </>
+                    )}
+                    {algorithm.name === "Binary Search" && (
+                      <>
+                        <a href="https://leetcode.com/problems/binary-search/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• LeetCode: Binary Search</a>
+                        <a href="https://leetcode.com/problems/search-in-rotated-sorted-array/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• LeetCode: Search in Rotated Sorted Array</a>
+                        <a href="https://practice.geeksforgeeks.org/problems/binary-search-1587115620/1" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• GFG: Binary Search</a>
+                      </>
+                    )}
+                    {algorithm.name === "Jump Search" && (
+                      <>
+                        <a href="https://www.geeksforgeeks.org/jump-search/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• GFG: Jump Search Tutorial</a>
+                        <a href="https://leetcode.com/problems/search-insert-position/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• LeetCode: Search Insert Position</a>
+                      </>
+                    )}
+                    {algorithm.name === "Exponential Search" && (
+                      <>
+                        <a href="https://www.geeksforgeeks.org/exponential-search/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• GFG: Exponential Search Tutorial</a>
+                        <a href="https://leetcode.com/problems/search-in-rotated-sorted-array-ii/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• LeetCode: Search in Rotated Sorted Array II</a>
+                      </>
+                    )}
+                    {algorithm.name === "Ternary Search" && (
+                      <>
+                        <a href="https://www.geeksforgeeks.org/ternary-search/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• GFG: Ternary Search Tutorial</a>
+                        <a href="https://leetcode.com/problems/peak-index-in-a-mountain-array/" target="_blank" rel="noopener noreferrer"
+                           className="block text-sm text-green-600 dark:text-green-400 hover:underline">• LeetCode: Peak Index in a Mountain Array</a>
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
               </div>
           ))}
@@ -281,6 +378,34 @@ function SearchingAlgorithmsPage() {
           </div>
         )}
       </main>
+
+      {/* Questions Modal */}
+      {showQuestionsModal && (
+        <QuestionsDialog
+          title="Searching Algorithm Problems"
+          questions={[...QUESTIONS, ...QUESTIONS_MODAL]}
+          onQuestionSelect={(question) => {
+            const algorithm = searchingAlgorithms.find(
+              (algo) => algo.name.toLowerCase().includes(question.id.split('-')[0])
+            );
+            if (algorithm) {
+              setSelectedAlgorithm(algorithm);
+              setShowQuestionsModal(false);
+              setShowVisualization(false);
+              if (algorithm.name === "Binary Search") {
+                setInputArray("1 3 5 7 9 11 13 15 17 19");
+                setTargetValue("7");
+              } else {
+                setInputArray("64 34 25 12 22 11 90 88");
+                setTargetValue("22");
+              }
+            }
+          }}
+          onClose={() => setShowQuestionsModal(false)}
+          selectedQuestionId={selectedAlgorithm?.name.toLowerCase().includes("linear") ? "linear-search" : 
+                             selectedAlgorithm?.name.toLowerCase().includes("binary") ? "binary-search" : undefined}
+        />
+      )}
     </div>
   );
 }

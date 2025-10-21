@@ -48,7 +48,7 @@ function LinkedListVisualizerPage() {
   const [showStepByStep, setShowStepByStep] = useState(false);
   const [currentOperation, setCurrentOperation] = useState<
     CodeOperationType | ""
-  >("");
+  >(""); 
 
   // Add these interfaces and types after existing interfaces
   interface CodeStructure {
@@ -1305,6 +1305,37 @@ function search(value) {
                 )}
               </div>
             </div>
+
+                          {/* Practice Questions Section - Card Style */}
+                          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-blue-200 dark:border-blue-700 p-6 mt-8">
+                            <h2 className="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">Practice Questions (Linked List)</h2>
+                            <ul className="space-y-3">
+                              <li>
+                                <a href="https://leetcode.com/problems/reverse-linked-list/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Reverse Linked List (LeetCode)</a>
+                              </li>
+                              <li>
+                                <a href="https://leetcode.com/problems/merge-two-sorted-lists/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Merge Two Sorted Lists (LeetCode)</a>
+                              </li>
+                              <li>
+                                <a href="https://leetcode.com/problems/linked-list-cycle/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Linked List Cycle (LeetCode)</a>
+                              </li>
+                              <li>
+                                <a href="https://leetcode.com/problems/add-two-numbers/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Add Two Numbers (LeetCode)</a>
+                              </li>
+                              <li>
+                                <a href="https://leetcode.com/problems/palindrome-linked-list/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Palindrome Linked List (LeetCode)</a>
+                              </li>
+                              <li>
+                                <a href="https://practice.geeksforgeeks.org/problems/delete-without-head-pointer/1" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Delete Without Head Pointer (GFG)</a>
+                              </li>
+                              <li>
+                                <a href="https://practice.geeksforgeeks.org/problems/detect-loop-in-linked-list/1" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Detect Loop in Linked List (GFG)</a>
+                              </li>
+                              <li>
+                                <a href="https://practice.geeksforgeeks.org/problems/flattening-a-linked-list/1" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Flattening a Linked List (GFG)</a>
+                              </li>
+                            </ul>
+                          </div>
 
             {/* Code Implementation Section */}
             {currentOperation && (

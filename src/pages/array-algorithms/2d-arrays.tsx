@@ -1,47 +1,51 @@
-"use client"
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { ArrowLeft, Grid, ChevronLeft, ChevronRight, Code } from "lucide-react"
-import { Button } from "../../components/ui/button"
+"use client";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowLeft, Grid, ChevronLeft, ChevronRight, Code } from "lucide-react";
+import { Button } from "../../components/ui/button";
 
 interface MatrixCell {
-  value: number
-  isHighlighted: boolean
-  isVisited: boolean
-  isResult: boolean
-  row: number
-  col: number
+  value: number;
+  isHighlighted: boolean;
+  isVisited: boolean;
+  isResult: boolean;
+  row: number;
+  col: number;
 }
 
 interface Step {
-  matrix: MatrixCell[][]
-  description: string
-  code: string
-  result?: number[] | string
-  currentPosition?: { row: number; col: number }
+  matrix: MatrixCell[][];
+  description: string;
+  code: string;
+  result?: number[] | string;
+  currentPosition?: { row: number; col: number };
 }
 
 function TwoDArraysPage() {
-  const [matrixInput, setMatrixInput] = useState<string>("")
-  const [steps, setSteps] = useState<Step[]>([])
-  const [currentStep, setCurrentStep] = useState<number>(0)
-  const [isVisualizing, setIsVisualizing] = useState<boolean>(false)
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState<"spiral" | "rotate" | "search" | "set-zeros">("spiral")
-  const [showFullCode, setShowFullCode] = useState<boolean>(false)
-  
-  const [searchTarget, setSearchTarget] = useState<number>(0)
+  const [matrixInput, setMatrixInput] = useState<string>("");
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const [isVisualizing, setIsVisualizing] = useState<boolean>(false);
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState<
+    "spiral" | "rotate" | "search" | "set-zeros"
+  >("spiral");
+  const [showFullCode, setShowFullCode] = useState<boolean>(false);
+
+  const [searchTarget, setSearchTarget] = useState<number>(0);
 
   const resetVisualization = () => {
-    setSteps([])
-    setCurrentStep(0)
-    setIsVisualizing(false)
-    setShowFullCode(false)
-  }
+    setSteps([]);
+    setCurrentStep(0);
+    setIsVisualizing(false);
+    setShowFullCode(false);
+  };
 
   const parseMatrix = (input: string): number[][] => {
-    const rows = input.trim().split("\n")
-    return rows.map((row) => row.split(",").map((cell) => Number.parseInt(cell.trim())))
-  }
+    const rows = input.trim().split("\n");
+    return rows.map((row) =>
+      row.split(",").map((cell) => Number.parseInt(cell.trim()))
+    );
+  };
 
   const createMatrixCells = (matrix: number[][]): MatrixCell[][] => {
     return matrix.map((row, rowIndex) =>
@@ -52,20 +56,20 @@ function TwoDArraysPage() {
         isResult: false,
         row: rowIndex,
         col: colIndex,
-      })),
-    )
-  }
+      }))
+    );
+  };
 
   const generateSpiralSteps = (matrix: number[][]) => {
-    const newSteps: Step[] = []
-    const rows = matrix.length
-    const cols = matrix[0].length
-    const result: number[] = []
+    const newSteps: Step[] = [];
+    const rows = matrix.length;
+    const cols = matrix[0].length;
+    const result: number[] = [];
 
     let top = 0,
       bottom = rows - 1,
       left = 0,
-      right = cols - 1
+      right = cols - 1;
 
     // Initial state
     newSteps.push({
@@ -75,23 +79,26 @@ function TwoDArraysPage() {
 top, bottom = 0, ${rows - 1}
 left, right = 0, ${cols - 1}
 result = []`,
-    })
+    });
 
     while (top <= bottom && left <= right) {
       // Traverse right
       for (let col = left; col <= right; col++) {
-        result.push(matrix[top][col])
+        result.push(matrix[top][col]);
 
-        const currentMatrix = createMatrixCells(matrix)
-        currentMatrix[top][col].isHighlighted = true
+        const currentMatrix = createMatrixCells(matrix);
+        currentMatrix[top][col].isHighlighted = true;
 
         // Mark all previously visited cells
         for (let i = 0; i < result.length - 1; i++) {
           for (let r = 0; r < rows; r++) {
             for (let c = 0; c < cols; c++) {
-              if (matrix[r][c] === result[i] && !currentMatrix[r][c].isHighlighted) {
-                currentMatrix[r][c].isVisited = true
-                break
+              if (
+                matrix[r][c] === result[i] &&
+                !currentMatrix[r][c].isHighlighted
+              ) {
+                currentMatrix[r][c].isVisited = true;
+                break;
               }
             }
           }
@@ -105,26 +112,29 @@ for col in range(left, right + 1):
     result.append(matrix[top][col])`,
           result: [...result],
           currentPosition: { row: top, col },
-        })
+        });
       }
-      top++
+      top++;
 
       // Traverse down
       for (let row = top; row <= bottom; row++) {
-        result.push(matrix[row][right])
+        result.push(matrix[row][right]);
 
-        const currentMatrix = createMatrixCells(matrix)
-        currentMatrix[row][right].isHighlighted = true
+        const currentMatrix = createMatrixCells(matrix);
+        currentMatrix[row][right].isHighlighted = true;
 
         // Mark visited cells
-        let resultIndex = 0
+        let resultIndex = 0;
         for (let r = 0; r < rows; r++) {
           for (let c = 0; c < cols; c++) {
-            if (resultIndex < result.length - 1 && matrix[r][c] === result[resultIndex]) {
+            if (
+              resultIndex < result.length - 1 &&
+              matrix[r][c] === result[resultIndex]
+            ) {
               if (!currentMatrix[r][c].isHighlighted) {
-                currentMatrix[r][c].isVisited = true
+                currentMatrix[r][c].isVisited = true;
               }
-              resultIndex++
+              resultIndex++;
             }
           }
         }
@@ -137,17 +147,17 @@ for row in range(top, bottom + 1):
     result.append(matrix[row][right])`,
           result: [...result],
           currentPosition: { row, col: right },
-        })
+        });
       }
-      right--
+      right--;
 
       // Traverse left
       if (top <= bottom) {
         for (let col = right; col >= left; col--) {
-          result.push(matrix[bottom][col])
+          result.push(matrix[bottom][col]);
 
-          const currentMatrix = createMatrixCells(matrix)
-          currentMatrix[bottom][col].isHighlighted = true
+          const currentMatrix = createMatrixCells(matrix);
+          currentMatrix[bottom][col].isHighlighted = true;
 
           newSteps.push({
             matrix: currentMatrix,
@@ -157,18 +167,18 @@ for col in range(right, left - 1, -1):
     result.append(matrix[bottom][col])`,
             result: [...result],
             currentPosition: { row: bottom, col },
-          })
+          });
         }
-        bottom--
+        bottom--;
       }
 
       // Traverse up
       if (left <= right) {
         for (let row = bottom; row >= top; row--) {
-          result.push(matrix[row][left])
+          result.push(matrix[row][left]);
 
-          const currentMatrix = createMatrixCells(matrix)
-          currentMatrix[row][left].isHighlighted = true
+          const currentMatrix = createMatrixCells(matrix);
+          currentMatrix[row][left].isHighlighted = true;
 
           newSteps.push({
             matrix: currentMatrix,
@@ -178,15 +188,15 @@ for row in range(bottom, top - 1, -1):
     result.append(matrix[row][left])`,
             result: [...result],
             currentPosition: { row, col: left },
-          })
+          });
         }
-        left++
+        left++;
       }
     }
 
     // Final result
-    const finalMatrix = createMatrixCells(matrix)
-    finalMatrix.forEach((row) => row.forEach((cell) => (cell.isResult = true)))
+    const finalMatrix = createMatrixCells(matrix);
+    finalMatrix.forEach((row) => row.forEach((cell) => (cell.isResult = true)));
 
     newSteps.push({
       matrix: finalMatrix,
@@ -194,15 +204,15 @@ for row in range(bottom, top - 1, -1):
       code: `# Return spiral order
 return result`,
       result,
-    })
+    });
 
-    return newSteps
-  }
+    return newSteps;
+  };
 
   const generateRotateSteps = (matrix: number[][]) => {
-    const newSteps: Step[] = []
-    const n = matrix.length
-    const rotated = matrix.map((row) => [...row])
+    const newSteps: Step[] = [];
+    const n = matrix.length;
+    const rotated = matrix.map((row) => [...row]);
 
     // Initial state
     newSteps.push({
@@ -211,16 +221,16 @@ return result`,
       code: `# Rotate matrix 90 degrees clockwise
 # Step 1: Transpose the matrix
 # Step 2: Reverse each row`,
-    })
+    });
 
     // Step 1: Transpose
     for (let i = 0; i < n; i++) {
       for (let j = i + 1; j < n; j++) {
-        ;[rotated[i][j], rotated[j][i]] = [rotated[j][i], rotated[i][j]]
+        [rotated[i][j], rotated[j][i]] = [rotated[j][i], rotated[i][j]];
       }
     }
 
-    const transposedMatrix = createMatrixCells(rotated)
+    const transposedMatrix = createMatrixCells(rotated);
     newSteps.push({
       matrix: transposedMatrix,
       description: "Step 1: Transpose the matrix (swap rows and columns)",
@@ -228,31 +238,32 @@ return result`,
 for i in range(n):
     for j in range(i + 1, n):
         matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]`,
-    })
+    });
 
     // Step 2: Reverse each row
     for (let i = 0; i < n; i++) {
-      rotated[i].reverse()
+      rotated[i].reverse();
     }
 
-    const finalMatrix = createMatrixCells(rotated)
-    finalMatrix.forEach((row) => row.forEach((cell) => (cell.isResult = true)))
+    const finalMatrix = createMatrixCells(rotated);
+    finalMatrix.forEach((row) => row.forEach((cell) => (cell.isResult = true)));
 
     newSteps.push({
       matrix: finalMatrix,
-      description: "Step 2: Reverse each row to complete 90° clockwise rotation",
+      description:
+        "Step 2: Reverse each row to complete 90° clockwise rotation",
       code: `# Reverse each row
 for i in range(n):
     matrix[i].reverse()`,
-    })
+    });
 
-    return newSteps
-  }
+    return newSteps;
+  };
 
   const generateSearchSteps = (matrix: number[][], target: number) => {
-    const newSteps: Step[] = []
-    const rows = matrix.length
-    const cols = matrix[0].length
+    const newSteps: Step[] = [];
+    const rows = matrix.length;
+    const cols = matrix[0].length;
 
     // Initial state
     newSteps.push({
@@ -262,19 +273,19 @@ for i in range(n):
 # Start from top-right corner
 target = ${target}
 row, col = 0, ${cols - 1}`,
-    })
+    });
 
     let row = 0,
-      col = cols - 1
-    let found = false
+      col = cols - 1;
+    let found = false;
 
     while (row < rows && col >= 0) {
-      const currentMatrix = createMatrixCells(matrix)
-      currentMatrix[row][col].isHighlighted = true
+      const currentMatrix = createMatrixCells(matrix);
+      currentMatrix[row][col].isHighlighted = true;
 
       if (matrix[row][col] === target) {
-        currentMatrix[row][col].isResult = true
-        found = true
+        currentMatrix[row][col].isResult = true;
+        found = true;
 
         newSteps.push({
           matrix: currentMatrix,
@@ -282,8 +293,8 @@ row, col = 0, ${cols - 1}`,
           code: `# Found target!
 return True`,
           currentPosition: { row, col },
-        })
-        break
+        });
+        break;
       } else if (matrix[row][col] > target) {
         newSteps.push({
           matrix: currentMatrix,
@@ -291,8 +302,8 @@ return True`,
           code: `# Current value > target, move left
 col -= 1`,
           currentPosition: { row, col },
-        })
-        col--
+        });
+        col--;
       } else {
         newSteps.push({
           matrix: currentMatrix,
@@ -300,8 +311,8 @@ col -= 1`,
           code: `# Current value < target, move down
 row += 1`,
           currentPosition: { row, col },
-        })
-        row++
+        });
+        row++;
       }
     }
 
@@ -311,53 +322,53 @@ row += 1`,
         description: `${target} not found in matrix`,
         code: `# Target not found
 return False`,
-      })
+      });
     }
 
-    return newSteps
-  }
+    return newSteps;
+  };
 
   const handleVisualize = () => {
     try {
-      const matrix = parseMatrix(matrixInput)
+      const matrix = parseMatrix(matrixInput);
       if (matrix.length === 0 || matrix.some((row) => row.some(isNaN))) {
-        throw new Error("Invalid matrix format")
+        throw new Error("Invalid matrix format");
       }
 
       // Validate matrix dimensions
-      const cols = matrix[0].length
+      const cols = matrix[0].length;
       if (matrix.some((row) => row.length !== cols)) {
-        throw new Error("All rows must have the same number of columns")
+        throw new Error("All rows must have the same number of columns");
       }
 
-      resetVisualization()
-      setIsVisualizing(true)
+      resetVisualization();
+      setIsVisualizing(true);
 
-      let newSteps: Step[]
+      let newSteps: Step[];
       switch (selectedAlgorithm) {
         case "spiral":
-          newSteps = generateSpiralSteps(matrix)
-          break
+          newSteps = generateSpiralSteps(matrix);
+          break;
         case "rotate":
           if (matrix.length !== cols) {
-            setIsVisualizing(false)
-            throw new Error("Matrix must be square for rotation")
+            setIsVisualizing(false);
+            throw new Error("Matrix must be square for rotation");
           }
-          newSteps = generateRotateSteps(matrix)
-          break
+          newSteps = generateRotateSteps(matrix);
+          break;
         case "search":
-          newSteps = generateSearchSteps(matrix, searchTarget)
-          break
+          newSteps = generateSearchSteps(matrix, searchTarget);
+          break;
         default:
-          newSteps = []
+          newSteps = [];
       }
 
-      setSteps(newSteps)
-      setIsVisualizing(false)
+      setSteps(newSteps);
+      setIsVisualizing(false);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Please enter a valid matrix")
+      alert(err instanceof Error ? err.message : "Please enter a valid matrix");
     }
-  }
+  };
 
   const getFullCode = () => {
     switch (selectedAlgorithm) {
@@ -394,7 +405,7 @@ return False`,
                 result.append(matrix[row][left])
             left += 1
     
-    return result`
+    return result`;
 
       case "rotate":
         return `def rotate_matrix(matrix):
@@ -409,7 +420,7 @@ return False`,
     for i in range(n):
         matrix[i].reverse()
     
-    return matrix`
+    return matrix`;
 
       case "search":
         return `def search_matrix(matrix, target):
@@ -427,19 +438,16 @@ return False`,
         else:
             row += 1
     
-    return False`
+    return False`;
 
       default:
-        return ""
+        return "";
     }
-  }
-
-  
-  
+  };
 
   // Helper type guard
   function isNumberArray(val: unknown): val is number[] {
-    return Array.isArray(val) && val.every((x) => typeof x === 'number');
+    return Array.isArray(val) && val.every((x) => typeof x === "number");
   }
 
   return (
@@ -448,7 +456,10 @@ return False`,
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Link to="/array-algorithms" className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors">
+              <Link
+                to="/array-algorithms"
+                className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors"
+              >
                 <ArrowLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
               </Link>
               <div className="p-2 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-lg">
@@ -465,7 +476,9 @@ return False`,
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Algorithm Selection */}
         <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Select Algorithm</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            Select Algorithm
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <button
               onClick={() => setSelectedAlgorithm("spiral")}
@@ -502,10 +515,15 @@ return False`,
 
         {/* Input Section */}
         <div className="mb-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Input</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            Input
+          </h2>
           <div className="flex flex-col gap-4">
             <div>
-              <label htmlFor="matrix-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="matrix-input"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Matrix (one row per line, comma-separated values)
               </label>
               <textarea
@@ -513,19 +531,28 @@ return False`,
                 value={matrixInput}
                 onChange={(e) => setMatrixInput(e.target.value)}
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-teal-500 h-32"
-                placeholder={selectedAlgorithm === "rotate" ? "1,2,3\n4,5,6\n7,8,9" : "1,4,7,11\n2,5,8,12\n3,6,9,16"}
+                placeholder={
+                  selectedAlgorithm === "rotate"
+                    ? "1,2,3\n4,5,6\n7,8,9"
+                    : "1,4,7,11\n2,5,8,12\n3,6,9,16"
+                }
               />
             </div>
             {selectedAlgorithm === "search" && (
               <div>
-                <label htmlFor="search-target" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor="search-target"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Search Target
                 </label>
                 <input
                   id="search-target"
                   type="number"
                   value={searchTarget}
-                  onChange={(e) => setSearchTarget(Number.parseInt(e.target.value))}
+                  onChange={(e) =>
+                    setSearchTarget(Number.parseInt(e.target.value))
+                  }
                   className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-teal-500"
                   placeholder="Enter target value"
                 />
@@ -546,7 +573,9 @@ return False`,
           <div className="space-y-8">
             {/* Matrix Visualization */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Matrix Visualization</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Matrix Visualization
+              </h2>
               <div className="flex justify-center">
                 <div className="inline-block">
                   {steps[currentStep].matrix.map((row, rowIndex) => (
@@ -558,10 +587,10 @@ return False`,
                             cell.isHighlighted
                               ? "bg-teal-500 text-white"
                               : cell.isResult
-                                ? "bg-green-500 text-white"
-                                : cell.isVisited
-                                  ? "bg-teal-100 text-teal-700"
-                                  : "bg-gray-50 dark:bg-slate-700 text-gray-700 dark:text-gray-300"
+                              ? "bg-green-500 text-white"
+                              : cell.isVisited
+                              ? "bg-teal-100 text-teal-700"
+                              : "bg-gray-50 dark:bg-slate-700 text-gray-700 dark:text-gray-300"
                           }`}
                         >
                           {cell.value}
@@ -574,37 +603,48 @@ return False`,
             </div>
 
             {/* Result Display */}
-            {steps[currentStep] && typeof steps[currentStep].result !== 'undefined' && (() => {
-              const result = steps[currentStep].result;
-              return (
-                <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Result</h2>
-                  <div className="text-lg font-mono bg-gray-50 dark:bg-slate-700 p-4 rounded-lg">
-                    {isNumberArray(result)
-                      ? `[${result.join(", ")}]`
-                      : result}
+            {steps[currentStep] &&
+              typeof steps[currentStep].result !== "undefined" &&
+              (() => {
+                const result = steps[currentStep].result;
+                return (
+                  <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                      Result
+                    </h2>
+                    <div className="text-lg font-mono bg-gray-50 dark:bg-slate-700 p-4 rounded-lg">
+                      {isNumberArray(result)
+                        ? `[${result.join(", ")}]`
+                        : result}
+                    </div>
                   </div>
-                </div>
-              );
-            })()}
+                );
+              })()}
 
             {/* Step Information */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Step Information</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Step Information
+              </h2>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-gray-700 dark:text-gray-300">{steps[currentStep].description}</p>
+                    <p className="text-gray-700 dark:text-gray-300">
+                      {steps[currentStep].description}
+                    </p>
                     {steps[currentStep].currentPosition && (
                       <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                        Current position: ({steps[currentStep].currentPosition!.row},{" "}
+                        Current position: (
+                        {steps[currentStep].currentPosition!.row},{" "}
                         {steps[currentStep].currentPosition!.col})
                       </p>
                     )}
                   </div>
                   <div className="flex items-center space-x-4">
                     <button
-                      onClick={() => setCurrentStep((prev) => Math.max(0, prev - 1))}
+                      onClick={() =>
+                        setCurrentStep((prev) => Math.max(0, prev - 1))
+                      }
                       disabled={currentStep === 0}
                       className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -614,7 +654,11 @@ return False`,
                       Step {currentStep + 1} of {steps.length}
                     </span>
                     <button
-                      onClick={() => setCurrentStep((prev) => Math.min(steps.length - 1, prev + 1))}
+                      onClick={() =>
+                        setCurrentStep((prev) =>
+                          Math.min(steps.length - 1, prev + 1)
+                        )
+                      }
                       disabled={currentStep === steps.length - 1}
                       className="p-2 hover:bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -622,7 +666,7 @@ return False`,
                     </button>
                   </div>
                 </div>
-                <Button onClick={()=> setCurrentStep(0)} variant="secondary">
+                <Button onClick={() => setCurrentStep(0)} variant="secondary">
                   Reset
                 </Button>
               </div>
@@ -631,26 +675,64 @@ return False`,
             {/* Code Section */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Code</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Code
+                </h2>
                 <button
                   onClick={() => setShowFullCode(!showFullCode)}
                   className="flex items-center space-x-2 text-teal-600 hover:text-teal-700"
                 >
                   <Code className="w-5 h-5" />
-                  <span>{showFullCode ? "Show Current Step" : "Show Full Code"}</span>
+                  <span>
+                    {showFullCode ? "Show Current Step" : "Show Full Code"}
+                  </span>
                 </button>
               </div>
               <pre className="bg-gray-50 dark:bg-slate-700 p-4 rounded-lg overflow-x-auto">
-                <code className="text-sm text-gray-800">{showFullCode ? getFullCode() : steps[currentStep].code}</code>
+                <code className="text-sm text-gray-800">
+                  {showFullCode ? getFullCode() : steps[currentStep].code}
+                </code>
               </pre>
             </div>
           </div>
         )}
+
+        {/* Practice Questions */}
+        <div className="mt-6 border-t pt-4">
+          <h4 className="text-xl font-bold text-black dark:text-gray-200 mb-3">
+            Practice Questions
+          </h4>
+          <div className="space-y-2"></div>
+          <>
+            <a
+              href="https://leetcode.com/problems/spiral-matrix/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              • LeetCode: Spiral Matrix
+            </a>
+            <a
+              href="https://leetcode.com/problems/search-a-2d-matrix/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              • LeetCode: Search a 2D Matrix
+            </a>
+            <a
+              href="https://practice.geeksforgeeks.org/problems/spirally-traversing-a-matrix-1587115621/1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-lg text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              • GFG: Spirally Traversing a Matrix
+            </a>
+          </>
+        </div>
       </main>
     </div>
-  )
+  );
 }
 
-export default TwoDArraysPage
-
-
+export default TwoDArraysPage;

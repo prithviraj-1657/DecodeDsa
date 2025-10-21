@@ -697,6 +697,37 @@ print(f"Size: {stack.get_size()}")     # 2`;
               </div>
             </div>
 
+                          {/* Practice Questions Section - Card Style */}
+                          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-purple-200 dark:border-purple-700 p-6 mt-8">
+                            <h2 className="text-xl font-bold text-purple-700 dark:text-purple-300 mb-4">Practice Questions (Stack)</h2>
+                            <ul className="space-y-3">
+                              <li>
+                                <a href="https://leetcode.com/problems/valid-parentheses/" target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 hover:underline">Valid Parentheses (LeetCode)</a>
+                              </li>
+                              <li>
+                                <a href="https://leetcode.com/problems/min-stack/" target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 hover:underline">Min Stack (LeetCode)</a>
+                              </li>
+                              <li>
+                                <a href="https://leetcode.com/problems/daily-temperatures/" target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 hover:underline">Daily Temperatures (LeetCode)</a>
+                              </li>
+                              <li>
+                                <a href="https://leetcode.com/problems/largest-rectangle-in-histogram/" target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 hover:underline">Largest Rectangle in Histogram (LeetCode)</a>
+                              </li>
+                              <li>
+                                <a href="https://leetcode.com/problems/implement-stack-using-queues/" target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 hover:underline">Implement Stack using Queues (LeetCode)</a>
+                              </li>
+                              <li>
+                                <a href="https://practice.geeksforgeeks.org/problems/stack-using-two-queues/1" target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 hover:underline">Stack using Two Queues (GFG)</a>
+                              </li>
+                              <li>
+                                <a href="https://practice.geeksforgeeks.org/problems/next-larger-element-1587115620/1" target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 hover:underline">Next Larger Element (GFG)</a>
+                              </li>
+                              <li>
+                                <a href="https://practice.geeksforgeeks.org/problems/get-minimum-element-from-stack/1" target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 hover:underline">Get Minimum Element from Stack (GFG)</a>
+                              </li>
+                            </ul>
+                          </div>
+
             {/* Full Code Implementation */}
             {showCode && (
               <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6">

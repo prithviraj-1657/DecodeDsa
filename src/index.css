@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities; 
+@tailwind utilities;
+.spinner-small {
+    width:16px;
+    height:16px;
+    border:2px solid rgba(0,0,0,0.2);
+    border-top-color:#fff; /* white for dark buttons, adjust if needed */
+    border-radius:50%;
+    animation:spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

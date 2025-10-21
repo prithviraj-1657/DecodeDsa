@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef } from "react";
 import { Layers, ArrowUp, ArrowDown, RotateCcw, BookOpen, Code } from "lucide-react";
 
 // --- INTERFACES AND CONSTANTS ---
@@ -42,8 +42,6 @@ const dequeOperations: DequeOperation[] = [
     realWorldExample: "Backtracking operations",
   },
 ];
-
-let dequeUpdateKey = 0;
 
 // --- COMPONENT DEFINITION ---
 function DequeVisualizerPage() {
@@ -117,7 +115,6 @@ function DequeVisualizerPage() {
     setDeque([]);
     addToHistory("🗑️ Deque cleared");
     setLastOperation("clear");
-    dequeUpdateKey += 1;
   };
 
   const getFullDequeCode = () => {

@@ -19,6 +19,7 @@ const SearchingAlgorithmsPage = lazy(
 const StackVisualizerPage = lazy(() => import("./pages/StackVisualizerPage"));
 const QueueVisualizerPage = lazy(() => import("./pages/QueueVisualizerPage"));
 const TrieVisualizerPage = lazy(() => import("./pages/TrieVisualizerPage")); // ✅ Added
+const DequeVisualizerPage = lazy(() => import("./pages/DequeVisualizerPage")); // ✅ Added
 const ArrayAlgorithmsPage = lazy(() => import("./pages/array-algorithms"));
 const TwoPointerPage = lazy(
   () => import("./pages/array-algorithms/two-pointer")
@@ -117,6 +118,8 @@ useEffect(() => {
               <Route path="/data-structures/linked-list" element={<LinkedListVisualizerPage />} />
               <Route path="/data-structures/graph" element={<GraphVisualizerPage />} />
               <Route path="/data-structures/binary-tree" element={<TreeVisualizerPage />} />
+              <Route path="/data-structures/deque" element={<DequeVisualizerPage />} />
+
 
               {/* Array Algorithms */}
               <Route path="/array-algorithms" element={<ArrayAlgorithmsPage />} />

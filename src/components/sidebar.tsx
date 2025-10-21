@@ -82,6 +82,8 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
         { name: "Queue", path: "/data-structures/queue" },
         { name: "Trie", path: "/data-structures/trie" },   // ✅ Added
         { name: "Graph", path: "/data-structures/graph" },
+        { name: "Deque", path: "/data-structures/deque" },   // ✅ Added
+
       ],
     },
     {

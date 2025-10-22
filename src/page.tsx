@@ -87,6 +87,8 @@ export default function Page() {
         { name: "Stack", path: "/data-structures/stack", description: "LIFO data structure" },
         { name: "Queue", path: "/data-structures/queue", description: "FIFO data structure" },
         { name: "Graph", path: "/data-structures/graph", description: "Graph data structure and algorithms" },
+        { name: "Deque", path: "/data-structures/deque", description: "Deque data structure and algorithms" },
+
       ],
     },
     {

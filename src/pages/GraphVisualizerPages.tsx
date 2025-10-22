@@ -167,6 +167,8 @@ function GraphVisualizerPage() {
   // Keep track of a single active timer to avoid runaway loops
   const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const algorithmsRequiringStartNode: AlgorithmType[] = ["bfs", "dfs", "dijkstra"];
+
   // Helper functions
   // Use a ref so IDs are unique even when generating many nodes in a loop
   const nodeIdCounterRef = React.useRef(0);
@@ -542,6 +544,104 @@ function GraphVisualizerPage() {
     addToHistory(`🔍 Started DFS from node ${startValue}`);
   };
 
+  const runTopologicalSort = async () => {
+    if (!graph.isDirected) {
+      addToHistory("❌ Error: Topological sort requires a DAG ");
+      return;
+    }
+
+    setIsAnimating(true);
+    const steps: any[] = [];
+    const inDegree = new Map<string, number>();
+    const queue: string[] = [];
+    const sortedOrder: string[] = [];
+
+    // Calculate in-degrees
+    graph.nodes.forEach((node) => inDegree.set(node.id, 0));
+    graph.edges.forEach((edge) => {
+      inDegree.set(edge.to, (inDegree.get(edge.to) || 0) + 1);
+    });
+
+    // Find nodes with in-degree 0
+    graph.nodes.forEach((node) => {
+      if (inDegree.get(node.id) === 0) {
+        queue.push(node.id);
+      }
+    });
+
+    steps.push({
+      type: "start",
+      message: "Starting Topological Sort",
+      queue: [...queue],
+      sortedOrder: [...sortedOrder],
+      inDegree: new Map(inDegree),
+    });
+
+    while (queue.length > 0) {
+      const u = queue.shift()!;
+      sortedOrder.push(u);
+      const uNode = graph.nodes.find((n) => n.id === u)!;
+
+      steps.push({
+        type: "visit",
+        nodeId: u,
+        message: `Adding node ${uNode.value} to sorted order`,
+        queue: [...queue],
+        sortedOrder: [...sortedOrder],
+        inDegree: new Map(inDegree),
+      });
+
+      const neighbors = graph.edges
+        .filter((edge) => edge.from === u)
+        .map((edge) => edge.to);
+
+      for (const v of neighbors) {
+        const vNode = graph.nodes.find((n) => n.id === v)!;
+        inDegree.set(v, (inDegree.get(v) || 0) - 1);
+
+        steps.push({
+          type: "relax",
+          edgeFrom: u,
+          edgeTo: v,
+          message: `Decreasing in-degree of node ${vNode.value}`,
+          queue: [...queue],
+          sortedOrder: [...sortedOrder],
+          inDegree: new Map(inDegree),
+        });
+
+        if (inDegree.get(v) === 0) {
+          queue.push(v);
+          steps.push({
+            type: "discover",
+            nodeId: v,
+            message: `Node ${vNode.value} has in-degree 0, adding to queue`,
+            queue: [...queue],
+            sortedOrder: [...sortedOrder],
+            inDegree: new Map(inDegree),
+          });
+        }
+      }
+    }
+
+    if (sortedOrder.length !== graph.nodes.length) {
+      steps.push({
+        type: "complete",
+        message: "Graph has a cycle, topological sort not possible",
+        sortedOrder: [],
+      });
+    } else {
+      steps.push({
+        type: "complete",
+        message: "Topological sort complete",
+        sortedOrder: [...sortedOrder],
+      });
+    }
+
+    setAlgorithmSteps(steps);
+    setCurrentStep(0);
+    addToHistory("🚀 Started Topological Sort");
+  };
+
   const runDijkstra = async () => {
     if (!graph.isWeighted) {
       addToHistory("❌ Error: Dijkstra's algorithm requires a weighted graph");
@@ -669,6 +769,7 @@ function GraphVisualizerPage() {
         isHighlighted: step.nodeId === node.id,
         isVisited: step.visited?.has(node.id) || false,
         isStart: step.type === "start" && step.nodeId === node.id,
+        color: step.sortedOrder?.includes(node.id) ? "#22C55E" : undefined,
         distance: step.distances?.get(node.id),
       })),
       edges: prev.edges.map((edge) => ({
@@ -827,6 +928,9 @@ function GraphVisualizerPage() {
       case "dijkstra":
         runDijkstra();
         break;
+      case "topological":
+        runTopologicalSort();
+        break;
       default:
         addToHistory(`❌ Algorithm ${selectedAlgorithm} not implemented yet`);
     }
@@ -956,7 +1060,7 @@ function GraphVisualizerPage() {
               </h2>
               <div className="grid grid-cols-2 gap-3">
                 {(
-                  ["bfs", "dfs", "dijkstra", "bellman-ford"] as AlgorithmType[]
+                  ["bfs", "dfs", "dijkstra", "bellman-ford", "topological"] as AlgorithmType[]
                 ).map((algorithm) => (
                   <button
                     key={algorithm}
@@ -1068,34 +1172,39 @@ function GraphVisualizerPage() {
 
               {/* Algorithm Controls */}
               <div className="space-y-4 mb-6">
-                <div>
-                  <h3 className="font-semibold text-gray-700 mb-3">
-                    Algorithm Parameters
-                  </h3>
-                  <div className="space-y-2">
-                    <input
-                      type="number"
-                      value={startNode}
-                      onChange={(e) => setStartNode(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      placeholder="Start node"
-                    />
-                    {(selectedAlgorithm === "dijkstra" ||
-                      selectedAlgorithm === "bellman-ford") && (
+                {algorithmsRequiringStartNode.includes(selectedAlgorithm) && (
+                  <div>
+                    <h3 className="font-semibold text-gray-700 mb-3">
+                      Algorithm Parameters
+                    </h3>
+                    <div className="space-y-2">
                       <input
                         type="number"
-                        value={endNode}
-                        onChange={(e) => setEndNode(e.target.value)}
+                        value={startNode}
+                        onChange={(e) => setStartNode(e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                        placeholder="End node (optional)"
+                        placeholder="Start node"
                       />
-                    )}
+                      {(selectedAlgorithm === "dijkstra" ||
+                        selectedAlgorithm === "bellman-ford") && (
+                        <input
+                          type="number"
+                          value={endNode}
+                          onChange={(e) => setEndNode(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                          placeholder="End node (optional)"
+                        />
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <button
                   onClick={runSelectedAlgorithm}
-                  disabled={!startNode || graph.nodes.length === 0}
+                  disabled={
+                    (algorithmsRequiringStartNode.includes(selectedAlgorithm) && !startNode) ||
+                    graph.nodes.length === 0
+                  }
                   className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   <Search className="w-4 h-4" />
@@ -1237,7 +1346,7 @@ function GraphVisualizerPage() {
                   </span>
                   {algorithmSteps.length > 0 && (
                     <span>
-                      Step: {currentStep + 1}/{algorithmSteps.length}
+                      Step: {currentStep}/{algorithmSteps.length}
                     </span>
                   )}
                 </div>
@@ -1309,34 +1418,48 @@ function GraphVisualizerPage() {
                     </span>
                   </div>
                   <div className="text-green-700 text-sm space-y-1">
-                    {algorithmResult.distances && (
-                      <div>
-                        <strong>Distances from start node:</strong>
-                        <div className="mt-1 font-mono text-xs">
-                          {Array.from(
-                            algorithmResult.distances.entries() as IterableIterator<
-                              [string, number]
-                            >
-                          ).map(([nodeId, distance]: [string, number]) => {
-                            const node = graph.nodes.find(
-                              (n) => n.id === nodeId
-                            );
-                            return (
-                              <div key={nodeId}>
-                                Node {node?.value}:{" "}
-                                {distance === Number.POSITIVE_INFINITY
-                                  ? "∞"
-                                  : distance}
-                              </div>
-                            );
-                          })}
+                    {(selectedAlgorithm === "dijkstra" ||
+                      selectedAlgorithm === "bfs") &&
+                      algorithmResult.distances && (
+                        <div>
+                          <p>
+                            <strong>Distances from start node:</strong>
+                          </p>
+                          <ul className="list-disc list-inside">
+                            {Array.from(algorithmResult.distances.entries() as [string, number][])
+                              .sort(([a], [b]) => a.localeCompare(b))
+                              .map(([nodeId, distance]: [string, number]) => {
+                                const node = graph.nodes.find(
+                                  (n) => n.id === nodeId
+                                );
+                                return (
+                                  <li key={nodeId}>
+                                    Node {node ? node.value : "?"}:{" "}
+
+                                    {distance === Number.POSITIVE_INFINITY
+                                      ? "∞"
+                                      : distance}
+                                  </li>
+                                );
+                              })}
+                          </ul>
                         </div>
-                      </div>
-                    )}
-                    {algorithmResult.visited && (
+                      )}
+                    {selectedAlgorithm === "topological" &&
+                    algorithmResult.sortedOrder &&
+                    algorithmResult.sortedOrder.length > 0 && (
                       <div>
-                        <strong>Visited nodes:</strong>{" "}
-                        {algorithmResult.visited.size}
+                        <p>
+                          <strong>Topological Sort Order:</strong>
+                        </p>
+                        <p className="font-mono text-lg bg-gray-100 p-2 rounded">
+                          {algorithmResult.sortedOrder
+                            .map((nodeId: string) => {
+                              const node = graph.nodes.find((n) => n.id === nodeId);
+                              return node ? node.value : "";
+                            })
+                            .join(" → ")}
+                        </p>
                       </div>
                     )}
                   </div>
@@ -1820,7 +1943,31 @@ def get_shortest_path(parents, start, end):
     return distances, parents`,
     kruskal: "# Kruskal's algorithm implementation not available",
     prim: "# Prim's algorithm implementation not available",
-    topological: "# Topological sort implementation not available",
+    topological: `from collections import deque
+
+def topological_sort(graph):
+    """Topological sort for a directed acyclic graph"""
+    in_degree = {node: 0 for node in graph}
+    for node in graph:
+        for neighbor in graph[node]:
+            in_degree[neighbor] += 1
+
+    queue = deque([node for node in graph if in_degree[node] == 0])
+    sorted_order = []
+
+    while queue:
+        node = queue.popleft()
+        sorted_order.append(node)
+
+        for neighbor in graph[node]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+
+    if len(sorted_order) == len(graph):
+        return sorted_order
+    else:
+        return []  # Graph has a cycle`,
     "floyd-warshall": "# Floyd-Warshall algorithm implementation not available",
   };
 

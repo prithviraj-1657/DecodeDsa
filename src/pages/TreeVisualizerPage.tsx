@@ -14,6 +14,8 @@ import {
   Clock,
   Database,
   Layers,
+  Copy,
+  Check,
 } from "lucide-react"
 
 // Tree Node interfaces for different tree types
@@ -131,6 +133,7 @@ function TreeVisualizerPage() {
   const [nodeCounter, setNodeCounter] = useState(0)
   const [traversalResult, setTraversalResult] = useState<number[]>([])
   const [selectedTraversal, setSelectedTraversal] = useState<TraversalType>("inorder")
+  const [copiedCode, setCopiedCode] = useState(false)
 
   // Helper functions
   const generateNodeId = () => {
@@ -518,6 +521,42 @@ function TreeVisualizerPage() {
     }
 
     return <BTreeRenderer root={bTreeRoot} />
+  }
+
+  // Copy to clipboard function
+  const copyToClipboard = async (text: string) => {
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text)
+      } else {
+        const textarea = document.createElement('textarea')
+        textarea.value = text
+        textarea.style.position = 'fixed'
+        textarea.style.opacity = '0'
+        document.body.appendChild(textarea)
+        textarea.select()
+        document.execCommand('copy')
+        document.body.removeChild(textarea)
+      }
+      setCopiedCode(true)
+      setTimeout(() => setCopiedCode(false), 1500)
+    } catch (error) {
+      console.error('Failed to copy to clipboard', error)
+    }
+  }
+
+  // Get the current tree implementation code
+  const getCurrentTreeCode = () => {
+    switch (treeType) {
+      case "binary": return getFullTreeCode()
+      case "bst": return getFullBSTCode()
+      case "avl": return getFullAVLCode()
+      case "redblack": return getFullRBCode()
+      case "heap": return getFullHeapCode()
+      case "btree": return getFullBTreeCode()
+      case "bplus": return getFullBPlusTreeCode()
+      default: return getFullTreeCode()
+    }
   }
 
   const getFullTreeCode = () => {
@@ -1142,15 +1181,42 @@ print("B+ Tree traverse:", bplus.traverse())`
                   {treeType === "bplus" && "B+ Tree Implementation"}
                 </h2>
 
-                <pre className="bg-gray-900 text-green-300 p-4 rounded-lg overflow-x-auto text-sm">
-                  {treeType === "binary" && getFullTreeCode()}
-                  {treeType === "bst" && getFullBSTCode()}
-                  {treeType === "avl" && getFullAVLCode()}
-                  {treeType === "redblack" && getFullRBCode()}
-                  {treeType === "heap" && getFullHeapCode()}
-                  {treeType === "btree" && getFullBTreeCode()}
-                  {treeType === "bplus" && getFullBPlusTreeCode()}
-                </pre>
+                <div className="relative">
+                  <button
+                    className="absolute top-2 right-4 inline-flex items-center gap-1 rounded px-2 py-1 text-xs bg-green-600 hover:bg-green-700 text-white shadow z-10"
+                    onClick={() => copyToClipboard(getCurrentTreeCode())}
+                    aria-label="Copy tree implementation"
+                  >
+                    {copiedCode ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    {copiedCode ? 'Copied' : 'Copy'}
+                  </button>
+                  <div 
+                    className="bg-gray-900 text-green-400 p-4 rounded-lg text-sm font-mono max-h-96 overflow-auto pr-16"
+                    onWheel={(e) => {
+                      // Prevent page scroll when scrolling within code block
+                      e.stopPropagation();
+                    }}
+                    style={{ scrollbarWidth: 'thin' }}
+                  >
+                    <pre>
+                      <code>{getCurrentTreeCode()}</code>
+                    </pre>
+                  </div>
+                </div>
+
+                <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md">
+                  <p className="text-sm text-blue-800 dark:text-blue-200">
+                    <strong>💡 Complete Implementation:</strong> This is the full {
+                      treeType === "binary" ? "Binary Tree" :
+                      treeType === "bst" ? "Binary Search Tree" :
+                      treeType === "avl" ? "AVL Tree" :
+                      treeType === "redblack" ? "Red-Black Tree" :
+                      treeType === "heap" ? "Heap" :
+                      treeType === "btree" ? "B-Tree" :
+                      treeType === "bplus" ? "B+ Tree" : "Tree"
+                    } algorithm implementation. You can copy this code and use it in your own projects!
+                  </p>
+                </div>
               </div>
             )}
 

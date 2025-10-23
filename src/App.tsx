@@ -6,6 +6,7 @@ import PageLoader from "./components/PageLoader";
 import { useTheme } from "./contexts/ThemeContext";
 import ScrollToTop from "./components/scrollToTop";
 import AIAssistantPage from "./pages/AIAssistantPage"
+import ScrollToTop from "./components/scrollToTop";
 
 // Lazy load all page components
 const Home = lazy(() => import("./page"));

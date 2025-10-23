@@ -113,21 +113,22 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
   return (
     <>
       {/* Menu Button */}
-      <button
-        onClick={onToggle}
-        className="fixed z-50 p-3 text-white transition-all shadow-lg top-4 left-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl hover:shadow-xl"
-        aria-label="Toggle menu"
-      >
-        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-      </button>
+          <button
+            onClick={onToggle}
+            className={`fixed z-50 p-3 text-white transition-all duration-300 shadow-lg top-[1.5rem] bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl hover:shadow-xl
+              ${isOpen ? "left-[14rem]" : "left-4"}`}  // 👈 shift position when open
+            aria-label="Toggle menu"
+          >
+            {isOpen ? <X className="w-4 h-4" /> : <Menu className="w-6 h-6" />}
+          </button>
 
-      {/* Overlay */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-30 bg-black/50"
-          onClick={onToggle}
-        />
-      )}
+          {/* Overlay */}
+          {isOpen && (
+            <div
+              className="fixed inset-0 z-30 bg-black/50"
+              onClick={onToggle}
+            />
+          )}
 
       {/* Sidebar */}
       <aside

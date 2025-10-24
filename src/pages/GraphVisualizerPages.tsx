@@ -167,7 +167,11 @@ function GraphVisualizerPage() {
   // Keep track of a single active timer to avoid runaway loops
   const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const algorithmsRequiringStartNode: AlgorithmType[] = ["bfs", "dfs", "dijkstra"];
+  const algorithmsRequiringStartNode: AlgorithmType[] = [
+    "bfs",
+    "dfs",
+    "dijkstra",
+  ];
 
   // Helper functions
   // Use a ref so IDs are unique even when generating many nodes in a loop
@@ -1060,7 +1064,13 @@ function GraphVisualizerPage() {
               </h2>
               <div className="grid grid-cols-2 gap-3">
                 {(
-                  ["bfs", "dfs", "dijkstra", "bellman-ford", "topological"] as AlgorithmType[]
+                  [
+                    "bfs",
+                    "dfs",
+                    "dijkstra",
+                    "bellman-ford",
+                    "topological",
+                  ] as AlgorithmType[]
                 ).map((algorithm) => (
                   <button
                     key={algorithm}
@@ -1202,7 +1212,8 @@ function GraphVisualizerPage() {
                 <button
                   onClick={runSelectedAlgorithm}
                   disabled={
-                    (algorithmsRequiringStartNode.includes(selectedAlgorithm) && !startNode) ||
+                    (algorithmsRequiringStartNode.includes(selectedAlgorithm) &&
+                      !startNode) ||
                     graph.nodes.length === 0
                   }
                   className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -1367,24 +1378,32 @@ function GraphVisualizerPage() {
                     </div>
                   </div>
                 ) : (
-                  <GraphRenderer
-                    graph={graph}
-                    setGraph={setGraph}
-                    onNodeClick={(nodeId) => {
-                      // Handle node selection for removal
-                      if (selectedNodes.includes(nodeId)) {
-                        setSelectedNodes((prev) =>
-                          prev.filter((id) => id !== nodeId)
-                        );
-                      } else {
-                        setSelectedNodes((prev) => [...prev, nodeId]);
-                      }
-                    }}
-                    selectedNodes={selectedNodes}
-                  />
+                  <>
+                    <GraphRenderer
+                      graph={graph}
+                      setGraph={setGraph}
+                      onNodeClick={(nodeId) => {
+                        // Handle node selection for removal
+                        if (selectedNodes.includes(nodeId)) {
+                          setSelectedNodes((prev) =>
+                            prev.filter((id) => id !== nodeId)
+                          );
+                        } else {
+                          setSelectedNodes((prev) => [...prev, nodeId]);
+                        }
+                      }}
+                      selectedNodes={selectedNodes}
+                    />
+                    {/* Touch interaction hint for mobile */}
+                    <div className="mt-3 text-center text-sm text-gray-600 dark:text-gray-400 md:hidden">
+                      <span className="inline-flex items-center space-x-1">
+                        <span>💡</span>
+                        <span>Touch and hold nodes to drag them around</span>
+                      </span>
+                    </div>
+                  </>
                 )}
               </div>
-             
 
               {/* Current Step Info */}
               {algorithmSteps.length > 0 &&
@@ -1426,7 +1445,12 @@ function GraphVisualizerPage() {
                             <strong>Distances from start node:</strong>
                           </p>
                           <ul className="list-disc list-inside">
-                            {Array.from(algorithmResult.distances.entries() as [string, number][])
+                            {Array.from(
+                              algorithmResult.distances.entries() as [
+                                string,
+                                number
+                              ][]
+                            )
                               .sort(([a], [b]) => a.localeCompare(b))
                               .map(([nodeId, distance]: [string, number]) => {
                                 const node = graph.nodes.find(
@@ -1435,7 +1459,6 @@ function GraphVisualizerPage() {
                                 return (
                                   <li key={nodeId}>
                                     Node {node ? node.value : "?"}:{" "}
-
                                     {distance === Number.POSITIVE_INFINITY
                                       ? "∞"
                                       : distance}
@@ -1446,22 +1469,24 @@ function GraphVisualizerPage() {
                         </div>
                       )}
                     {selectedAlgorithm === "topological" &&
-                    algorithmResult.sortedOrder &&
-                    algorithmResult.sortedOrder.length > 0 && (
-                      <div>
-                        <p>
-                          <strong>Topological Sort Order:</strong>
-                        </p>
-                        <p className="font-mono text-lg bg-gray-100 p-2 rounded">
-                          {algorithmResult.sortedOrder
-                            .map((nodeId: string) => {
-                              const node = graph.nodes.find((n) => n.id === nodeId);
-                              return node ? node.value : "";
-                            })
-                            .join(" → ")}
-                        </p>
-                      </div>
-                    )}
+                      algorithmResult.sortedOrder &&
+                      algorithmResult.sortedOrder.length > 0 && (
+                        <div>
+                          <p>
+                            <strong>Topological Sort Order:</strong>
+                          </p>
+                          <p className="font-mono text-lg bg-gray-100 p-2 rounded">
+                            {algorithmResult.sortedOrder
+                              .map((nodeId: string) => {
+                                const node = graph.nodes.find(
+                                  (n) => n.id === nodeId
+                                );
+                                return node ? node.value : "";
+                              })
+                              .join(" → ")}
+                          </p>
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>
@@ -1502,37 +1527,110 @@ function GraphVisualizerPage() {
 
             {/* Practice Questions Section - Card Style */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-blue-200 dark:border-blue-700 p-6 mt-8">
-              <h2 className="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">Practice Questions (Graph)</h2>
+              <h2 className="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">
+                Practice Questions (Graph)
+              </h2>
               <ul className="space-y-3">
                 <li>
-                  <a href="https://leetcode.com/problems/course-schedule/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Course Schedule (Topological Sort) (LeetCode)</a>
+                  <a
+                    href="https://leetcode.com/problems/course-schedule/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    Course Schedule (Topological Sort) (LeetCode)
+                  </a>
                 </li>
                 <li>
-                  <a href="https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Number of Connected Components in an Undirected Graph (LeetCode)</a>
+                  <a
+                    href="https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    Number of Connected Components in an Undirected Graph
+                    (LeetCode)
+                  </a>
                 </li>
                 <li>
-                  <a href="https://leetcode.com/problems/shortest-path-in-binary-matrix/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Shortest Path in Binary Matrix (BFS) (LeetCode)</a>
+                  <a
+                    href="https://leetcode.com/problems/shortest-path-in-binary-matrix/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    Shortest Path in Binary Matrix (BFS) (LeetCode)
+                  </a>
                 </li>
                 <li>
-                  <a href="https://leetcode.com/problems/network-delay-time/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Network Delay Time (Dijkstra) (LeetCode)</a>
+                  <a
+                    href="https://leetcode.com/problems/network-delay-time/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    Network Delay Time (Dijkstra) (LeetCode)
+                  </a>
                 </li>
                 <li>
-                  <a href="https://leetcode.com/problems/clone-graph/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Clone Graph (DFS/BFS) (LeetCode)</a>
+                  <a
+                    href="https://leetcode.com/problems/clone-graph/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    Clone Graph (DFS/BFS) (LeetCode)
+                  </a>
                 </li>
                 <li>
-                  <a href="https://leetcode.com/problems/find-the-town-judge/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Find the Town Judge (LeetCode)</a>
+                  <a
+                    href="https://leetcode.com/problems/find-the-town-judge/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    Find the Town Judge (LeetCode)
+                  </a>
                 </li>
                 <li>
-                  <a href="https://practice.geeksforgeeks.org/problems/detect-cycle-in-an-undirected-graph/1" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Detect Cycle in an Undirected Graph (GFG)</a>
+                  <a
+                    href="https://practice.geeksforgeeks.org/problems/detect-cycle-in-an-undirected-graph/1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    Detect Cycle in an Undirected Graph (GFG)
+                  </a>
                 </li>
                 <li>
-                  <a href="https://practice.geeksforgeeks.org/problems/shortest-path-in-unweighted-graph/1" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Shortest Path in Unweighted Graph (GFG)</a>
+                  <a
+                    href="https://practice.geeksforgeeks.org/problems/shortest-path-in-unweighted-graph/1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    Shortest Path in Unweighted Graph (GFG)
+                  </a>
                 </li>
                 <li>
-                  <a href="https://practice.geeksforgeeks.org/problems/kruskals-algorithm/1" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Kruskal's Algorithm (GFG)</a>
+                  <a
+                    href="https://practice.geeksforgeeks.org/problems/kruskals-algorithm/1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    Kruskal's Algorithm (GFG)
+                  </a>
                 </li>
                 <li>
-                  <a href="https://practice.geeksforgeeks.org/problems/prim%E2%80%99s-algorithm/1" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Prim's Algorithm (GFG)</a>
+                  <a
+                    href="https://practice.geeksforgeeks.org/problems/prim%E2%80%99s-algorithm/1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    Prim's Algorithm (GFG)
+                  </a>
                 </li>
               </ul>
             </div>
@@ -1578,7 +1676,7 @@ function GraphRenderer({
     y: number;
   } | null>(null);
 
-  // Drag event handlers
+  // Drag event handlers - Mouse support
   const handleNodeMouseDown = (e: React.MouseEvent, node: GraphNode) => {
     e.preventDefault();
     setDraggingNodeId(node.id);
@@ -1593,8 +1691,30 @@ function GraphRenderer({
     });
   };
 
+  // Touch event handlers - Touch screen support
+  const handleNodeTouchStart = (e: React.TouchEvent, node: GraphNode) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    if (!touch) return;
+
+    setDraggingNodeId(node.id);
+    // Store offset from node center to touch position
+    setDragOffset({
+      x:
+        touch.clientX -
+        (svgRef.current?.getBoundingClientRect().left ?? 0) -
+        node.x,
+      y:
+        touch.clientY -
+        (svgRef.current?.getBoundingClientRect().top ?? 0) -
+        node.y,
+    });
+  };
+
+  // Mouse move and mouse up handlers
   React.useEffect(() => {
     if (!draggingNodeId) return;
+
     const move = (e: MouseEvent) => {
       if (!draggingNodeId || !dragOffset) return;
       const svgRect = svgRef.current?.getBoundingClientRect();
@@ -1618,15 +1738,69 @@ function GraphRenderer({
         nodes: updatedNodes,
       }));
     };
+
     const up = () => {
       setDraggingNodeId(null);
       setDragOffset(null);
     };
+
     window.addEventListener("mousemove", move);
     window.addEventListener("mouseup", up);
+
     return () => {
       window.removeEventListener("mousemove", move);
       window.removeEventListener("mouseup", up);
+    };
+  }, [draggingNodeId, dragOffset, graph, setGraph]);
+
+  // Touch move and touch end handlers
+  React.useEffect(() => {
+    if (!draggingNodeId) return;
+
+    const touchMove = (e: TouchEvent) => {
+      if (!draggingNodeId || !dragOffset) return;
+      e.preventDefault(); // Prevent scrolling while dragging
+
+      const touch = e.touches[0];
+      if (!touch) return;
+
+      const svgRect = svgRef.current?.getBoundingClientRect();
+      if (!svgRect) return;
+
+      // Node center should be at touch point
+      let newX = touch.clientX - svgRect.left - dragOffset.x;
+      let newY = touch.clientY - svgRect.top - dragOffset.y;
+      const minX = 25,
+        minY = 25,
+        maxX = 800 - 25,
+        maxY = 500 - 25;
+      newX = Math.max(minX, Math.min(maxX, newX));
+      newY = Math.max(minY, Math.min(maxY, newY));
+
+      // Only update the dragged node's position
+      const updatedNodes = graph.nodes.map((n) =>
+        n.id === draggingNodeId ? { ...n, x: newX, y: newY } : n
+      );
+
+      setGraph((prev: GraphState) => ({
+        ...prev,
+        nodes: updatedNodes,
+      }));
+    };
+
+    const touchEnd = () => {
+      setDraggingNodeId(null);
+      setDragOffset(null);
+    };
+
+    window.addEventListener("touchmove", touchMove, { passive: false });
+    window.addEventListener("touchend", touchEnd);
+    window.addEventListener("touchcancel", touchEnd);
+
+    return () => {
+      window.removeEventListener("touchmove", touchMove);
+      window.removeEventListener("touchend", touchEnd);
+      window.removeEventListener("touchcancel", touchEnd);
     };
   }, [draggingNodeId, dragOffset, graph, setGraph]);
 
@@ -1641,7 +1815,13 @@ function GraphRenderer({
       height="500"
       viewBox="0 0 800 500"
       className="border border-gray-200 dark:border-slate-700 rounded-lg bg-white"
-      style={{ userSelect: "none" }}
+      style={{
+        userSelect: "none",
+        touchAction: "none", // Prevent default touch behaviors like pinch-zoom
+        WebkitUserSelect: "none",
+        MozUserSelect: "none",
+        msUserSelect: "none",
+      }}
     >
       {/* Render edges first (so they appear behind nodes) */}
       {graph.edges.map((edge) => {
@@ -1717,7 +1897,7 @@ function GraphRenderer({
       {/* Render nodes */}
       {graph.nodes.map((node) => (
         <g key={node.id}>
-          {/* Node circle */}
+          {/* Node circle - Enhanced for touch interaction */}
           <circle
             cx={node.x}
             cy={node.y}
@@ -1742,17 +1922,32 @@ function GraphRenderer({
                 ? "#d97706"
                 : "#1e40af"
             }
-            strokeWidth="2"
+            strokeWidth={draggingNodeId === node.id ? "3" : "2"}
             className="cursor-pointer transition-all duration-300"
             style={{
-              filter: "drop-shadow(0 0 8px #6366f1)",
+              filter:
+                draggingNodeId === node.id
+                  ? "drop-shadow(0 0 16px #f59e0b)"
+                  : "drop-shadow(0 0 8px #6366f1)",
               transition: "filter 0.2s",
-              ...(draggingNodeId === node.id
-                ? { filter: "drop-shadow(0 0 16px #f59e0b)" }
-                : {}),
+              touchAction: "none", // Prevent default touch behaviors
             }}
             onClick={() => handleNodeClick(node.id)}
             onMouseDown={(e) => handleNodeMouseDown(e, node)}
+            onTouchStart={(e) => handleNodeTouchStart(e, node)}
+          />
+
+          {/* Invisible larger touch target for better mobile UX */}
+          <circle
+            cx={node.x}
+            cy={node.y}
+            r="35"
+            fill="transparent"
+            className="cursor-pointer md:hidden"
+            style={{ touchAction: "none" }}
+            onClick={() => handleNodeClick(node.id)}
+            onMouseDown={(e) => handleNodeMouseDown(e, node)}
+            onTouchStart={(e) => handleNodeTouchStart(e, node)}
           />
 
           {/* Node value */}
